@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="b7.Scripter.WPF.Controls.GrayscaleImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:b7.Scripter.WPF.Controls"
+             xmlns:converter="clr-namespace:b7.Scripter.WPF.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100 "
+             x:Name="root">
+    <Grid DataContext="{Binding ElementName=root}">
+        <Image x:Name="image" Source="{Binding Source}">
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsGrayscale}" Value="True">
+                            <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+        <Image x:Name="grayscaleImage">
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsGrayscale}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="{Binding Source}" />
+            </Image.OpacityMask>
+        </Image>
+    </Grid>
+</UserControl>

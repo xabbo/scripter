@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="b7.Scripter.View.StatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:b7.Scripter"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ListView ItemsSource="{Binding Features}"  Margin="2">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Foreground" Value="LightSlateGray" />
+                    <Style.Triggers>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource AnyConverter}">
+                                    <Binding Path="Availability" Converter="{StaticResource EqualityConverter}"
+                                             ConverterParameter="{x:Static local:Availability.Unavailable}" />
+                                    <Binding Path="Availability" Converter="{StaticResource EqualityConverter}"
+                                             ConverterParameter="{x:Static local:Availability.Unresolved}" />
+                                    <Binding Path="Availability" Converter="{StaticResource EqualityConverter}"
+                                             ConverterParameter="{x:Static local:Availability.Error}" />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="Background" Value="{StaticResource DarkRedBackground}" />
+                            <Setter Property="Foreground" Value="DarkRed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Availability}" Value="{x:Static local:Availability.Loading}">
+                            <Setter Property="Background" Value="{StaticResource DarkOrangeBackground}" />
+                            <Setter Property="Foreground" Value="DarkOrange" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Availability}" Value="{x:Static local:Availability.Available}">
+                            <Setter Property="Background" Value="{StaticResource DarkGreenBackground}" />
+                            <Setter Property="Foreground" Value="DarkGreen" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="name" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" ToolTipService.IsEnabled="{Binding HasDescription}"
+                                               ToolTipService.ShowDuration="10000">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip MaxWidth="350" Visibility="{Binding HasDescription, Converter={StaticResource BoolVisibilityConverter}}">
+                                                <StackPanel Margin="2">
+                                                    <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="status" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StatusText}"
+                                               ToolTipService.IsEnabled="{Binding HasError}"
+                                               ToolTipService.ShowDuration="30000">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip MaxWidth="350">
+                                                <TextBlock Margin="2"
+                                                           Foreground="DarkRed"
+                                                           FontWeight="Bold"
+                                                           Text="{Binding ErrorText}" TextWrapping="Wrap" />
+                                            </ToolTip>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Collapsed">
+            <Button Margin="2" Padding="8,2" Content="Reload metadata" IsEnabled="{Binding CanReloadMetadata}" />
+            <Button Margin="2" Padding="8,2" Content="Reload hashes" IsEnabled="{Binding CanReloadHashes}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,21 @@
+﻿<Application x:Class="b7.Scripter.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:b7.Scripter"
+             xmlns:svc="clr-namespace:b7.Scripter.Services"
+             xmlns:converters="clr-namespace:b7.Scripter.WPF.Converters"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException">
+    <Application.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="DarkRedBackground" Color="#FF0000" Opacity="0.2" />
+        <SolidColorBrush x:Key="DarkOrangeBackground" Color="#FF8C00" Opacity="0.2" />
+        <SolidColorBrush x:Key="DarkGreenBackground" Color="#006400" Opacity="0.2" />
+        <!-- Converters -->
+        <converters:NotConverter x:Key="NotConverter" />
+        <converters:AnyConverter x:Key="AnyConverter" />
+        <converters:AllConverter x:Key="AllConverter" />
+        <converters:EqualityConverter x:Key="EqualityConverter" />
+        <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
+        <converters:DoubleSelector x:Key="DoubleSelector" />
+    </Application.Resources>
+</Application>

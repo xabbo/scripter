@@ -1,0 +1,1818 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>b7.Scripter.Common</name>
+    </assembly>
+    <members>
+        <member name="T:b7.Scripter.Scripting.G">
+            <summary>
+            The b7 scripter globals class.
+            Contains the methods and properties that are globally accessible from scripts.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Ct">
+            <summary>
+            Gets the cancellation token which signals when the script has been
+            cancelled or aborted, and execution should no longer continue.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsFinished">
+            <summary>
+            Gets if the script was terminated with <see cref="M:b7.Scripter.Scripting.G.Finish"/>.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Messages">
+            <summary>
+            Gets the message headers.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.In">
+            <summary>
+            Gets the incoming message headers.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Out">
+            <summary>
+            Gets the outgoing message headers.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.FigureData">
+            <summary>
+            Gets the figure data.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.FurniData">
+            <summary>
+            Gets the furni data.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.ProductData">
+            <summary>
+            Gets the product data.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Texts">
+            <summary>
+            Gets the external texts.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Global">
+            <summary>
+            Gets the global variables of the scripter.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Run">
+            <summary>
+            Gets whether the script should run or not. Returns <c>false</c> if the script has finished/been cancelled.
+            This is an alias for <c>!Ct.IsCancellationRequested</c>.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Delay(System.Int32)">
+            <summary>
+            Delays the script for the specified duration.
+            </summary>
+            <param name="millisecondsDelay">The duration in milliseconds of the delay.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Delay(System.TimeSpan)">
+            <summary>
+            Delays the script for the specified duration.
+            </summary>
+            <param name="delay">The duration of the delay.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DelayAsync(System.Int32)">
+            <summary>
+            Delays the script asynchronously for the specified duration.
+            </summary>
+            <param name="millisecondsDelay">The duration in milliseconds of the delay.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DelayAsync(System.TimeSpan)">
+            <summary>
+            Delays the script asynchronously for the specified duration.
+            </summary>
+            <param name="delay">The duration of the delay.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Pause">
+            <summary>
+            Pauses execution and keeps the script alive until it is cancelled or aborted.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Error(System.String)">
+            <summary>
+            Returns a new <see cref="!:ScriptError"/> with the specified message
+            which will be displayed in the log when thrown.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ToJson``1(``0,System.Boolean)">
+            <summary>
+            Serializes an object to JSON.
+            </summary>
+            <typeparam name="TValue">The type of the object to serialize.</typeparam>
+            <param name="value">The object to serialize.</param>
+            <param name="indented">Specifies whether to use indented formatting or not.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.FromJson``1(System.String)">
+            <summary>
+            Deserializes an object from JSON.
+            </summary>
+            <typeparam name="TValue">The type of the object to deserialize.</typeparam>
+            <param name="json">The JSON string that represents the object to deserialize.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Status(System.String)">
+            <summary>
+            Sets script's status.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Status(System.Object)">
+            <summary>
+            Sets the script's status using <see cref="M:System.Object.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Log(System.String)">
+            <summary>
+            Logs the specified message to the script's output.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Log(System.Object)">
+            <summary>
+            Logs the specified object to the script's output.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Log">
+            <summary>
+            Logs an empty line to the script's output.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Yield">
+            <summary>
+            Creates an awaitable task that asynchronously yields back to the current context when awaited.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Finish">
+            <summary>
+            Cancels the script and sets <see cref="P:b7.Scripter.Scripting.G.IsFinished"/> to <c>true</c>.
+            Can be used to complete the script from another task such as an intercept or event callback.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand(System.Int32)">
+            <summary>
+            Returns a non-negative integer that is less than the specified maximum.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand(System.Int32,System.Int32)">
+            <summary>
+            Returns a random integer that is within a specified range.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand(System.Byte[])">
+            <summary>
+            Fills the elements of a specified array of bytes with random numbers.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.RandDouble">
+            <summary>
+            Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a random element from a specified enumerable.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Rand``1(``0[])">
+            <summary>
+            Returns a random element from a specified array.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.InitGlobal(System.String,System.Object)">
+            <summary>
+            Initializes a global variable if it does not yet exist.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dist(System.ValueTuple{System.Int32,System.Int32},System.ValueTuple{System.Int32,System.Int32})">
+            <summary>
+            Calculates the distance between two points.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dist(Xabbo.Core.Tile,Xabbo.Core.Tile)">
+            <summary>
+            Calculates the distance between two tiles. The Z co-ordinate of the tile is ignored.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.RunTask(System.Action)">
+            <summary>
+            Queues the specified work to run on the thread pool.
+            You must ensure that the task finishes once the script has completed 
+            (when <see cref="P:b7.Scripter.Scripting.G.Run"/> evaluates to false), otherwise the task may
+            continue executing after the script has completed or has been cancelled.
+            Calls to <c>Delay</c> are also exit points for a task as an <see cref="T:System.OperationCanceledException"/>
+            will be thrown when the script should no longer execute.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetInfo(Xabbo.Core.IItem)">
+            <summary>
+            Gets the information of the specified item from the furni data.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetName(Xabbo.Core.IItem)">
+            <summary>
+            Gets the name of the specified item from the furni data.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetCategory(Xabbo.Core.IItem)">
+            <summary>
+            Gets the category of the specified item from the furni data.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Send(Xabbo.Messages.Header,System.Object[])">
+            <summary>
+            Constructs a packet with the specified header and values, then sends it to the server.
+            </summary>
+            <param name="header">The header of the message to send.</param>
+            <param name="values">The values to write to the packet.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Send(Xabbo.Messages.IReadOnlyPacket)">
+            <summary>
+            Sends the specified packet to the client or server.
+            </summary>
+            <param name="packet">The packet to send.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Receive(System.Int32,Xabbo.Messages.Header[])">
+            <summary>
+            Captures a packet being sent to the client with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be received.</param>
+            <param name="targetHeaders">The incoming message headers to listen for.</param>
+            <returns>The first packet received with a header that matches one of the target headers.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ReceiveAsync(System.Int32,Xabbo.Messages.Header[])">
+            <summary>
+            Asynchronously captures a packet being sent to the client with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be received.</param>
+            <param name="targetHeaders">The incoming message headers to listen for.</param>
+            <returns>The first packet received with a header that matches one of the target headers.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.TryReceive(System.Int32,Xabbo.Messages.IReadOnlyPacket@,Xabbo.Messages.Header[])">
+            <summary>
+            Attempts to capture a packet being sent to the client with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be received.</param>
+            <param name="packet">The packet that was captured.</param>
+            <param name="targetHeaders">The incoming message headers to listen for.</param>
+            <returns>True if a packet was successfully captured, or false if the operation timed out.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CaptureOut(System.Int32,Xabbo.Messages.Header[])">
+            <summary>
+            Captures a packet being sent to the server with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be captured.</param>
+            <param name="targetHeaders">The outgoing message headers to listen for.</param>
+            <returns>The first packet captured with a header that matches one of the target headers.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CaptureOutAsync(System.Int32,Xabbo.Messages.Header[])">
+            <summary>
+            Asynchronously a packet being sent to the server with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be captured.</param>
+            <param name="targetHeaders">The outgoing message headers to listen for.</param>
+            <returns>The first packet captured with a header that matches one of the target headers.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.TryCaptureOut(System.Int32,Xabbo.Messages.IReadOnlyPacket@,Xabbo.Messages.Header[])">
+            <summary>
+            Attempts to capture a packet being sent to the server with a header that matches any of the defined target headers.
+            </summary>
+            <param name="timeout">The time to wait for a packet to be captured.</param>
+            <param name="packet">The packet that was captured.</param>
+            <param name="targetHeaders">The outgoing message headers to listen for.</param>
+            <returns>True if a packet was successfully captured, or false if the operation timed out.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnIntercept(Xabbo.Messages.Header,System.Action{Xabbo.Messages.InterceptArgs})">
+            <summary>
+            Registers a callback to be invoked when a packet with the specified header is intercepted.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnIntercept(Xabbo.Messages.Header[],System.Action{Xabbo.Messages.InterceptArgs})">
+            <summary>
+            Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnIntercept(Xabbo.Messages.Header,System.Func{Xabbo.Messages.InterceptArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback to be invoked when a packet with the specified header is intercepted.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnIntercept(Xabbo.Messages.Header[],System.Func{Xabbo.Messages.InterceptArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.RoomData">
+            <summary>
+            Gets the data of the room the user is currently in.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.RoomId">
+            <summary>
+            Gets the ID of the current/last room that the user is/was in.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsRingingDoorbell">
+            <summary>
+            Gets if the user is ringing the doorbell.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsInQueue">
+            <summary>
+            Gets if the user is in the room queue.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.QueuePosition">
+            <summary>
+            Gets the current queue position the user is in.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsLoadingRoom">
+            <summary>
+            Gets if the user is currently loading a room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsInRoom">
+            <summary>
+            Gets if the user is in a room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Room">
+            <summary>
+            Gets the current room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.DoorTile">
+            <summary>
+            Gets the door tile of the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Heightmap">
+            <summary>
+            Gets the height map of the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.FloorPlan">
+            <summary>
+            Gets the floor plan of the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.CanMute">
+            <summary>
+            Gets if the user has permission to mute.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.CanKick">
+            <summary>
+            Gets if the user has permission to kick.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.CanBan">
+            <summary>
+            Gets if the user has permission to ban.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.CanUnban">
+            <summary>
+            Gets if the user has permission to unban.
+            This is an alias for <see cref="P:b7.Scripter.Scripting.G.IsRoomOwner"/>.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsRoomOwner">
+            <summary>
+            Gets if the user is the room owner.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Furni">
+            <summary>
+            Gets the furni in the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.FloorItems">
+            <summary>
+            Gets the floor items in the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.WallItems">
+            <summary>
+            Gets the wall items in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetFloorItem(System.Int64)">
+            <summary>
+            Gets the floor items with the specified ID.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetWallItem(System.Int64)">
+            <summary>
+            Gets the wall item with the specified ID.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Entities">
+            <summary>
+            Gets the entities in the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Users">
+            <summary>
+            Gets the users in the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Pets">
+            <summary>
+            Gets the pets in the room.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Bots">
+            <summary>
+            Gets the bots in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetEntityByIndex(System.Int32)">
+            <summary>
+            Gets the entity with the specified index.
+            </summary>
+            <param name="index">The index of the entity to get.</param>
+            <returns>The entity with the specified index, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetEntity(System.String)">
+            <summary>
+            Gets the entity with the specified name.
+            </summary>
+            <param name="name">The name of the entity to get.</param>
+            <returns>The entity with the specified name, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetEntityById(System.Int64)">
+            <summary>
+            Gets the entity with the specified id.
+            </summary>
+            <param name="id">The id of the entity to get.</param>
+            <returns>The entity with the specified id, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetUser(System.Int32)">
+            <summary>
+            Gets the user with the specified index.
+            </summary>
+            <param name="index">The index of the user to get.</param>
+            <returns>The user with the specified index, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetUser(System.String)">
+            <summary>
+            Gets the user with the specified name.
+            </summary>
+            <param name="name">The name of the user to get.</param>
+            <returns>The user with the specified name, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetUserById(System.Int64)">
+            <summary>
+            Gets the user with the specified ID.
+            </summary>
+            <param name="id">The ID of the user to get.</param>
+            <returns>The user with the specified ID, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetPet(System.Int32)">
+            <summary>
+            Gets the pet with the specified index.
+            </summary>
+            <param name="index">The index of the pet to get.</param>
+            <returns>The pet with the specified index, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetPet(System.String)">
+            <summary>
+            Gets the pet with the specified name.
+            </summary>
+            <param name="name">The name of the pet to get.</param>
+            <returns>The pet with the specified name, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetPetById(System.Int64)">
+            <summary>
+            Gets the pet with the specified ID.
+            </summary>
+            <param name="id">The ID of the pet to get.</param>
+            <returns>The pet with the specified ID, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetBot(System.Int32)">
+            <summary>
+            Gets the bot with the specified index.
+            </summary>
+            <param name="index">The index of the bot to get.</param>
+            <returns>The bot with the specified index, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetBot(System.String)">
+            <summary>
+            Gets the bot with the specified name.
+            </summary>
+            <param name="name">The name of the bot to get.</param>
+            <returns>The bot with the specified name, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetBotById(System.Int64)">
+            <summary>
+            Gets the bot with the specified ID.
+            </summary>
+            <param name="id">The ID of the bot to get.</param>
+            <returns>The bot with the specified ID, or <c>null</c> if it doesn't exist.</returns>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Self">
+            <summary>
+            Gets the user's own <see cref="T:Xabbo.Core.IRoomUser"/> instance.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserData">
+            <summary>
+            Gets the user's data.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserId">
+            <summary>
+            Gets the user's ID.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserName">
+            <summary>
+            Gets the user's name.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserGender">
+            <summary>
+            Gets the user's gender.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserFigure">
+            <summary>
+            Gets the user's figure.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.UserMotto">
+            <summary>
+            Gets the user's motto.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.IsNameChangeable">
+            <summary>
+            Gets if the user's name can be changed.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Achievements">
+            <summary>
+            Gets the user's achievements.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SetMotto(System.String)">
+            <summary>
+            Sets the user's motto.
+            </summary>
+            <param name="motto">The motto to set.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SetFigure(System.String,Xabbo.Core.Gender)">
+            <summary>
+            Sets the user's figure.
+            </summary>
+            <param name="figureString">The figure string.</param>
+            <param name="gender">The gender of the figrue.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SetFigure(System.String)">
+            <summary>
+            Sets the user's figure, inferring the gender from the figure string.
+            </summary>
+            <param name="figureString">The figure string.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetBadges(System.Int32)">
+            <summary>
+            Gets the list of badges owned by the user.
+            </summary>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetGroups(System.Int32)">
+            <summary>
+            Gets the list of groups the user belongs to.
+            </summary>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetAchievements(System.Int32)">
+            <summary>
+            Gets the list of achievements of the user.
+            </summary>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetRooms(System.Int32)">
+            <summary>
+            Gets the user's rooms.
+            </summary>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Credits">
+            <summary>
+            Gets the user's current credits.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Points">
+            <summary>
+            Gets the user's activity points.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Diamonds">
+            <summary>
+            Gets the user's current diamonds.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Scripting.G.Duckets">
+            <summary>
+            Gets the user's current duckets.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.AcceptFriendRequest(System.Int64)">
+            <summary>
+            Accepts a friend request from the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.AcceptFriendRequests(System.Int64[])">
+            <summary>
+            Accepts friend requests from the specified users.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeclineFriendRequest(System.Int64)">
+            <summary>
+            Declines a friend request from the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeclineFriendRequests(System.Int64[])">
+            <summary>
+            Declines friend requests from the specified users.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeclineAllFriendRequests">
+            <summary>
+            Declines all incoming friend requests.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.AddFriend(System.String)">
+            <summary>
+            Sends a friend request to the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.RemoveFriend(System.Int64)">
+            <summary>
+            Removes the specified user from the user's friend list.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.RemoveFriends(System.Int64[])">
+            <summary>
+            Removes the specified users from the user's friend list.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SendMessage(System.Int64,System.String)">
+            <summary>
+            Sends a private message to a friend with the specified ID.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.AssertRoom">
+            <summary>
+            Ensures the user is in a room, and displays an error message
+            in the output log if the user is not in a room or has not re-entered
+            the room after opening the scripter.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetRoomData(System.Int32,System.Int32)">
+            <summary>
+            Gets the data of the specified room.
+            </summary>
+            <param name="roomId">The ID of the room.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CreateRoom(System.String,System.String,System.String,Xabbo.Core.RoomCategory,System.Int32,Xabbo.Core.TradePermissions)">
+            <summary>
+            Sends a request to create a room with the specified parameters.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetRoomSettings(System.Int32,System.Int32)">
+            <summary>
+            Gets the room settings of the specified room.
+            </summary>
+            <param name="roomId">The ID of the room.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+            <returns></returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SaveRoomSettings(Xabbo.Core.RoomSettings)">
+            <summary>
+            Saves the specified room settings.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeleteRoom(System.Int64)">
+            <summary>
+            Sends a request to delete a room with the specified ID.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.EnterRoom(System.Int64,System.String)">
+            <summary>
+            Sends a request to enter a room with the specified ID, and optionally, a password.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.LeaveRoom">
+            <summary>
+            Leaves the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetRights(System.Int32)">
+            <summary>
+            Gets the list of users with rights to the current room.
+            Returns <c>null</c> if the user is not in a room, or is not the current room owner.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetRightsFor(System.Int64,System.Int32)">
+            <summary>
+            Gets the list of users with rights to the specified room.
+            This operation will timeout if the user is not the owner of the specified room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Express(System.Int32)">
+            <summary>
+            Makes the user perform the specified expression.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Express(Xabbo.Core.Expressions)">
+            <summary>
+            Makes the user perform the specified expression.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unidle">
+            <summary>
+            Makes the user unidle.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Wave">
+            <summary>
+            Makes the user wave.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Kiss">
+            <summary>
+            Makes the user blow a kiss. (HC required)
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Laugh">
+            <summary>
+            Makes the user laugh. (HC required)
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Idle">
+            <summary>
+            Makes the user idle.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Jump">
+            <summary>
+            Makes the user jump. (HC required)
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ThumbsUp">
+            <summary>
+            Makes the user thumbs up.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Sit(System.Boolean)">
+            <summary>
+            Makes the user sit if <c>true</c>, or stand if <c>false</c> is passed in.
+            </summary>
+            <param name="sit"><c>true</c> to sit, or <c>false</c> to stand.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Sit">
+            <summary>
+            Makes the user sit.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Stand">
+            <summary>
+            Makes the user stand.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Sign(System.Int32)">
+            <summary>
+            Makes the user show the specified sign.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Sign(Xabbo.Core.Signs)">
+            <summary>
+            Makes the user show the specified sign.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dance(System.Int32)">
+            <summary>
+            Makes the user perform the specfied dance.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dance(Xabbo.Core.Dances)">
+            <summary>
+            Makes the user perform the specfied dance.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dance">
+            <summary>
+            Makes the user dance.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.StopDancing">
+            <summary>
+            Makes the user stop dancing.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ActivateEffect(System.Int32)">
+            <summary>
+            Activates the specified effect. (Warning: this will consume the effect if it is not permanent)
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.EnableEffect(System.Int32)">
+            <summary>
+            Enables the specified effect.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DisableEffect">
+            <summary>
+            Disables the current effect.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(System.Int32,System.Int32)">
+            <summary>
+            Moves to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(System.ValueTuple{System.Int32,System.Int32})">
+            <summary>
+            Moves to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.Tile)">
+            <summary>
+            Moves to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.LookAt(System.Int32,System.Int32)">
+            <summary>
+            Turns to look at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.LookAt(System.ValueTuple{System.Int32,System.Int32})">
+            <summary>
+            Turns to look at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.LookAt(Xabbo.Core.Tile)">
+            <summary>
+            Turns to look at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Turn(System.Int32)">
+            <summary>
+            Turns to look in the specified direction.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Chat(Xabbo.Core.ChatType,System.String,System.Int32)">
+            <summary>
+            Sends a chat message with the specified message and chat bubble style.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Whisper(Xabbo.Core.RoomUser,System.String,System.Int32)">
+            <summary>
+            Whispers a user with the specified message and chat bubble style.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Whisper(System.String,System.String,System.Int32)">
+            <summary>
+            Whispers a user with the specified message and chat bubble style.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Talk(System.String,System.Int32)">
+            <summary>
+            Talks with the specified message and chat bubble style.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Shout(System.String,System.Int32)">
+            <summary>
+            Shouts with the specified message and chat bubble style.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Mute(System.Int64,System.Int64,System.Int32)">
+            <summary>
+            Mutes a user for the specified number of minutes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Mute(Xabbo.Core.IRoomUser,System.Int32)">
+            <summary>
+            Mutes a user for the specified number of minutes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Kick(Xabbo.Core.IRoomUser)">
+            <summary>
+            Kicks the specified user from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Kick(System.Int64)">
+            <summary>
+            Kicks the specified user from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ban(System.Int64,System.Int64,Xabbo.Core.BanDuration)">
+            <summary>
+            Bans a user for the specified duration.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ban(Xabbo.Core.IRoomUser,Xabbo.Core.BanDuration)">
+            <summary>
+            Bans a user for the specified duration.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unban(System.Int64,System.Int64)">
+            <summary>
+            Unbans a user from the specified room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unban(Xabbo.Core.IRoomUser)">
+            <summary>
+            Unbans the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unban(System.Int64)">
+            <summary>
+            Unbans the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GiveRights(System.Int64)">
+            <summary>
+            Gives rights to the current room to the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.RemoveRights(System.Int64[])">
+            <summary>
+            Removes rights to the current room from the specified users.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UseFurni(Xabbo.Core.IFurni)">
+            <summary>
+            Uses the specified furni.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UseFloorItem(System.Int64)">
+            <summary>
+            Uses the specified floor item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UseWallItem(System.Int64)">
+            <summary>
+            Uses the specified wall item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ToggleFurni(Xabbo.Core.IFurni,System.Int32)">
+            <summary>
+            Toggles the state of the specified furni.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ToggleFloorItem(System.Int64,System.Int32)">
+            <summary>
+            Toggles the state of the specified floor item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ToggleWallItem(System.Int64,System.Int32)">
+            <summary>
+            Toggles the state of the specified wall item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UseGate(System.Int64)">
+            <summary>
+            Uses the specified one-way gate.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UseGate(Xabbo.Core.IFloorItem)">
+            <summary>
+            Uses the specified one-way gate.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceSticky(Xabbo.Core.IInventoryItem,Xabbo.Core.WallLocation)">
+            <summary>
+            Places a sticky at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceSticky(System.Int32,Xabbo.Core.WallLocation)">
+            <summary>
+            Places a sticky at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceStickyWithPole(Xabbo.Core.IInventoryItem,Xabbo.Core.WallLocation,System.String,System.String)">
+            <summary>
+            Places a sticky at the specified location using a sticky pole.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceStickyWithPole(System.Int64,Xabbo.Core.WallLocation,System.String,System.String)">
+            <summary>
+            Places a sticky at the specified location using a sticky pole.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetSticky(Xabbo.Core.IWallItem,System.Int32)">
+            <summary>
+            Gets the sticky data for the specified wall item.
+            </summary>
+            <param name="item">The sticky item to get data for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetSticky(System.Int64,System.Int32)">
+            <summary>
+            Gets the sticky data for the specified wall item.
+            </summary>
+            <param name="itemId">The item ID of the sticky to get data for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UpdateSticky(Xabbo.Core.Sticky)">
+            <summary>
+            Updates the specified sticky.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UpdateSticky(Xabbo.Core.IWallItem,System.String,System.String)">
+            <summary>
+            Updates the specified sticky.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UpdateSticky(System.Int64,System.String,System.String)">
+            <summary>
+            Updates the specified sticky.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeleteSticky(Xabbo.Core.Sticky)">
+            <summary>
+            Deletes the specified sticky.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeleteWallItem(Xabbo.Core.IWallItem)">
+            <summary>
+            Deletes the specified wall item. Used for stickies, photos.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.DeleteWallItem(System.Int64)">
+            <summary>
+            Deletes the specified wall item. Used for stickies, photos.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Place(Xabbo.Core.IInventoryItem,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Places a floor item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Place(Xabbo.Core.IInventoryItem,System.ValueTuple{System.Int32,System.Int32},System.Int32)">
+            <summary>
+            Places a floor item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Place(Xabbo.Core.IInventoryItem,Xabbo.Core.Tile,System.Int32)">
+            <summary>
+            Places a floor item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Place(Xabbo.Core.IInventoryItem,Xabbo.Core.WallLocation)">
+            <summary>
+            Places a wall item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.IFloorItem,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves a floor item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.IFloorItem,System.ValueTuple{System.Int32,System.Int32},System.Int32)">
+            <summary>
+            Moves a floor item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.IFloorItem,Xabbo.Core.Tile,System.Int32)">
+            <summary>
+            Moves a floor item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.IWallItem,Xabbo.Core.WallLocation)">
+            <summary>
+            Moves a wall item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Move(Xabbo.Core.IWallItem,System.String)">
+            <summary>
+            Moves a wall item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Pickup(Xabbo.Core.IFurni)">
+            <summary>
+            Picks up the specified furni.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceFloorItem(System.Int64,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Places a floor item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.MoveFloorItem(System.Int64,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves a floor item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PickupFloorItem(System.Int64)">
+            <summary>
+            Picks up the specified floor item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceWallItem(System.Int64,Xabbo.Core.WallLocation)">
+            <summary>
+            Places a wall item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PlaceWallItem(System.Int64,System.String)">
+            <summary>
+            Places a wall item at the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.MoveWallItem(System.Int64,Xabbo.Core.WallLocation)">
+            <summary>
+            Moves a wall item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.MoveWallItem(System.Int64,System.String)">
+            <summary>
+            Moves a wall item to the specified location.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.PickupWallItem(System.Int64)">
+            <summary>
+            Picks up the specified wall item.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UpdateStackTile(Xabbo.Core.IFloorItem,System.Double)">
+            <summary>
+            Updates the stack tile to the specified height.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.UpdateStackTile(System.Int64,System.Double)">
+            <summary>
+            Updates the stack tile to the specified height.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ignore(Xabbo.Core.IRoomUser)">
+            <summary>
+            Ignores the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ignore(System.String)">
+            <summary>
+            Ignores the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unignore(Xabbo.Core.IRoomUser)">
+            <summary>
+            Unignores the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Unignore(System.String)">
+            <summary>
+            Unignores the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.FriendRequest(Xabbo.Core.IRoomUser)">
+            <summary>
+            Sends a friend request to the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.FriendRequest(System.String)">
+            <summary>
+            Sends a friend request to the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Respect(System.Int64)">
+            <summary>
+            Respects the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Respect(Xabbo.Core.IRoomUser)">
+            <summary>
+            Respects the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Scratch(System.Int64)">
+            <summary>
+            Scratches (or treats) the specified pet.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Scratch(Xabbo.Core.IPet)">
+            <summary>
+            Scratches (or treats) the specified pet.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ride(System.Int64,System.Boolean)">
+            <summary>
+            Mounts or dismounts the pet with the specified id.
+            </summary>
+            <param name="petId">The id of the pet to (dis)mount.</param>
+            <param name="mount">Whether to mount or dismount.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Ride(Xabbo.Core.IPet,System.Boolean)">
+            <summary>
+            Mounts or dismounts the specified pet.
+            </summary>
+            <param name="pet">The pet to (dis)mount.</param>
+            <param name="mount">Whether to mount or dismount.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Mount(System.Int64)">
+            <summary>
+            Mounts the pet with the specified id.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Mount(Xabbo.Core.IPet)">
+            <summary>
+            Mounts the specified pet.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dismount(System.Int64)">
+            <summary>
+            Dismounts the pet with the specified id.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Dismount(Xabbo.Core.IPet)">
+            <summary>
+            Dismounts the specified pet.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Trade(Xabbo.Core.IRoomUser)">
+            <summary>
+            Trades the specified user.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Trade(System.Int32)">
+            <summary>
+            Trades the user with the specified index.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Offer(Xabbo.Core.IInventoryItem)">
+            <summary>
+            Offers the specified inventory item in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Offer(System.Int64)">
+            <summary>
+            Offers the item with the specified item id in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Offer(System.Collections.Generic.IEnumerable{Xabbo.Core.IInventoryItem})">
+            <summary>
+            Offers the specified inventory items in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.Offer(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Offers the items with the specified item ids in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CancelOffer(Xabbo.Core.IInventoryItem)">
+            <summary>
+            Cancels the offer for the specified item in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CancelOffer(System.Int64)">
+            <summary>
+            Cancels the offer for the item with the specified item id in the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.CancelTrade">
+            <summary>
+            Cancels the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.AcceptTrade">
+            <summary>
+            Accepts the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.ConfirmTrade">
+            <summary>
+            Confirms the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.JoinGroup(System.Int64)">
+            <summary>
+            Joins the group with the specified ID.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.LeaveGroup(System.Int64)">
+            <summary>
+            Leaves the group with the specified ID. <see cref="!:Feature.UserData"/> must be available.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetGroup(System.Int64,System.Int32)">
+            <summary>
+            Gets the group information of the specified group.
+            </summary>
+            <param name="groupId">The group ID.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetGroupMembers(System.Int64,System.Int32,System.String,Xabbo.Core.GroupMemberSearchType,System.Int32)">
+            <summary>
+            Gets a paged list of group members in the specified group.
+            </summary>
+            <param name="groupId">The group ID.</param>
+            <param name="page">The page number. (starting at 0)</param>
+            <param name="filter">The filter text.</param>
+            <param name="searchType">The type of member to search for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetProfile(System.Int32,System.Int32)">
+            <summary>
+            Gets the profile of the specified user.
+            </summary>
+            <param name="userId">The ID of the user.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetInventory(System.Int32)">
+            <summary>
+            Gets the inventory of the user. The user must be in a room for the server to return a response.
+            </summary>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.GetNav(System.String,System.String,System.Int32)">
+            <summary>
+            Searches the navigator by category/filter and returns the list of navigator search results.
+            </summary>
+            <param name="category">The category to search.</param>
+            <param name="filter">The filter text. Can be left empty.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SearchNav(System.String,System.String,System.Int32)">
+            <summary>
+            Searches the navigator by category/filter and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            </summary>
+            <param name="category">The category to search.</param>
+            <param name="filter">The filter text. Can be left empty.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.QueryNav(System.String,System.Int32)">
+            <summary>
+            Queries the navigator and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            This is the same as searching by 'Anything' in the game client.
+            </summary>
+            <param name="query">The query text.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SearchNavByName(System.String,System.Int32)">
+            <summary>
+            Searches the navigator by room name and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            </summary>
+            <param name="roomName">The room name to search for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+            <returns></returns>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SearchNavByOwner(System.String,System.Int32)">
+            <summary>
+            Searches the navigator by owner name and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            </summary>
+            <param name="ownerName">The room owner name to search for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SearchNavByTag(System.String,System.Int32)">
+            <summary>
+            Searches the navigator by tag and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            </summary>
+            <param name="tag">The tag to search for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.SearchNavByGroup(System.String,System.Int32)">
+            <summary>
+            Searches the navigator by group name and returns a flattened view of <see cref="T:Xabbo.Core.RoomInfo"/>.
+            </summary>
+            <param name="group">The group name to search for.</param>
+            <param name="timeout">The time to wait for a response from the server.</param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnterQueue(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user enters the room queue.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnterQueue(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user enters the room queue.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateQueue(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user's queue position changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateQueue(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user's queue position changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnteringRoom(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user is entering a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnteringRoom(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user is entering a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnterRoom(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user has entered a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEnterRoom(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user has entered a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnLeaveRoom(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user has left room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnLeaveRoom(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user has left room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnKicked(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when the user is kicked from a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnKicked(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the user is kicked from a room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRoomData(System.Action{Xabbo.Core.Events.RoomDataEventArgs})">
+            <summary>
+            Registers a callback that is invoked when the room data updates.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRoomData(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when the room data updates.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnFloorItems(System.Action{Xabbo.Core.Events.FloorItemsEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a room's floor items are first loaded.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnFloorItems(System.Func{Xabbo.Core.Events.FloorItemsEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a room's floor items are first loaded.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddFloorItem(System.Action{Xabbo.Core.Events.FloorItemEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a floor item is placed in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddFloorItem(System.Func{Xabbo.Core.Events.FloorItemEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a floor item is placed in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateFloorItem(System.Action{Xabbo.Core.Events.FloorItemUpdatedEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a floor item is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateFloorItem(System.Func{Xabbo.Core.Events.FloorItemUpdatedEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a floor item is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateFloorItemData(System.Action{Xabbo.Core.Events.FloorItemDataUpdatedEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a floor item's data is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateFloorItemData(System.Func{Xabbo.Core.Events.FloorItemDataUpdatedEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a floor item's data is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnFloorItemSlide(System.Action{Xabbo.Core.Events.FloorItemSlideEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a floor item slides on a roller, or due to a wired trigger.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnFloorItemSlide(System.Func{Xabbo.Core.Events.FloorItemSlideEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a floor item slides on a roller, or due to a wired trigger.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveFloorItem(System.Action{Xabbo.Core.Events.FloorItemEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a floor item is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveFloorItem(System.Func{Xabbo.Core.Events.FloorItemEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a floor item is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnWallItems(System.Action{Xabbo.Core.Events.WallItemsEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a room's wall items are first loaded.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnWallItems(System.Func{Xabbo.Core.Events.WallItemsEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a room's wall items are first loaded.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddWallItem(System.Action{Xabbo.Core.Events.WallItemEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a wall item is placed in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddWallItem(System.Func{Xabbo.Core.Events.WallItemEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a wall item is placed in the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateWallItem(System.Action{Xabbo.Core.Events.WallItemUpdatedEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a wall item is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateWallItem(System.Func{Xabbo.Core.Events.WallItemUpdatedEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a wall item is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveWallItem(System.Action{Xabbo.Core.Events.WallItemEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a wall item is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveWallItem(System.Func{Xabbo.Core.Events.WallItemEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a wall item is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddEntity(System.Action{Xabbo.Core.Events.EntityEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity is added to the room.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddEntity(System.Func{Xabbo.Core.Events.EntityEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity is added to the room.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddEntities(System.Action{Xabbo.Core.Events.EntitiesEventArgs})">
+            <summary>
+            Registers a callback that is invoked when entities are added to the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnAddEntities(System.Func{Xabbo.Core.Events.EntitiesEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when entities are added to the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateEntity(System.Action{Xabbo.Core.Events.EntityEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateEntity(System.Func{Xabbo.Core.Events.EntityEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntitySlide(System.Action{Xabbo.Core.Events.EntitySlideEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity slides on a roller.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntitySlide(System.Func{Xabbo.Core.Events.EntitySlideEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity slides on a roller.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateUserData(System.Action{Xabbo.Core.Events.UserDataUpdatedEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnUpdateUserData(System.Func{Xabbo.Core.Events.UserDataUpdatedEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityIdle(System.Action{Xabbo.Core.Events.EntityIdleEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity's idle status changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityIdle(System.Func{Xabbo.Core.Events.EntityIdleEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity's idle status changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityDance(System.Action{Xabbo.Core.Events.EntityDanceEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity's dance changes.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityDance(System.Func{Xabbo.Core.Events.EntityDanceEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity's dance changes.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityHandItem(System.Action{Xabbo.Core.Events.EntityHandItemEventArgs})">
+            <summary>
+            Registers a callback to be invoked when an entity's hand item changes.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityHandItem(System.Func{Xabbo.Core.Events.EntityHandItemEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback to be invoked when an entity's hand item changes.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityEffect(System.Action{Xabbo.Core.Events.EntityEffectEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity's effect changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityEffect(System.Func{Xabbo.Core.Events.EntityEffectEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity's effect changes.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityExpression(System.Action{Xabbo.Core.Events.EntityExpressionEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity performs an action.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnEntityExpression(System.Func{Xabbo.Core.Events.EntityExpressionEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity performs an action.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveEntity(System.Func{Xabbo.Core.Events.EntityEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnRemoveEntity(System.Action{Xabbo.Core.Events.EntityEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity is removed from the room.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnChat(System.Action{Xabbo.Core.Events.EntityChatEventArgs})">
+            <summary>
+            Registers a callback that is invoked when an entity in the room chats.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnChat(System.Func{Xabbo.Core.Events.EntityChatEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when an entity in the room chats.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStart(System.Action{Xabbo.Core.Events.TradeStartEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a trade is started.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStart(System.Func{Xabbo.Core.Events.TradeStartEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a trade is started.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStartFail(System.Action{Xabbo.Core.Events.TradeStartFailEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a trade fails to start.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStartFail(System.Func{Xabbo.Core.Events.TradeStartFailEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a trade fails to start.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeUpdate(System.Action{Xabbo.Core.Events.TradeOfferEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a trade is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeUpdate(System.Func{Xabbo.Core.Events.TradeOfferEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a trade is updated.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeAccept(System.Action{Xabbo.Core.Events.TradeAcceptEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a user accepts the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeAccept(System.Func{Xabbo.Core.Events.TradeAcceptEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a user accepts the trade.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeWaitingConfirm(System.Action{System.EventArgs})">
+            <summary>
+            Registers a callback that is invoked when both users have accepted the trade and are waiting for each other's confirmation.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeWaitingConfirm(System.Func{System.EventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when both users have accepted the trade and are waiting for each other's confirmation.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStop(System.Action{Xabbo.Core.Events.TradeStopEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a trade is stopped.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeStop(System.Func{Xabbo.Core.Events.TradeStopEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a trade is stopped.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeComplete(System.Action{Xabbo.Core.Events.TradeCompleteEventArgs})">
+            <summary>
+            Registers a callback that is invoked when a trade is completed successfully.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.G.OnTradeComplete(System.Func{Xabbo.Core.Events.TradeCompleteEventArgs,System.Threading.Tasks.Task})">
+            <summary>
+            Registers a callback that is invoked when a trade is completed successfully.
+            </summary>
+        </member>
+        <member name="T:b7.Scripter.Scripting.GlobalVariables">
+            <summary>
+            The global variables container for the scripter.
+            </summary>
+        </member>
+        <member name="M:b7.Scripter.Scripting.GlobalVariables.Update(System.String,System.Object)">
+            <summary>
+            Attempts to update the global variable and returns whether the value was updated or not.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.CanExecute">
+            <summary>
+            Gets whether scripts may execute or not.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.MessageManager">
+            <summary>
+            Provides an interface to the message manager.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.Interceptor">
+            <summary>
+            Provides an interface to the interceptor.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.GameDataManager">
+            <summary>
+            Provides an interface to the game data manager.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.GameManager">
+            <summary>
+            Provides an interface to the game manager.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.JsonSerializer">
+            <summary>
+            Provides an interface to the JSON serializer.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.GlobalVariables">
+            <summary>
+            Provides the global variables for the scripts.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.Random">
+            <summary>
+            Provides access to a random number generator.
+            </summary>
+        </member>
+        <member name="P:b7.Scripter.Services.IScriptHost.CancellationToken">
+            <summary>
+            Gets the cancellation token for all scripts.
+            </summary>
+        </member>
+    </members>
+</doc>
