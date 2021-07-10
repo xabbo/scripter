@@ -71,7 +71,8 @@ namespace b7.Scripter.Engine
                     "System.Collections.Generic",
                     "Xabbo.Messages",
                     "Xabbo.Core",
-                    "b7.Scripter.Runtime"
+                    "b7.Scripter.Runtime",
+                    "b7.Scripter.Runtime.PacketTypes"
                 });
 
             RoslynHost = new ScripterRoslynHost(
