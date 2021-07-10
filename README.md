@@ -4,6 +4,8 @@ A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) wh
 [Xabbo.GEarth](https://www.github.com/b7c/Xabbo.GEarth) and
 [Xabbo.Core](https://www.github.com/b7c/Xabbo.Core) libraries.
 
+![image](https://user-images.githubusercontent.com/58299468/125163971-d1e1e400-e1e3-11eb-84ca-67560769ea56.png)
+
 ## Usage
 ### Accessing message headers
 `Out.Move` / `In.Talk`\
