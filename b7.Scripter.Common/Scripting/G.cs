@@ -2140,11 +2140,11 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when an entity performs an action.
         /// </summary>
-        public void OnEntityExpression(Action<EntityExpressionEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityExpression), callback);
+        public void OnEntityAction(Action<EntityActionEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityAction), callback);
         /// <summary>
         /// Registers a callback that is invoked when an entity performs an action.
         /// </summary>
-        public void OnEntityExpression(Func<EntityExpressionEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityExpression), callback);
+        public void OnEntityAction(Func<EntityActionEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityAction), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when an entity is removed from the room.
