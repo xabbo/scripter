@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -167,7 +167,7 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Pauses execution and keeps the script alive until it is cancelled or aborted.
         /// </summary>
-        public void Pause() => Delay(-1);
+        public void Wait() => Delay(-1);
 
         /// <summary>
         /// Returns a new <see cref="ScriptError"/> with the specified message
