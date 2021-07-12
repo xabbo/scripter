@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -1884,20 +1884,20 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when the user enters the room queue.
         /// </summary>
-        public void OnEnterQueue(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.EnteredQueue), callback);
+        public void OnEnteredQueue(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.EnteredQueue), callback);
         /// <summary>
         /// Registers a callback that is invoked when the user enters the room queue.
         /// </summary>
-        public void OnEnterQueue(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EnteredQueue), callback);
+        public void OnEnteredQueue(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EnteredQueue), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when the user's queue position changes.
         /// </summary>
-        public void OnUpdateQueue(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.QueuePositionUpdated), callback);
+        public void OnQueueUpdate(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.QueuePositionUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when the user's queue position changes.
         /// </summary>
-        public void OnUpdateQueue(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.QueuePositionUpdated), callback);
+        public void OnQueueUpdate(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.QueuePositionUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when the user is entering a room.
@@ -1911,20 +1911,20 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when the user has entered a room.
         /// </summary>
-        public void OnEnterRoom(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
+        public void OnEnteredRoom(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
         /// <summary>
         /// Registers a callback that is invoked when the user has entered a room.
         /// </summary>
-        public void OnEnterRoom(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
+        public void OnEnteredRoom(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when the user has left room.
         /// </summary>
-        public void OnLeaveRoom(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.Left), callback);
+        public void OnLeftRoom(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.Left), callback);
         /// <summary>
         /// Registers a callback that is invoked when the user has left room.
         /// </summary>
-        public void OnLeaveRoom(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Left), callback);
+        public void OnLeftRoom(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Left), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when the user is kicked from a room.
@@ -1938,11 +1938,11 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when the room data updates.
         /// </summary>
-        public void OnRoomData(Action<RoomDataEventArgs> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
+        public void OnRoomDataUpdate(Action<RoomDataEventArgs> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when the room data updates.
         /// </summary>
-        public void OnRoomData(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
+        public void OnRoomDataUpdate(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
 
         /*/// <summary>
         /// Registers a callback that is invoked when someone rings the doorbell.
@@ -1958,38 +1958,44 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when a room's floor items are first loaded.
         /// </summary>
-        public void OnFloorItems(Action<FloorItemsEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemsLoaded), callback);
+        public void OnFloorItemsLoaded(Action<FloorItemsEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemsLoaded), callback);
         /// <summary>
         /// Registers a callback that is invoked when a room's floor items are first loaded.
         /// </summary>
-        public void OnFloorItems(Func<FloorItemsEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemsLoaded), callback);
+        public void OnFloorItemsLoaded(Func<FloorItemsEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemsLoaded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a floor item is placed in the room.
         /// </summary>
-        public void OnAddFloorItem(Action<FloorItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemAdded), callback);
+        public void OnFloorItemAdded(Action<FloorItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemAdded), callback);
         /// <summary>
         /// Registers a callback that is invoked when a floor item is placed in the room.
         /// </summary>
-        public void OnAddFloorItem(Func<FloorItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemAdded), callback);
+        public void OnFloorItemAdded(Func<FloorItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemAdded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a floor item is updated.
+        /// This happens when the floor item is moved or rotated.
         /// </summary>
-        public void OnUpdateFloorItem(Action<FloorItemUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemUpdated), callback);
+        public void OnFloorItemUpdated(Action<FloorItemUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a floor item is updated.
+        /// This happens when the floor item is moved or rotated.
         /// </summary>
-        public void OnUpdateFloorItem(Func<FloorItemUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemUpdated), callback);
+        public void OnFloorItemUpdated(Func<FloorItemUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a floor item's data is updated.
+        /// This happens when the state of a floor item is changed,
+        /// for example a gate opening/closing or an animation state changing.
         /// </summary>
-        public void OnUpdateFloorItemData(Action<FloorItemDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemDataUpdated), callback);
+        public void OnFloorItemDataUpdated(Action<FloorItemDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemDataUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a floor item's data is updated.
+        /// This happens when the state of a floor item is changed,
+        /// for example a gate opening/closing or an animation state changing.
         /// </summary>
-        public void OnUpdateFloorItemData(Func<FloorItemDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemDataUpdated), callback);
+        public void OnFloorItemDataUpdated(Func<FloorItemDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemDataUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a floor item slides on a roller, or due to a wired trigger.
@@ -2003,47 +2009,47 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when a floor item is removed from the room.
         /// </summary>
-        public void OnRemoveFloorItem(Action<FloorItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemRemoved), callback);
+        public void OnFloorItemRemoved(Action<FloorItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.FloorItemRemoved), callback);
         /// <summary>
         /// Registers a callback that is invoked when a floor item is removed from the room.
         /// </summary>
-        public void OnRemoveFloorItem(Func<FloorItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemRemoved), callback);
+        public void OnFloorItemRemoved(Func<FloorItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.FloorItemRemoved), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a room's wall items are first loaded.
         /// </summary>
-        public void OnWallItems(Action<WallItemsEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemsLoaded), callback);
+        public void OnWallItemsLoaded(Action<WallItemsEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemsLoaded), callback);
         /// <summary>
         /// Registers a callback that is invoked when a room's wall items are first loaded.
         /// </summary>
-        public void OnWallItems(Func<WallItemsEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemsLoaded), callback);
+        public void OnWallItemsLoaded(Func<WallItemsEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemsLoaded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a wall item is placed in the room.
         /// </summary>
-        public void OnAddWallItem(Action<WallItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemAdded), callback);
+        public void OnWallItemAdded(Action<WallItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemAdded), callback);
         /// <summary>
         /// Registers a callback that is invoked when a wall item is placed in the room.
         /// </summary>
-        public void OnAddWallItem(Func<WallItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemAdded), callback);
+        public void OnWallItemAdded(Func<WallItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemAdded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a wall item is updated.
         /// </summary>
-        public void OnUpdateWallItem(Action<WallItemUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemUpdated), callback);
+        public void OnWallItemUpdated(Action<WallItemUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a wall item is updated.
         /// </summary>
-        public void OnUpdateWallItem(Func<WallItemUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemUpdated), callback);
+        public void OnWallItemUpdated(Func<WallItemUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a wall item is removed from the room.
         /// </summary>
-        public void OnRemoveWallItem(Action<WallItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemRemoved), callback);
+        public void OnWallItemRemoved(Action<WallItemEventArgs> callback) => Register(_roomManager, nameof(_roomManager.WallItemRemoved), callback);
         /// <summary>
         /// Registers a callback that is invoked when a wall item is removed from the room.
         /// </summary>
-        public void OnRemoveWallItem(Func<WallItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemRemoved), callback);
+        public void OnWallItemRemoved(Func<WallItemEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.WallItemRemoved), callback);
 
         #endregion
 
@@ -2052,30 +2058,30 @@ namespace b7.Scripter.Scripting
         /// Registers a callback that is invoked when an entity is added to the room.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnAddEntity(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityAdded), callback);
+        public void OnEntityAdded(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityAdded), callback);
         /// <summary>
         /// Registers a callback that is invoked when an entity is added to the room.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnAddEntity(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityAdded), callback);
+        public void OnEntityAdded(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityAdded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when entities are added to the room.
         /// </summary>
-        public void OnAddEntities(Action<EntitiesEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntitiesAdded), callback);
+        public void OnEntitiesAdded(Action<EntitiesEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntitiesAdded), callback);
         /// <summary>
         /// Registers a callback that is invoked when entities are added to the room.
         /// </summary>
-        public void OnAddEntities(Func<EntitiesEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntitiesAdded), callback);
+        public void OnEntitiesAdded(Func<EntitiesEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntitiesAdded), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when an entity is updated.
         /// </summary>
-        public void OnUpdateEntity(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityUpdated), callback);
+        public void OnEntityUpdated(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when an entity is updated.
         /// </summary>
-        public void OnUpdateEntity(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityUpdated), callback);
+        public void OnEntityUpdated(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when an entity slides on a roller.
@@ -2090,12 +2096,12 @@ namespace b7.Scripter.Scripting
         /// Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnUpdateUserData(Action<UserDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
+        public void OnUserDataUpdated(Action<UserDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnUpdateUserData(Func<UserDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
+        public void OnUserDataUpdated(Func<UserDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when an entity's idle status changes.
@@ -2149,11 +2155,11 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when an entity is removed from the room.
         /// </summary>
-        public void OnRemoveEntity(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityRemoved), callback);
+        public void OnEntityRemoved(Func<EntityEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityRemoved), callback);
         /// <summary>
         /// Registers a callback that is invoked when an entity is removed from the room.
         /// </summary>
-        public void OnRemoveEntity(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityRemoved), callback);
+        public void OnEntityRemoved(Action<EntityEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityRemoved), callback);
         #endregion
 
         #region - Chat events -
@@ -2223,11 +2229,11 @@ namespace b7.Scripter.Scripting
         public void OnTradeStop(Func<TradeStopEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Stop), callback);
 
         /// <summary>
-        /// Registers a callback that is invoked when a trade is completed successfully.
+        /// Registers a callback that is invoked when a trade completes successfully.
         /// </summary>
         public void OnTradeComplete(Action<TradeCompleteEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Complete), callback);
         /// <summary>
-        /// Registers a callback that is invoked when a trade is completed successfully.
+        /// Registers a callback that is invoked when a trade completes successfully.
         /// </summary>
         public void OnTradeComplete(Func<TradeCompleteEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Complete), callback);
         #endregion
