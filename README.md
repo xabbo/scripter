@@ -4,6 +4,8 @@ A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) wh
 [Xabbo.GEarth](https://www.github.com/b7c/Xabbo.GEarth) and
 [Xabbo.Core](https://www.github.com/b7c/Xabbo.Core) libraries.
 
+![image](https://user-images.githubusercontent.com/58299468/125163971-d1e1e400-e1e3-11eb-84ca-67560769ea56.png)
+
 ## Usage
 ### Accessing message headers
 `Out.Move` / `In.Talk`\
@@ -41,7 +43,7 @@ Receive and read from a packet:
 ```cs
 Send(Out.GetCredits);
 var p = Receive(5000, In.WalletBalance); // wait 5000ms to receive a packet with the WalletBalance header
-p.ReadString() // Returns the amount of credits in your wallet
+p.ReadString() // returns the amount of credits in your wallet
 ```
 If the final statement in a script excludes the semicolon `;` it will become the return value and be output to the log.
 
@@ -80,19 +82,40 @@ OnIntercept(In.Chat, e => e.Packet.ReplaceAt(4, s => s.ToUpper()));
 ```
 
 ### Interactions
-There are various methods defined in the scripter globals class (`G`) to make it easier to interact with the game.\
+There are various methods defined in the scripter globals class ([source](https://github.com/b7c/b7.Scripter/blob/master/b7.Scripter.Common/Scripting/G.cs)) to make it easier to interact with the game.\
 These are just a few of the methods available.
 
 Talk, shout or whisper:
 ```cs
 Talk("Hello, world");
 Shout("Hello, world!");
-Whisper("world", "Hello, world.");
+Whisper("recipient", "Hello, world.");
 ```
 
 Move to a tile:
 ```cs
 Move(5, 6);
+```
+
+Search for "shop" in the navigator and display results where there is at least 1 user in the room:
+```cs
+foreach (var room in QueryNav("shop")
+    .Where(x => x.Users > 0)
+    .OrderByDescending(x => x.Users)) {
+  Log(
+    $"\"{room.Name}\" by {room.OwnerName}"
+    + $" ({room.Users}/{room.MaxUsers} users)"
+  );
+}
+```
+
+Retrieve and log the content of all sticky notes in the room:
+```cs
+foreach (var item in WallItems.OfCategory(FurniCategory.Sticky)) {
+  var sticky = GetSticky(item);
+  Log($"\"{sticky.Text}\"\n");
+  Delay(1000);
+}
 ```
 
 ### Game state
@@ -110,18 +133,24 @@ foreach (var user in Users)
   Log(user.Name);
 ```
 
-Count furni in the room:
+List the name and count of all furniture in the room:
 ```cs
-Furni.Count()
-FloorItems.Count()
-WallItems.Count()
+// Group furni by its descriptor
+// which includes it type (floor/wall), kind (furni id)
+// and variant (for posters, eg. "9" = Rainforest Poster)
+var groups = Furni
+  .GroupBy(furni => furni.GetDescriptor())
+  .OrderByDescending(group => group.Count());
+// Display the count and name of each furni group
+foreach (var (descriptor, items) in groups)
+  Log($"{items.Count(),6:N0} x {descriptor.GetName()}");
 ```
 
 ### Game data support
 
 The current furni, figure, product data and external texts are loaded when the scripter starts.\
 They can be accessed using `FurniData`, `FigureData`, `ProductData` and `Texts` respectively.\
-To get the data of a furni you can use `FurniData.GetInfo(ItemType type, int kind)` where `type` is either `ItemType.Floor` or `ItemType.Wall`, and `kind` is the furni's ID specifier. (ex. `ItemType.Floor, 179` = Rubber Duck).
+To get the info of a furni you can use `FurniData.GetInfo(ItemType type, int kind)` where `type` is either `ItemType.Floor` or `ItemType.Wall`, and `kind` is the furni's ID specifier. (ex. `ItemType.Floor, 179` = Rubber Duck).
 
 Each furni also has a unique string identifier (its "class name").\
 For example the rubber duck's identifier is `duck`, and this can be accessed using `FurniData["duck"]`.
@@ -134,13 +163,13 @@ var furni = Furni.First();
 string name = furni.GetName();
 Log($"Item name: {name}");
 var info = furni.GetInfo();
-Log(ToJson(furni.GetInfo()));
+Log(ToJson(info));
 ```
 
-Enumerables of `IItem` can be filtered by furni info:
+Enumerables of `IItem` can be filtered by a furni info:
 ```cs
-// find furni info by name
-// note this may not be the exact info you're looking for
+// Find furni info by name
+// Note this may not be the exact info you're looking for
 // if another furni shares the same name
 var info = FurniData.FindFloorItem("Rubber Duck");
 int count = Furni.OfKind(info).Count();
@@ -161,42 +190,37 @@ foreach (var item in Furni.OfKind("duck")) {
 }
 ```
 
+### Events
+
+Callbacks for specific events can be registered using methods that begin with `On...`.\
+The packet data is parsed into a more easily consumable `EventArgs` instance which is passed into the callback, so it is not necessary to read the packet structure yourself.
+
+For example, to walk to a chair when it gets placed:
+```cs
+OnFloorItemAdded(e => {
+  if (e.Item.GetInfo().CanSitOn)
+    Move(e.Item.Location);
+});
+```
+
 ## Example scripts
-- Output the current room's floor plan to a text file:
+Output the current room's floor plan to a text file:
 ```cs
 File.WriteAllText($"floorplan-{Room.Id}.txt", FloorPlan.OriginalString);
 ```
 
-- Send a friend request to everyone in the room:
+Send a friend request to everyone in the room:
 ```cs
 foreach (var user in Users) {
   if (user == Self) continue; // skip self
   Send(Out.RequestFriend, user.Name);
   // display a whisper from the user for visual feedback
-  ShowBubble("friend request sent", index: user.Index);
+  ShowBubble("*friend request sent*", index: user.Index);
   Delay(1000);
 }
 ```
 
-List the name and count of all furni in the room:
-```cs
-// group all furni by its descriptor using the IItem.GetDescriptor() extension method
-// the descriptor includes the item type, kind and a variant string (used for posters).
-foreach (var group in Furni.GroupBy(furni => furni.GetDescriptor())) {
-  string name = group.Key.GetName();
-  int count = group.Count();
-  Log($"{count,6:N0} x {name}");
-}
-```
-This can also be done with your inventory. Just replace Furni with `GetInventory()`.\
-Note you must be in a room to load your inventory.
-```cs
-var inventory = GetInventory();
-foreach (var group in inventory.GroupBy(item => item.GetDescriptor()))
-  Log($"{group.Count(),6:N0} x {group.Key.GetName()}");
-```
-
-- Download all photos in a room to the directory `photos/roomId`:
+Download all photos in a room to the directory `photos/roomId`:
 ```cs
 string dir = $"photos/{Room.Id}";
 Directory.CreateDirectory(dir);
