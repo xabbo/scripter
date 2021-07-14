@@ -94,6 +94,13 @@ namespace b7.Scripter.ViewModel
             set => Set(ref _isRunning, value);
         }
 
+        private bool _isFaulted;
+        public bool IsFaulted
+        {
+            get => _isFaulted;
+            set => Set(ref _isFaulted, value);
+        }
+
         private ScriptStatus _status;
         public ScriptStatus Status
         {

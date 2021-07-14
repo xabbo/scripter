@@ -3,8 +3,9 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Diagnostics;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.CodeAnalysis;
@@ -101,6 +102,7 @@ namespace b7.Scripter.Engine
 
             try
             {
+                script.IsFaulted = false;
                 script.IsCompiling = true;
                 script.Status = ScriptStatus.Compiling;
                 script.UpdateStatus("Compiling...");
@@ -158,6 +160,7 @@ namespace b7.Scripter.Engine
 
             try
             {
+                script.IsFaulted = false;
                 script.UpdateStatus("Executing...");
                 script.Status = ScriptStatus.Executing;
                 script.StartTime = DateTime.Now;
@@ -178,26 +181,58 @@ namespace b7.Scripter.Engine
             {
                 error = ex;
 
+                StringBuilder errorMessage = new();
+
                 if (ex is OperationCanceledException operationCanceledEx)
                 {
                     if (script.CancellationToken.IsCancellationRequested)
                     {
                         script.Status = ScriptStatus.Canceled;
-                        script.LogMessage("Execution canceled.");
+                        errorMessage.Append("Execution canceled.");
                     }
                     else
                     {
                         script.Status = ScriptStatus.TimedOut;
-                        script.LogMessage("Operation timed out.");
+                        errorMessage.Append("Operation timed out.");
                     }
                 }
                 else
                 {
-                    script.Status = ScriptStatus.RuntimeError;
-                    script.LogMessage(ex.ToString());
+                    errorMessage.Append($"{ex.GetType().FullName ?? "Error"}: {ex.Message}");
 
-                    script.RaiseRuntimeError(ex);
+                    script.IsFaulted = true;
+                    script.Status = ScriptStatus.RuntimeError;
                 }
+
+                StackTrace stackTrace = new(ex, true);
+                StackFrame[] frames = stackTrace.GetFrames();
+
+                foreach (StackFrame frame in frames)
+                {
+                    if (!frame.HasSource()) continue;
+
+                    MethodBase? methodBase = frame.GetMethod();
+                    string? fileName = frame.GetFileName();
+
+                    if (methodBase is null || fileName is null) continue;
+                    if (methodBase.DeclaringType?.Namespace?.StartsWith("b7.Scripter") == true)
+                        continue;
+
+                    int lineNumber = frame.GetFileLineNumber();
+
+                    fileName = Path.GetFileName(fileName);
+
+                    errorMessage.Append("\r\n  ");
+                    if (methodBase.DeclaringType?.Name.StartsWith("<<Init") != true)
+                    {
+                        errorMessage.Append($"at {methodBase} ");
+                    }
+
+                    errorMessage.Append($"in {fileName}:line {lineNumber}");
+                }
+
+                script.LogMessage(errorMessage.ToString());
+                script.RaiseRuntimeError(ex);
             }
             finally
             {
