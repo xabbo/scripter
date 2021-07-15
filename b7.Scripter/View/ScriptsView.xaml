@@ -7,13 +7,13 @@
              xmlns:viewModel="clr-namespace:b7.Scripter.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}"
-             Loaded="ScriptManagerView_Loaded">
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}">
     <Grid>
         <TabControl x:Name="tabControl"
                     Margin="2"
                     ItemsSource="{Binding Tabs, Mode=OneWay}"
-                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="HeaderTemplate">
@@ -23,6 +23,7 @@
                             </DataTemplate>
                         </Setter.Value>
                     </Setter>
+                    <EventSetter Event="MouseDown" Handler="ScriptTab_MouseDown" />
                 </Style>
                 <DataTemplate DataType="{x:Type viewModel:ScriptsViewManager}">
                     <local:ScriptListView />

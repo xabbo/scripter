@@ -1,4 +1,5 @@
-﻿using System;
+﻿using b7.Scripter.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +18,28 @@ namespace b7.Scripter.View
 {
     public partial class ScriptListView : UserControl
     {
+        public ScriptsViewManager Manager => (ScriptsViewManager)DataContext;
+
         public ScriptListView()
         {
             InitializeComponent();
         }
 
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ListViewItem_MouseDoubleClick(object? sender, MouseButtonEventArgs e)
         {
-            // TODO ((ScriptViewModel)((FrameworkElement)sender).DataContext).ExecuteAsync(default);
+            if (sender is not ListViewItem item ||
+                item.DataContext is not ScriptViewModel script)
+            {
+                return;
+            }
+
+            if (!script.IsOpen)
+            {
+                script.IsOpen = true;
+                Manager.OpenScripts.Refresh();
+            }
+
+            Manager.SelectedItem = script;
         }
     }
 }

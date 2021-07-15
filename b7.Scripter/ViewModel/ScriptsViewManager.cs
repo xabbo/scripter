@@ -3,14 +3,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 using GalaSoft.MvvmLight;
 
 using b7.Scripter.Model;
 using b7.Scripter.Services;
 using b7.Scripter.Engine;
-using System.Windows.Threading;
-using System.Windows;
 
 namespace b7.Scripter.ViewModel
 {
@@ -28,7 +27,8 @@ namespace b7.Scripter.ViewModel
         private int _currentScriptIndex = 1;
 
         public ICollectionView Tabs { get; }
-        public ObservableCollection<ScriptViewModel> Scripts => _scripts;
+        public ICollectionView Scripts { get; }
+        public ICollectionView OpenScripts { get; }
 
         public string Header { get; } = "*";
 
@@ -53,10 +53,19 @@ namespace b7.Scripter.ViewModel
 
             _scripts = new ObservableCollection<ScriptViewModel>();
 
+            Scripts = CollectionViewSource.GetDefaultView(_scripts);
+            OpenScripts = new CollectionViewSource { Source = _scripts }.View;
+            OpenScripts.Filter = obj =>
+            {
+                return
+                    obj is ScriptViewModel scriptViewModel &&
+                    scriptViewModel.IsOpen;
+            };
+
             _tabCollection = new CompositeCollection()
             {
                 new CollectionContainer { Collection = new object[] { this } },
-                new CollectionContainer { Collection = _scripts },
+                new CollectionContainer { Collection = OpenScripts },
                 new CollectionContainer { Collection = new object[] { _newScriptTab } }
             };
 
@@ -92,7 +101,7 @@ namespace b7.Scripter.ViewModel
                 {
                     string scriptName = $"script {_currentScriptIndex++}";
                     ScriptViewModel scriptViewModel = new(_engine, new ScriptModel { Name = scriptName });
-                    Scripts.Add(scriptViewModel);
+                    _scripts.Add(scriptViewModel);
 
                     _uiContext.InvokeAsync(() => SelectedItem = scriptViewModel);
                 }

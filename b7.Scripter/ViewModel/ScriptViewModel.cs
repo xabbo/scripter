@@ -69,6 +69,13 @@ namespace b7.Scripter.ViewModel
             }
         }
 
+        private bool _isOpen = true;
+        public bool IsOpen
+        {
+            get => _isOpen;
+            set => Set(ref _isOpen, value);
+        }
+
         private bool _isModified;
         public bool IsModified
         {
