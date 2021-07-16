@@ -14,6 +14,10 @@
                     ItemsSource="{Binding Tabs, Mode=OneWay}"
                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                     SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+            <TabControl.InputBindings>
+                <KeyBinding Key="T" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
+                <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+            </TabControl.InputBindings>
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="HeaderTemplate">

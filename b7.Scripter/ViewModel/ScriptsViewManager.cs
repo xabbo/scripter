@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 using b7.Scripter.Model;
 using b7.Scripter.Services;
@@ -46,6 +49,9 @@ namespace b7.Scripter.ViewModel
             set => Set(ref selectedIndex, value);
         }
 
+        public ICommand NewTabCommand { get; }
+        public ICommand CloseTabCommand { get; }
+
         public ScriptsViewManager(IUIContext uiContext, ScriptEngine engine)
         {
             _uiContext = uiContext;
@@ -81,6 +87,53 @@ namespace b7.Scripter.ViewModel
                 );
                 timer.Start();
             }
+
+            NewTabCommand = new RelayCommand(AddNewScript);
+            CloseTabCommand = new RelayCommand(CloseCurrentScript);
+        }
+
+        public void AddNewScript()
+        {
+            string scriptName = $"script {_currentScriptIndex++}";
+            ScriptViewModel scriptViewModel = new(_engine, new ScriptModel { Name = scriptName });
+            _scripts.Add(scriptViewModel);
+
+            _uiContext.InvokeAsync(() => SelectedItem = scriptViewModel);
+        }
+
+        public void DeleteScript(ScriptViewModel script)
+        {
+            _scripts.Remove(script);
+        }
+
+        public void CloseScript(ScriptViewModel script)
+        {
+            if (SelectedItem == script)
+            {
+                if (SelectedIndex == _scripts.Count(x => x.IsOpen))
+                    SelectedIndex--;
+                else
+                    SelectedIndex++;
+            }
+
+            script.IsOpen = false;
+
+            if (!script.IsModified &&
+                string.IsNullOrWhiteSpace(script.Code))
+            {
+                DeleteScript(script);
+            }
+
+            OpenScripts.Refresh();
+            Tabs.Refresh();
+        }
+
+        public void CloseCurrentScript()
+        {
+            if (SelectedItem is ScriptViewModel scriptViewModel)
+            {
+                CloseScript(scriptViewModel);
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -99,11 +152,7 @@ namespace b7.Scripter.ViewModel
             {
                 if (SelectedItem == _newScriptTab)
                 {
-                    string scriptName = $"script {_currentScriptIndex++}";
-                    ScriptViewModel scriptViewModel = new(_engine, new ScriptModel { Name = scriptName });
-                    _scripts.Add(scriptViewModel);
-
-                    _uiContext.InvokeAsync(() => SelectedItem = scriptViewModel);
+                    AddNewScript();
                 }
             }
         }

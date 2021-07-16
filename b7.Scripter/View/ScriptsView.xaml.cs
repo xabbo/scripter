@@ -27,13 +27,7 @@ namespace b7.Scripter.View
             {
                 e.Handled = true;
 
-                if (Manager.SelectedItem == scriptViewModel)
-                    Manager.SelectedIndex--;
-
-                scriptViewModel.IsOpen = false;
-
-                Manager.OpenScripts.Refresh();
-                Manager.Tabs.Refresh();
+                Manager.CloseScript(scriptViewModel);
             }
         }
     }
