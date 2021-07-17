@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+
 using Microsoft.CodeAnalysis.Scripting;
 
 using GalaSoft.MvvmLight;
@@ -13,15 +14,20 @@ using b7.Scripter.Scripting;
 using b7.Scripter.Engine;
 using b7.Scripter.Services;
 using b7.Scripter.Events;
+using b7.Scripter.Util;
 
 namespace b7.Scripter.ViewModel
 {
     public class ScriptViewModel : ObservableObject, IScript, IDisposable
     {
+        private static readonly string EmptyHash = StringUtil.ComputeHash(string.Empty);
+
         private bool _disposed;
 
-        public ScriptModel Model { get; }
+        private int _lastSaveLength;
+        private string _lastSaveHash = EmptyHash;
 
+        public ScriptModel Model { get; }
         public IScriptHost Host => Engine.Host;
         public ScriptEngine Engine { get; }
 
@@ -50,8 +56,8 @@ namespace b7.Scripter.ViewModel
             }
         }
 
-        private string _path;
-        public string Path
+        private string? _path;
+        public string? Path
         {
             get => _path;
             set => Set(ref _path, value);
@@ -66,6 +72,8 @@ namespace b7.Scripter.ViewModel
                 _code.Clear();
                 _code.Append(value);
                 RaisePropertyChanged();
+
+                IsModified = _lastSaveLength != value.Length || StringUtil.ComputeHash(value) != _lastSaveHash;
             }
         }
 
@@ -212,11 +220,9 @@ namespace b7.Scripter.ViewModel
         public ScriptViewModel(ScriptEngine engine, ScriptModel scriptModel)
         {
             Engine = engine;
-
             Model = scriptModel;
 
             _code = new StringBuilder();
-            _path = string.Empty;
 
             SaveCommand = new RelayCommand(OnSave);
             ExecuteCommand = new RelayCommand(OnExecute);
