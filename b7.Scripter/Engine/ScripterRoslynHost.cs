@@ -1,38 +1,44 @@
-﻿using b7.Scripter.Scripting;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using RoslynPad.Roslyn;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Scripting;
+
+using RoslynPad.Roslyn;
+
+using b7.Scripter.Scripting;
 
 namespace b7.Scripter.Engine
 {
     public class ScripterRoslynHost : RoslynHost
     {
-        public ScripterRoslynHost(IEnumerable<Assembly>? additionalAssemblies = null,
-            RoslynHostReferences? references = null, ImmutableArray<string>? disabledDiagnostics = null)
+        private readonly ScriptOptions _scriptOptions;
+
+        public ScripterRoslynHost(ScriptOptions scriptOptions,
+            IEnumerable<Assembly>? additionalAssemblies = null,
+            RoslynHostReferences? references = null,
+            ImmutableArray<string>? disabledDiagnostics = null)
             : base(additionalAssemblies, references, disabledDiagnostics)
-        { }
+        {
+            _scriptOptions = scriptOptions;
+        }
 
         protected override Project CreateProject(Solution solution, DocumentCreationArgs args,
             CompilationOptions compilationOptions, Project? previousProject = null)
         {
             string name = args.Name ?? "Program";
             ProjectId id = ProjectId.CreateNewId(name);
-
             CSharpParseOptions parseOptions = new(
                 kind: SourceCodeKind.Script,
                 languageVersion: LanguageVersion.CSharp8
             );
             
-
             compilationOptions = compilationOptions
-                .WithScriptClassName(name);
+                .WithScriptClassName(name)
+                .WithSourceReferenceResolver(_scriptOptions.SourceResolver);
 
             if (compilationOptions is CSharpCompilationOptions csharpCompilationOptions)
             {

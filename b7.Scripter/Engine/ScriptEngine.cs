@@ -38,7 +38,7 @@ namespace b7.Scripter.Engine
             _logger = logger;
             _baseScriptOptions = ScriptOptions.Default;
 
-            Directory = Path.GetFullPath("Scripts");
+            Directory = Path.GetFullPath("scripts");
             Host = host;
 
             _referenceAssemblies = new List<Assembly>()
@@ -77,6 +77,7 @@ namespace b7.Scripter.Engine
                 });
 
             RoslynHost = new ScripterRoslynHost(
+                _baseScriptOptions,
                 additionalAssemblies: new[]
                 {
                     Assembly.Load("RoslynPad.Roslyn.Windows"),
