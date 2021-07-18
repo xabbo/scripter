@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -20,6 +22,9 @@ namespace b7.Scripter.ViewModel
 {
     public class ScriptViewModel : ObservableObject, IScript, IDisposable
     {
+        private static readonly Regex
+            NameRegex = new Regex(@"^///\s*@name\s+(?<name>.+?)\s*$", RegexOptions.Multiline | RegexOptions.Compiled);
+
         private static readonly string EmptyHash = StringUtil.ComputeHash(string.Empty);
 
         private bool _disposed;
@@ -56,11 +61,11 @@ namespace b7.Scripter.ViewModel
             }
         }
 
-        private string? _path;
-        public string? Path
+        private string _fileName = string.Empty;
+        public string FileName
         {
-            get => _path;
-            set => Set(ref _path, value);
+            get => _fileName;
+            set => Set(ref _fileName, value);
         }
 
         private StringBuilder _code;
@@ -74,6 +79,16 @@ namespace b7.Scripter.ViewModel
                 RaisePropertyChanged();
 
                 IsModified = _lastSaveLength != value.Length || StringUtil.ComputeHash(value) != _lastSaveHash;
+
+                Match match = NameRegex.Match(value);
+                if (match.Success)
+                {
+                    Name = match.Groups["name"].Value;
+                }
+                else
+                {
+                    Name = Path.GetFileNameWithoutExtension(FileName);
+                }
             }
         }
 
