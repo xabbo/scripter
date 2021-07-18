@@ -170,7 +170,7 @@ namespace b7.Scripter.Scripting
         public void Wait() => Delay(-1);
 
         /// <summary>
-        /// Returns a new <see cref="ScriptError"/> with the specified message
+        /// Returns a new <see cref="ScriptException"/> with the specified message
         /// which will be displayed in the log when thrown.
         /// </summary>
         public ScriptException Error(string message) => new ScriptException(message);
@@ -178,10 +178,9 @@ namespace b7.Scripter.Scripting
         /// <summary>
         /// Serializes an object to JSON.
         /// </summary>
-        /// <typeparam name="TValue">The type of the object to serialize.</typeparam>
         /// <param name="value">The object to serialize.</param>
         /// <param name="indented">Specifies whether to use indented formatting or not.</param>
-        public string ToJson<TValue>(TValue? value, bool indented = true) => _scriptHost.JsonSerializer.Serialize(value, indented);
+        public string ToJson(object? value, bool indented = true) => _scriptHost.JsonSerializer.Serialize(value, indented);
 
         /// <summary>
         /// Deserializes an object from JSON.
