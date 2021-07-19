@@ -1,5 +1,5 @@
-# b7 scripter
-A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) which utilizes the
+# xabbo scripter
+A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) powered by the
 [Xabbo.Common](https://www.github.com/b7c/Xabbo.Common),
 [Xabbo.GEarth](https://www.github.com/b7c/Xabbo.GEarth) and
 [Xabbo.Core](https://www.github.com/b7c/Xabbo.Core) libraries.
@@ -82,7 +82,7 @@ OnIntercept(In.Chat, e => e.Packet.ReplaceAt(4, s => s.ToUpper()));
 ```
 
 ### Interactions
-There are various methods defined in the scripter globals class ([source](https://github.com/b7c/b7.Scripter/blob/master/b7.Scripter.Common/Scripting/G.cs)) to make it easier to interact with the game.\
+There are various methods defined in the scripter globals class ([source](https://github.com/b7c/Xabbo.Scripter/blob/master/Xabbo.Scripter.Common/Scripting/G.cs)) to make it easier to interact with the game.\
 These are just a few of the methods available.
 
 Talk, shout or whisper:
