@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Xabbo.Scripter.View.ScriptsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Xabbo.Scripter.View"
+             xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}">
+    <Grid>
+        <TabControl x:Name="tabControl"
+                    Margin="2"
+                    ItemsSource="{Binding Tabs, Mode=OneWay}"
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+            <TabControl.InputBindings>
+                <KeyBinding Key="T" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
+                <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+            </TabControl.InputBindings>
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Header, Mode=OneWay}" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <EventSetter Event="MouseDown" Handler="ScriptTab_MouseDown" />
+                </Style>
+                <DataTemplate DataType="{x:Type viewModel:ScriptsViewManager}">
+                    <local:ScriptListView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewModel:ScriptViewModel}">
+                    <local:ScriptView />
+                </DataTemplate>
+            </TabControl.Resources>
+        </TabControl>
+    </Grid>
+</UserControl>

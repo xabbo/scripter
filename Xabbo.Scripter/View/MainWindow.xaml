@@ -1,0 +1,43 @@
+﻿<Window x:Class="Xabbo.Scripter.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:view="clr-namespace:Xabbo.Scripter.View"
+        xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"
+        Title="{Binding Title}" Height="450" Width="800"
+        FontFamily="Hack,Consolas,monospace" FontSize="12"
+        Topmost="{Binding IsChecked, ElementName=checkBoxTopMost}">
+    <Grid Margin="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <CheckBox
+            x:Name="checkBoxTopMost"
+            Margin="5" Panel.ZIndex="9999"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" VerticalContentAlignment="Center"
+            Opacity="0.33"
+            IsChecked="True"
+            ToolTip="Stay on top"
+        />
+        <TabControl Margin="2">
+            <TabItem Header="Log">
+                <view:LogView DataContext="{Binding Log}" />
+            </TabItem>
+            <TabItem Header="Scripts">
+                <view:ScriptsView DataContext="{Binding Scripts}" />
+            </TabItem>
+            <TabItem Header="Status">
+                <view:StatusView />
+            </TabItem>
+            <TabItem Header="About">
+                <view:AboutPage DataContext="{Binding About}" />
+            </TabItem>
+        </TabControl>
+        <view:StatusBar Grid.Row="1" Margin="2" DataContext="{Binding StatusBar}" />
+    </Grid>
+</Window>
