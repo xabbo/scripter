@@ -19,6 +19,7 @@ using Xabbo.Core.Tasks;
 
 using Xabbo.Scripter.Runtime;
 using Xabbo.Scripter.Services;
+using Xabbo.Scripter.Tasks;
 
 namespace Xabbo.Scripter.Scripting
 {
@@ -512,6 +513,26 @@ namespace Xabbo.Scripter.Scripting
         public long RoomId => _roomManager.CurrentRoomId;
 
         /// <summary>
+        /// Gets the name of the current room.
+        /// </summary>
+        public string? RoomName => _roomManager.Data?.Name;
+
+        /// <summary>
+        /// Gets the description of the current room.
+        /// </summary>
+        public string? RoomDescription => _roomManager.Data?.Description;
+
+        /// <summary>
+        /// Gets the owner's ID of the current room.
+        /// </summary>
+        public long RoomOwnerId => _roomManager.Data?.OwnerId ?? -1;
+
+        /// <summary>
+        /// Gets the owner's name of the current room.
+        /// </summary>
+        public string? RoomOwnerName => _roomManager.Data?.OwnerName;
+
+        /// <summary>
         /// Gets if the user is ringing the doorbell.
         /// </summary>
         public bool IsRingingDoorbell => _roomManager.IsRingingDoorbell;
@@ -963,9 +984,11 @@ namespace Xabbo.Scripter.Scripting
         public void DeleteRoom(long roomId) => Send(Out.DeleteFlat, roomId);
 
         /// <summary>
-        /// Sends a request to enter a room with the specified ID, and optionally, a password.
+        /// Attempts to enter the room with the specified ID, and optionally, a password.
         /// </summary>
-        public void EnterRoom(long roomId, string password = "") => Send(Out.FlatOpc, roomId, password, 0, 0);
+        public RoomEntryResult EnterRoom(long roomId, string password = "", int timeout = DEFAULT_TIMEOUT)
+            => new EnterRoomTask(Interceptor, roomId, password).Execute(timeout, Ct);
+            // => Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
 
         /// <summary>
         /// Leaves the room.
@@ -1951,11 +1974,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when the user has entered a room.
         /// </summary>
-        public void OnEnteredRoom(Action<EventArgs> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
+        public void OnEnteredRoom(Action<RoomEventArgs> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
         /// <summary>
         /// Registers a callback that is invoked when the user has entered a room.
         /// </summary>
-        public void OnEnteredRoom(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
+        public void OnEnteredRoom(Func<RoomEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.Entered), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when the user has left room.
@@ -1982,7 +2005,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when the room data updates.
         /// </summary>
-        public void OnRoomDataUpdate(Func<EventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
+        public void OnRoomDataUpdate(Func<RoomDataEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.RoomDataUpdated), callback);
 
         /*/// <summary>
         /// Registers a callback that is invoked when someone rings the doorbell.
