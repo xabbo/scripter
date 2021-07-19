@@ -23,7 +23,7 @@ namespace b7.Scripter.ViewModel
     public class ScriptViewModel : ObservableObject, IScript, IDisposable
     {
         private static readonly Regex
-            NameRegex = new Regex(@"^///\s*@name\s+(?<name>.+?)\s*$", RegexOptions.Multiline | RegexOptions.Compiled);
+            NameRegex = new Regex(@"^///\s*@name[^\S\n]+(?<name>\S.*?)[^\S\n]*$", RegexOptions.Multiline | RegexOptions.Compiled);
 
         private static readonly string EmptyHash = StringUtil.ComputeHash(string.Empty);
 
@@ -40,7 +40,18 @@ namespace b7.Scripter.ViewModel
 
         public string Name
         {
-            get => Model.Name;
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Model.Name))
+                {
+                    return Path.GetFileNameWithoutExtension(Model.FileName);
+                }
+                else
+                {
+                    return Model.Name;
+                }
+            }
+
             set
             {
                 if (Model.Name == value) return;
@@ -61,11 +72,20 @@ namespace b7.Scripter.ViewModel
             }
         }
 
-        private string _fileName = string.Empty;
         public string FileName
         {
-            get => _fileName;
-            set => Set(ref _fileName, value);
+            get => Model.FileName;
+            set
+            {
+                if (Model.FileName == value) return;
+                Model.FileName = value;
+                RaisePropertyChanged();
+                if (string.IsNullOrWhiteSpace(Model.Name))
+                {
+                    RaisePropertyChanged(nameof(Name));
+                    RaisePropertyChanged(nameof(Header));
+                }
+            }
         }
 
         private StringBuilder _code;

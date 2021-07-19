@@ -27,7 +27,7 @@ namespace b7.Scripter.ViewModel
         private readonly ObservableCollection<ScriptViewModel> _scripts;
         private readonly CompositeCollection _tabCollection;
 
-        private int _currentScriptIndex = 1;
+        private int _currentScriptIndex = 0;
 
         public ICollectionView Tabs { get; }
         public ICollectionView Scripts { get; }
@@ -94,8 +94,12 @@ namespace b7.Scripter.ViewModel
 
         public void AddNewScript()
         {
-            string scriptName = $"script {_currentScriptIndex++}";
-            ScriptViewModel scriptViewModel = new(_engine, new ScriptModel { Name = scriptName });
+            ScriptViewModel scriptViewModel = new(
+                _engine,
+                new ScriptModel {
+                    FileName = $"script-{++_currentScriptIndex}.csx"
+                }
+            );
             _scripts.Add(scriptViewModel);
 
             _uiContext.InvokeAsync(() => SelectedItem = scriptViewModel);

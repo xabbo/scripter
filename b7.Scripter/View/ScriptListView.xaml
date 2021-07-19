@@ -27,14 +27,11 @@
                         <GridViewColumn Header="name" Width="120">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="path" Width="200">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Path, FallbackValue='-'}" />
+                                    <TextBlock Text="{Binding Name}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding FileName}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
