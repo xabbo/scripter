@@ -91,7 +91,7 @@ namespace Xabbo.Scripter.Services
                     _ => "?"
                 };
 
-                _provider.Log($"[{DateTime.Now:HH:mm:ss.fff}] [{logLevelText}] {formatter(state, exception)}\n");
+                _provider.Log($"[{DateTime.Now:HH:mm:ss}] [{logLevelText}] {formatter(state, exception)}\n");
             }
         }
     }
