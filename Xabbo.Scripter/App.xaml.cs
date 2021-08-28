@@ -15,9 +15,12 @@ using Xabbo.Messages;
 using Xabbo.Interceptor;
 using Xabbo.GEarth;
 
+using Xabbo.Core.Game;
+
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.View;
 using Xabbo.Scripter.Engine;
+using System.Threading;
 
 namespace Xabbo.Scripter
 {
@@ -25,11 +28,15 @@ namespace Xabbo.Scripter
     {
         private static readonly Dictionary<string, string> _switchMappings = new()
         {
+            ["-i"] = "Xabbo:Interceptor:Service",
             ["-p"] = "Xabbo:Interceptor:Port",
-            ["-s"] = "Xabbo:Interceptor:Service"
+            ["-c"] = "Xabbo:Interceptor:Cookie",
+            ["-f"] = "Xabbo:Interceptor:File"
         };
 
         private IHost _host = null!;
+
+        private Mutex? _mutex;
 
         public App() { }
 
@@ -37,7 +44,11 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            _host = Host.CreateDefaultBuilder()
+            // TODO Check existing process
+            _mutex = new Mutex(false, "Xabbo.Scripter:9092");
+            if (_mutex.WaitOne(0, false))
+            {
+                _host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) => {
                     ConfigureAppConfiguration(context, config);
                     config.AddCommandLine(e.Args, _switchMappings);
@@ -45,7 +56,21 @@ namespace Xabbo.Scripter
                 .ConfigureServices(ConfigureServices)
                 .Build();
 
-            _host.Start();
+                _host.Start();
+            }
+            else
+            {
+                MessageBox.Show("Instance already running");
+                Shutdown();
+            }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            _mutex?.Close();
+            _mutex = null;
         }
 
         private void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder config)
@@ -64,21 +89,20 @@ namespace Xabbo.Scripter
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
 
             // Interceptor
-            string interceptorService = context.Configuration.GetValue("Xabbo:Interceptor:Service", "g-earth").ToLower();
+            string interceptorService = context.Configuration.GetValue("Xabbo:Interceptor:Service", "G-Earth").ToLower();
 
             switch (interceptorService)
             {
                 case "g-earth":
-                    services.AddSingleton(new GEarthOptions
-                    {
-                        Author = "b7",
-                        Title = "xabbo scripter",
-                        Description = "C# scripting interface",
-                        Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?"
-                    });
-                    services.AddSingleton<GEarthExtension>();
-                    services.AddSingleton<IInterceptor>(provider => provider.GetRequiredService<GEarthExtension>());
-                    services.AddSingleton<IRemoteInterceptor>(provider => provider.GetRequiredService<GEarthExtension>());
+                    services.AddSingleton(GEarthOptions.Default
+                        .WithTitle("xabbo scripter")
+                        .WithDescription("C# scripting interface")
+                        .WithAuthor("b7")
+                        .WithConfiguration(context.Configuration)
+                    );
+                    services.AddSingleton<ScripterExtension>();
+                    services.AddSingleton<IInterceptor>(provider => provider.GetRequiredService<ScripterExtension>());
+                    services.AddSingleton<IRemoteInterceptor>(provider => provider.GetRequiredService<ScripterExtension>());
                     break;
                 default:
                     throw new Exception($"Unknown interceptor service: '{interceptorService}'.");
@@ -96,6 +120,12 @@ namespace Xabbo.Scripter
             services.AddSingleton<IMessageManager, UnifiedMessageManager>();
             services.AddSingleton<IGameDataManager, GameDataManager>();
             services.AddSingleton<IGameManager, GameManager>();
+
+            foreach (Type type in GameStateManager.GetManagerTypes())
+            {
+                Debug.WriteLine($"Registering game state manager: {type.Name}");
+                services.AddSingleton(type);
+            }
 
             // Scripting
             services.AddSingleton<IScriptHost, ScriptHost>();

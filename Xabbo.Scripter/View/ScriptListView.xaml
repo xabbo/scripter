@@ -17,14 +17,13 @@
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Foreground" Value="DarkSlateGray" />
-                    <!-- TODO status colors -->
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
                 </Style>
             </ListView.Resources>
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
-                        <GridViewColumn Header="name" Width="120">
+                        <GridViewColumn Header="name" Width="300">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}">
@@ -35,7 +34,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="status" Width="150">
+                        <GridViewColumn Header="status" Width="120">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding StatusText, FallbackValue='?'}" />

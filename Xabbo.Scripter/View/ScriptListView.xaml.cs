@@ -33,13 +33,7 @@ namespace Xabbo.Scripter.View
                 return;
             }
 
-            if (!script.IsOpen)
-            {
-                script.IsOpen = true;
-                Manager.OpenScripts.Refresh();
-            }
-
-            Manager.SelectedItem = script;
+            Manager.SelectScript(script);
         }
     }
 }

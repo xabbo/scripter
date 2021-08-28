@@ -13,10 +13,10 @@ namespace Xabbo.Scripter.Scripting
         TimedOut,
         Aborted,
         // Warnings
-        // Modified,
+
         // State
         Compiling,
-        Executing,
+        Running,
         Cancelling,
         Canceled,
         Complete

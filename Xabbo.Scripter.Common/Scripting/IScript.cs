@@ -7,6 +7,9 @@ namespace Xabbo.Scripter.Scripting
 {
     public interface IScript
     {
+        /// <summary>
+        /// Gets the model.
+        /// </summary>
         public ScriptModel Model { get; }
 
         /// <summary>
@@ -30,11 +33,16 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         bool IsModified { get; set; }
         /// <summary>
-        /// Gets of sets whether the script is compiling or not.
+        /// Gets or sets whether the script is compiling or not.
         /// </summary>
         bool IsCompiling { get; set; }
-        
+        /// <summary>
+        /// Gets or sets whether the script is running or not.
+        /// </summary>
         bool IsRunning { get; set; }
+        /// <summary>
+        /// Gets or sets the status of the script.
+        /// </summary>
         ScriptStatus Status { get; set; }
         Exception? Error { get; set; }
         string? ErrorText { get; set; }

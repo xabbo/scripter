@@ -4,18 +4,52 @@
              xmlns:local="clr-namespace:Xabbo.Scripter"
              xmlns:svc="clr-namespace:Xabbo.Scripter.Services"
              xmlns:converters="clr-namespace:Xabbo.Scripter.WPF.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
-        <!-- Colors -->
-        <SolidColorBrush x:Key="DarkRedBackground" Color="#FF0000" Opacity="0.2" />
-        <SolidColorBrush x:Key="DarkOrangeBackground" Color="#FF8C00" Opacity="0.2" />
-        <SolidColorBrush x:Key="DarkGreenBackground" Color="#006400" Opacity="0.2" />
-        <!-- Converters -->
-        <converters:NotConverter x:Key="NotConverter" />
-        <converters:AnyConverter x:Key="AnyConverter" />
-        <converters:AllConverter x:Key="AllConverter" />
-        <converters:EqualityConverter x:Key="EqualityConverter" />
-        <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
-        <converters:DoubleSelector x:Key="DoubleSelector" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />-->
+
+                <!-- material design styles -->
+
+                <!--<materialDesign:BundledTheme
+                    BaseTheme="Dark"
+                    PrimaryColor="Purple"
+                    SecondaryColor="Yellow"
+                />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />-->
+
+
+                <!--<ResourceDictionary>
+                    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{Binding Color, Source={StaticResource MaterialDesignPaper}}" />
+                </ResourceDictionary>-->
+
+                <!--<ResourceDictionary>
+                    <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
+                        <Setter Property="md:ScrollViewerAssist.IgnorePadding" Value="False" />
+                    </Style>
+                </ResourceDictionary>-->
+
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Fonts -->
+            <FontFamily x:Key="FontUI">Segoe UI</FontFamily>
+            <FontFamily x:Key="FontCode">Fira Code,Hack,Consolas</FontFamily>
+            <!-- Colors -->
+            <SolidColorBrush x:Key="DarkRedBackground" Color="#FF0000" Opacity="0.2" />
+            <SolidColorBrush x:Key="DarkOrangeBackground" Color="#FF8C00" Opacity="0.2" />
+            <SolidColorBrush x:Key="DarkGreenBackground" Color="#006400" Opacity="0.2" />
+            <!-- Converters -->
+            <converters:NotConverter x:Key="NotConverter" />
+            <converters:AnyConverter x:Key="AnyConverter" />
+            <converters:AllConverter x:Key="AllConverter" />
+            <converters:EqualityConverter x:Key="EqualityConverter" />
+            <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
+            <converters:DoubleSelector x:Key="DoubleSelector" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

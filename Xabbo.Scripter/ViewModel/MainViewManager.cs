@@ -32,6 +32,7 @@ namespace Xabbo.Scripter.ViewModel
 
         public LogViewManager Log { get; }
         public ScriptsViewManager Scripts { get; }
+        public ToolsViewManager Tools { get; }
         public AboutViewManager About { get; }
         public StatusBarViewManager StatusBar { get; }
 
@@ -42,6 +43,7 @@ namespace Xabbo.Scripter.ViewModel
             IRemoteInterceptor interceptor,
             LogViewManager log,
             ScriptsViewManager scripts,
+            ToolsViewManager tools,
             AboutViewManager about,
             StatusBarViewManager statusBar)
         {
@@ -65,6 +67,7 @@ namespace Xabbo.Scripter.ViewModel
 
             Log = log;
             Scripts = scripts;
+            Tools = tools;
             About = about;
             StatusBar = statusBar;
         }

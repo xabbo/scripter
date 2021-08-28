@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Reflection;
@@ -23,20 +25,24 @@ namespace Xabbo.Scripter.Engine
 {
     public class ScriptEngine
     {
+        public static readonly Regex NameRegex = new Regex(
+            @"^///\s*@name[^\S\n]+(?<name>\S.*?)[^\S\n]*$",
+            RegexOptions.Multiline | RegexOptions.Compiled
+        );
+
         private readonly ILogger _logger;
 
-        private ScriptOptions _baseScriptOptions;
+        private readonly List<Assembly> _referenceAssemblies;
 
         public string Directory { get; }
         public IScriptHost Host { get; }
         public RoslynHost RoslynHost { get; private set; } = null!;
-
-        private readonly List<Assembly> _referenceAssemblies;
+        public ScriptOptions BaseScriptOptions { get; private set; }
 
         public ScriptEngine(ILogger<ScriptEngine> logger, IScriptHost host)
         {
             _logger = logger;
-            _baseScriptOptions = ScriptOptions.Default;
+            BaseScriptOptions = ScriptOptions.Default;
 
             Directory = Path.GetFullPath("scripts");
             Host = host;
@@ -54,7 +60,7 @@ namespace Xabbo.Scripter.Engine
         {
             _logger.LogInformation("Initializing script engine...");
 
-            _baseScriptOptions = ScriptOptions.Default
+            BaseScriptOptions = ScriptOptions.Default
                 .WithLanguageVersion(LanguageVersion.CSharp8)
                 .WithEmitDebugInformation(true)
                 .WithOptimizationLevel(OptimizationLevel.Debug)
@@ -77,15 +83,15 @@ namespace Xabbo.Scripter.Engine
                 });
 
             RoslynHost = new ScripterRoslynHost(
-                _baseScriptOptions,
+                BaseScriptOptions,
                 additionalAssemblies: new[]
                 {
                     Assembly.Load("RoslynPad.Roslyn.Windows"),
                     Assembly.Load("RoslynPad.Editor.Windows")
                 },
                 references: RoslynHostReferences.Empty.With(
-                    references: _baseScriptOptions.MetadataReferences,
-                    imports: _baseScriptOptions.Imports,
+                    references: BaseScriptOptions.MetadataReferences,
+                    imports: BaseScriptOptions.Imports,
                     assemblyReferences: _referenceAssemblies,
                     typeNamespaceImports: new[] { typeof(G) }
                 )
@@ -113,7 +119,7 @@ namespace Xabbo.Scripter.Engine
 
                 Script<object> csharpScript = CSharpScript.Create(
                     script.Code,
-                    options: _baseScriptOptions
+                    options: BaseScriptOptions
                         .WithFilePath("script.csx")
                         .WithFileEncoding(Encoding.UTF8),
                     globalsType: typeof(G)
@@ -163,7 +169,7 @@ namespace Xabbo.Scripter.Engine
             {
                 script.IsFaulted = false;
                 script.UpdateStatus("Executing...");
-                script.Status = ScriptStatus.Executing;
+                script.Status = ScriptStatus.Running;
                 script.StartTime = DateTime.Now;
                 script.EndTime = null;
                 script.IsRunning = true;
@@ -176,7 +182,15 @@ namespace Xabbo.Scripter.Engine
                 }
 
                 script.Status = ScriptStatus.Complete;
-                script.LogMessage(result?.ToString() ?? "Execution complete.");
+
+                if (result is not null)
+                {
+                    script.LogMessage(result.ToString() ?? "Execution complete.");
+                }
+                else
+                {
+                    script.LogMessage("Execution complete.");
+                }
             }
             catch (Exception ex)
             {

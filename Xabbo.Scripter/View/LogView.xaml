@@ -12,6 +12,7 @@
     <Grid>
         <TextBox
             Margin="2" Padding="4"
+            FontFamily="{StaticResource FontCode}"
             IsInactiveSelectionHighlightEnabled="True"
             AutoWordSelection="True"
             IsReadOnly="True"

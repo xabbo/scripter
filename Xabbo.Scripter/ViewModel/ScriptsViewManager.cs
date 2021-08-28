@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -90,19 +92,68 @@ namespace Xabbo.Scripter.ViewModel
 
             NewTabCommand = new RelayCommand(AddNewScript);
             CloseTabCommand = new RelayCommand(CloseCurrentScript);
+
+            LoadScripts();
+        }
+
+        private void LoadScripts()
+        {
+            DirectoryInfo directory = Directory.CreateDirectory("scripts");
+
+            foreach (FileInfo file in directory.EnumerateFiles("*.csx", SearchOption.TopDirectoryOnly))
+            {
+                ScriptModel model = new ScriptModel
+                {
+                    FileName = file.Name,
+                    Name = Path.GetFileNameWithoutExtension(file.Name)
+                };
+
+                foreach (string line in File.ReadLines(file.FullName))
+                {
+                    Match match = ScriptEngine.NameRegex.Match(line);
+                    if (match.Success)
+                    {
+                        model.Name = match.Groups["name"].Value;
+                        break;
+                    }
+                }
+
+                _scripts.Add(new ScriptViewModel(Engine, model)
+                {
+                    IsOpen = false,
+                    IsSavedToDisk = true
+                });
+            }
         }
 
         public void AddNewScript()
         {
-            ScriptViewModel scriptViewModel = new(
-                _engine,
-                new ScriptModel {
-                    FileName = $"script-{++_currentScriptIndex}.csx"
-                }
-            );
+            ScriptModel model = new ScriptModel
+            {
+                FileName = $"script-{++_currentScriptIndex}.csx"
+            };
+
+            ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
+
             _scripts.Add(scriptViewModel);
 
             _uiContext.InvokeAsync(() => SelectedItem = scriptViewModel);
+        }
+
+        public void SelectScript(ScriptViewModel script)
+        {
+            if (!script.IsOpen)
+            {
+                if (!script.IsLoaded)
+                {
+                    script.Load();
+                }
+
+                script.IsOpen = true;
+                OpenScripts.Refresh();
+            }
+
+            SelectedItem = script;
         }
 
         public void DeleteScript(ScriptViewModel script)
@@ -123,7 +174,8 @@ namespace Xabbo.Scripter.ViewModel
             script.IsOpen = false;
 
             if (!script.IsModified &&
-                string.IsNullOrWhiteSpace(script.Code))
+                string.IsNullOrWhiteSpace(script.Code) &&
+                !script.IsSavedToDisk)
             {
                 DeleteScript(script);
             }

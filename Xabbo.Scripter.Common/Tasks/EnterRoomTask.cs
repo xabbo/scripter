@@ -38,12 +38,11 @@ namespace Xabbo.Scripter.Tasks
                 RoomData roomData = RoomData.Parse(e.Packet);
                 if (roomData.Id == _roomId)
                 {
-                    roomData.IsUpdating = false;
-                    roomData.ForceLoad = true;
-                    roomData.BypassAccess = false;
+                    roomData.IsEntering = false;
+                    roomData.Forward = true;
                     roomData.Access = RoomAccess.Open;
 
-                    e.Packet = Packet.Compose(_interceptor.ClientType, e.Packet.Header, roomData);
+                    e.Packet = Packet.Compose(_interceptor.Client, e.Packet.Header, roomData);
 
                     _state = Status.AwaitingFlatOpc;
                 }

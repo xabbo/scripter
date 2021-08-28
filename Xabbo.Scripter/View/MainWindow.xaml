@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"
         Title="{Binding Title}" Height="450" Width="800"
-        FontFamily="Hack,Consolas,monospace" FontSize="12"
+        FontFamily="{StaticResource FontUI}" FontSize="12"
         Topmost="{Binding IsChecked, ElementName=checkBoxTopMost}">
     <Grid Margin="2">
         <Grid.RowDefinitions>
@@ -31,7 +31,10 @@
             <TabItem Header="Scripts">
                 <view:ScriptsView DataContext="{Binding Scripts}" />
             </TabItem>
-            <TabItem Header="Status">
+            <TabItem Header="Tools">
+                <view:ToolsView DataContext="{Binding Tools}" />
+            </TabItem>
+            <TabItem Header="Status" Visibility="Collapsed">
                 <view:StatusView />
             </TabItem>
             <TabItem Header="About">

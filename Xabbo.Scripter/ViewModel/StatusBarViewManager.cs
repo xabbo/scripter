@@ -2,7 +2,8 @@
 using System.Linq;
 
 using GalaSoft.MvvmLight;
-
+using Xabbo.Core.Events;
+using Xabbo.Core.Game;
 using Xabbo.Interceptor;
 
 using Xabbo.Scripter.Services;
@@ -13,6 +14,8 @@ namespace Xabbo.Scripter.ViewModel
     {
         private readonly IRemoteInterceptor _interceptor;
         private readonly IGameManager _gameManager;
+
+        protected IRoom? Room => _gameManager.RoomManager.Room;
 
         #region - Remote state -
         private bool isRemoteConnected;
@@ -73,33 +76,48 @@ namespace Xabbo.Scripter.ViewModel
             set => Set(ref _currentRoomName, value);
         }
 
-        private int _userCount = -1;
+        private int _userCount;
         public int UserCount
         {
             get => _userCount;
             set => Set(ref _userCount, value);
         }
 
-        private int _botCount = -1;
+        private int _botCount;
         public int BotCount
         {
             get => _botCount;
             set => Set(ref _botCount, value);
         }
 
-        private int _petCount = -1;
+        private int _petCount;
         public int PetCount
         {
             get => _petCount;
             set => Set(ref _petCount, value);
         }
 
-        private int _furniCount = -1;
+        private int _furniCount;
         public int FurniCount
         {
             get => _furniCount;
             set => Set(ref _furniCount, value);
         }
+
+        private int _floorItemCount;
+        public int FloorItemCount
+        {
+            get => _floorItemCount;
+            set => Set(ref _floorItemCount, value);
+        }
+
+        private int _wallItemCount;
+        public int WallItemCount
+        {
+            get => _wallItemCount;
+            set => Set(ref _wallItemCount, value);
+        }
+
         #endregion
 
         public StatusBarViewManager(IRemoteInterceptor interceptor,
@@ -116,6 +134,7 @@ namespace Xabbo.Scripter.ViewModel
             _gameManager.ProfileManager.LoadedUserData += OnLoadedUserData;
 
             _gameManager.RoomManager.Entered += OnEnteredRoom;
+            _gameManager.RoomManager.RoomDataUpdated += OnRoomDataUpdated;
             _gameManager.RoomManager.Left += OnLeftRoom;
             _gameManager.RoomManager.EntitiesAdded += OnEntitiesAdded;
             _gameManager.RoomManager.EntityRemoved += OnEntityRemoved;
@@ -128,56 +147,62 @@ namespace Xabbo.Scripter.ViewModel
         private void OnLoadedUserData(object? sender, EventArgs e)
         {
             HasUserData = true;
+            UserName = _gameManager.ProfileManager.UserData?.Name ?? "unknown";
         }
 
-        private void OnFloorItemAdded(object? sender, Xabbo.Core.Events.FloorItemEventArgs e)
-            => UpdateFurniCount();
-        private void OnFloorItemRemoved(object? sender, Xabbo.Core.Events.FloorItemEventArgs e)
-            => UpdateFurniCount();
-        private void OnWallItemAdded(object? sender, Xabbo.Core.Events.WallItemEventArgs e)
-            => UpdateFurniCount();
-        private void OnWallItemRemoved(object? sender, Xabbo.Core.Events.WallItemEventArgs e)
-            => UpdateFurniCount();
+        private void OnFloorItemAdded(object? sender, Xabbo.Core.Events.FloorItemEventArgs e) => UpdateFurniCount();
+        private void OnFloorItemRemoved(object? sender, Xabbo.Core.Events.FloorItemEventArgs e) => UpdateFurniCount();
+        private void OnWallItemAdded(object? sender, Xabbo.Core.Events.WallItemEventArgs e) => UpdateFurniCount();
+        private void OnWallItemRemoved(object? sender, Xabbo.Core.Events.WallItemEventArgs e) => UpdateFurniCount();
 
         private void UpdateEntityCount()
         {
-            UserCount = _gameManager.RoomManager.Room?.Users.Count() ?? 0;
-            PetCount = _gameManager.RoomManager.Room?.Pets.Count() ?? 0;
+            UserCount = Room?.Users.Count() ?? 0;
+            BotCount = Room?.Bots.Count() ?? 0;
+            PetCount = Room?.Pets.Count() ?? 0;
         }
 
         private void UpdateFurniCount()
         {
-            FurniCount = _gameManager.RoomManager.Room?.Furni.Count() ?? 0;
+            FurniCount = Room?.Furni.Count() ?? 0;
+            FloorItemCount = Room?.FloorItems.Count() ?? 0;
+            WallItemCount = Room?.WallItems.Count() ?? 0;
         }
 
-        private void OnEnteredRoom(object? sender, Xabbo.Core.Events.RoomEventArgs e)
+        private void OnEnteredRoom(object? sender, RoomEventArgs e)
         {
             UpdateEntityCount();
             UpdateFurniCount();
-            IsInRoom = true;
+            IsInRoom = BeenInRoom = true;
+            CurrentRoomName = e.Room.Data?.Name ?? string.Empty;
+        }
+
+        private void OnRoomDataUpdated(object? sender, RoomDataEventArgs e)
+        {
+            CurrentRoomName = e.Data.Name;
         }
 
         private void OnLeftRoom(object? sender, EventArgs e)
         {
             IsInRoom = false;
+            CurrentRoomName = string.Empty;
         }
 
-        private void OnEntityRemoved(object? sender, Xabbo.Core.Events.EntityEventArgs e)
-        {
-            UpdateEntityCount();
-        }
-
-        private void OnEntitiesAdded(object? sender, Xabbo.Core.Events.EntitiesEventArgs e)
-        {
-            UpdateEntityCount();
-        }
-
+        private void OnEntityRemoved(object? sender, EntityEventArgs e) => UpdateEntityCount();
+        private void OnEntitiesAdded(object? sender, EntitiesEventArgs e) => UpdateEntityCount();
 
         private void ResetState()
         {
             HasUserData =
             BeenInRoom =
             IsInRoom = false;
+            CurrentRoomName = string.Empty;
+            FurniCount =
+            FloorItemCount =
+            WallItemCount =
+            UserCount =
+            BotCount =
+            PetCount = 0;
         }
 
         private void OnInterceptorConnected(object? sender, EventArgs e)

@@ -12,6 +12,7 @@ namespace Xabbo.Scripter.Services
         ProfileManager ProfileManager { get; }
         FriendManager FriendManager { get; }
         RoomManager RoomManager { get; }
+        InventoryManager InventoryManager { get; }
         TradeManager TradeManager { get; }
     }
 }

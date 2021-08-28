@@ -18,12 +18,18 @@ namespace Xabbo.Scripter.Services
 
         public event EventHandler? InitializeComponents;
 
-        public ProfileManager ProfileManager { get; set; }
-        public RoomManager RoomManager { get; set; }
-        public TradeManager TradeManager { get; set; }
-        public FriendManager FriendManager { get; set; }
+        public ProfileManager ProfileManager { get; private set; }
+        public RoomManager RoomManager { get; private set; }
+        public TradeManager TradeManager { get; private set; }
+        public InventoryManager InventoryManager { get; private set; }
+        public FriendManager FriendManager { get; private set; }
 
-        public GameManager(IMessageManager messages, IRemoteInterceptor interceptor)
+        public GameManager(IMessageManager messages, IRemoteInterceptor interceptor,
+            ProfileManager profileManager,
+            FriendManager friendManager,
+            RoomManager roomManager,
+            InventoryManager inventoryManager,
+            TradeManager tradeManager)
         {
             _messages = messages;
 
@@ -32,10 +38,11 @@ namespace Xabbo.Scripter.Services
             _interceptor.Disconnected += Interceptor_ConnectionEnd;
             _interceptor.Disconnected += Interceptor_Disconnected;
 
-            ProfileManager = new ProfileManager(interceptor);
-            FriendManager = new FriendManager(interceptor);
-            RoomManager = new RoomManager(interceptor);
-            TradeManager = new TradeManager(interceptor, ProfileManager, RoomManager);
+            ProfileManager = profileManager;
+            FriendManager = friendManager;
+            RoomManager = roomManager;
+            InventoryManager = inventoryManager;
+            TradeManager = tradeManager;
         }
 
         private void Interceptor_ConnectionStart(object? sender, EventArgs e)

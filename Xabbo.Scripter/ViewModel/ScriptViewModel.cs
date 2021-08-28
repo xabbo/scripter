@@ -17,14 +17,13 @@ using Xabbo.Scripter.Engine;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Events;
 using Xabbo.Scripter.Util;
+using System.Windows;
+using Microsoft.Win32;
 
 namespace Xabbo.Scripter.ViewModel
 {
     public class ScriptViewModel : ObservableObject, IScript, IDisposable
     {
-        private static readonly Regex
-            NameRegex = new Regex(@"^///\s*@name[^\S\n]+(?<name>\S.*?)[^\S\n]*$", RegexOptions.Multiline | RegexOptions.Compiled);
-
         private static readonly string EmptyHash = StringUtil.ComputeHash(string.Empty);
 
         private bool _disposed;
@@ -80,11 +79,8 @@ namespace Xabbo.Scripter.ViewModel
                 if (Model.FileName == value) return;
                 Model.FileName = value;
                 RaisePropertyChanged();
-                if (string.IsNullOrWhiteSpace(Model.Name))
-                {
-                    RaisePropertyChanged(nameof(Name));
-                    RaisePropertyChanged(nameof(Header));
-                }
+                RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(Header));
             }
         }
 
@@ -98,16 +94,18 @@ namespace Xabbo.Scripter.ViewModel
                 _code.Append(value);
                 RaisePropertyChanged();
 
-                IsModified = _lastSaveLength != value.Length || StringUtil.ComputeHash(value) != _lastSaveHash;
+                IsModified =
+                    value.Length != _lastSaveLength ||
+                    StringUtil.ComputeHash(value) != _lastSaveHash;
 
-                Match match = NameRegex.Match(value);
+                Match match = ScriptEngine.NameRegex.Match(value);
                 if (match.Success)
                 {
                     Name = match.Groups["name"].Value;
                 }
                 else
                 {
-                    Name = Path.GetFileNameWithoutExtension(FileName);
+                    Name = string.Empty;
                 }
             }
         }
@@ -117,6 +115,20 @@ namespace Xabbo.Scripter.ViewModel
         {
             get => _isOpen;
             set => Set(ref _isOpen, value);
+        }
+
+        private bool _isSavedToDisk;
+        public bool IsSavedToDisk
+        {
+            get => _isSavedToDisk;
+            set => Set(ref _isSavedToDisk, value);
+        }
+
+        private bool _isLoaded;
+        public bool IsLoaded
+        {
+            get => _isLoaded;
+            set => Set(ref _isLoaded, value);
         }
 
         private bool _isModified;
@@ -134,15 +146,25 @@ namespace Xabbo.Scripter.ViewModel
         public bool IsCompiling
         {
             get => _isCompiling;
-            set => Set(ref _isCompiling, value);
+            set
+            {
+                if (Set(ref _isCompiling, value))
+                    RaisePropertyChanged(nameof(IsWorking));
+            }
         }
 
         private bool _isRunning;
         public bool IsRunning
         {
             get => _isRunning;
-            set => Set(ref _isRunning, value);
+            set
+            {
+                if (Set(ref _isRunning, value))
+                    RaisePropertyChanged(nameof(IsWorking));
+            }
         }
+
+        public bool IsWorking => IsCompiling || IsRunning;
 
         private bool _isFaulted;
         public bool IsFaulted
@@ -171,7 +193,7 @@ namespace Xabbo.Scripter.ViewModel
             ScriptStatus.TimedOut => "timed out",
             ScriptStatus.Aborted => "aborted",
             ScriptStatus.Compiling => "compiling...",
-            ScriptStatus.Executing => "executing...",
+            ScriptStatus.Running => "running...",
             ScriptStatus.Cancelling => "cancelling...",
             ScriptStatus.Canceled => "canceled",
             ScriptStatus.Complete => "complete",
@@ -317,7 +339,95 @@ namespace Xabbo.Scripter.ViewModel
 
         private void OnSave()
         {
+            if (!IsLoaded) return;
 
+            try
+            {
+                if (IsModified)
+                {
+                    if (IsSavedToDisk)
+                    {
+                        Save();
+                    }
+                    else
+                    {
+                        SaveFileDialog dialog = new SaveFileDialog
+                        {
+                            Title = "Save script",
+                            OverwritePrompt = true,
+                            Filter = "C# script (.csx)|*.csx",
+                            AddExtension = true,
+                            FileName = FileName,
+                            InitialDirectory = Path.GetFullPath("scripts"),
+                            CheckPathExists = true,
+                            ValidateNames = true
+                        };
+
+                        if (dialog.ShowDialog() != true) return;
+
+                        string filePath = dialog.FileName;
+                        string directoryPath = Path.GetDirectoryName(filePath) ?? string.Empty;
+
+                        if (!string.Equals(directoryPath, Path.GetFullPath("scripts"), StringComparison.OrdinalIgnoreCase))
+                        {
+                            MessageBox.Show(
+                                "Scripts must be saved into the 'scripts' sub-folder.", "xabbo scripter",
+                                MessageBoxButton.OK, MessageBoxImage.Warning
+                            );
+                            return;
+                        }
+
+                        if (File.Exists(filePath))
+                        {
+                            MessageBox.Show(
+                                "A script with that file name already exists.", "xabbo scripter",
+                                MessageBoxButton.OK, MessageBoxImage.Warning
+                            );
+                            return;
+                        }
+
+                        FileName = Path.GetFileName(filePath);
+
+                        Save();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Failed to save file to disk: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void UpdateHash()
+        {
+            _lastSaveLength = Code.Length;
+            _lastSaveHash = StringUtil.ComputeHash(Code);
+            IsModified = false;
+        }
+
+        public void Save()
+        {
+            if (!IsLoaded)
+                throw new InvalidOperationException("Cannot save to disk; file is not loaded.");
+
+            string filePath = Path.Combine("scripts", FileName);
+
+            UpdateHash();
+            File.WriteAllText(filePath, Code);
+            IsSavedToDisk = true;
+        }
+
+        public void Load()
+        {
+            string filePath = Path.Combine("Scripts", FileName);
+
+            Code = File.ReadAllText(filePath);
+            UpdateHash();
+
+            IsLoaded = true;
         }
 
         public void UpdateRuntime()

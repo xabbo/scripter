@@ -29,7 +29,11 @@
                 Loaded="CodeEditor_Loaded"
                 KeyDown="CodeEditor_KeyDown"
                 TextChanged="CodeEditor_TextChanged" 
-                PreviewMouseWheel="CodeEditor_MouseWheel" />
+                PreviewMouseWheel="CodeEditor_MouseWheel">
+                <roslynPad:RoslynCodeEditor.InputBindings>
+                    <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+                </roslynPad:RoslynCodeEditor.InputBindings>
+            </roslynPad:RoslynCodeEditor>
             <!-- Overlay -->
             <Canvas x:Name="overlayCanvas" IsHitTestVisible="False" Background="White">
                 <Canvas.Style>

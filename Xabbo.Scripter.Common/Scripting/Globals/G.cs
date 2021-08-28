@@ -20,6 +20,7 @@ using Xabbo.Core.Tasks;
 using Xabbo.Scripter.Runtime;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Tasks;
+using System.ComponentModel;
 
 namespace Xabbo.Scripter.Scripting
 {
@@ -27,7 +28,7 @@ namespace Xabbo.Scripter.Scripting
     /// The xabbo scripter globals class.
     /// Contains the methods and properties that are globally accessible from scripts.
     /// </summary>
-    public class G : IDisposable
+    public partial class G : IDisposable
     {
         private const int DEFAULT_TIMEOUT = 10000;
 
@@ -44,10 +45,12 @@ namespace Xabbo.Scripter.Scripting
         private ProfileManager _profileManager => _scriptHost.GameManager.ProfileManager;
         private FriendManager _friendManager => _scriptHost.GameManager.FriendManager;
         private RoomManager _roomManager => _scriptHost.GameManager.RoomManager;
+        private InventoryManager _inventoryManager => _scriptHost.GameManager.InventoryManager;
         private TradeManager _tradeManager => _scriptHost.GameManager.TradeManager;
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public IInterceptor Interceptor => _scriptHost.Interceptor;
-        public ClientType ClientType => Interceptor.ClientType;
+        public ClientType ClientType => Interceptor.Client;
 
         /// <summary>
         /// Gets the cancellation token which signals when the script has been
@@ -235,47 +238,6 @@ namespace Xabbo.Scripter.Scripting
         }
 
         /// <summary>
-        /// Returns a non-negative random integer.
-        /// </summary>
-        public int Rand() => _scriptHost.Random.Next();
-
-        /// <summary>
-        /// Returns a non-negative integer that is less than the specified maximum.
-        /// </summary>
-        public int Rand(int max) => _scriptHost.Random.Next(max);
-
-        /// <summary>
-        /// Returns a random integer that is within a specified range.
-        /// </summary>
-        public int Rand(int min, int max) => _scriptHost.Random.Next(min, max);
-
-        /// <summary>
-        /// Fills the elements of a specified array of bytes with random numbers.
-        /// </summary>
-        public void Rand(byte[] buffer) => _scriptHost.Random.NextBytes(buffer);
-
-        /// <summary>
-        /// Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
-        /// </summary>
-        /// <returns></returns>
-        public double RandDouble() => _scriptHost.Random.NextDouble();
-
-        /// <summary>
-        /// Returns a random element from a specified enumerable.
-        /// </summary>
-        public T Rand<T>(IEnumerable<T> enumerable)
-        {
-            if (enumerable is not Array array)
-                array = enumerable.ToArray();
-            return (T)(array.GetValue(Rand(array.Length)) ?? throw new NullReferenceException());
-        }
-
-        /// <summary>
-        /// Returns a random element from a specified array.
-        /// </summary>
-        public T Rand<T>(T[] array) => array[Rand(array.Length)];
-
-        /// <summary>
         /// Initializes a global variable if it does not yet exist.
         /// </summary>
         public bool InitGlobal(string variableName, dynamic value)
@@ -311,23 +273,6 @@ namespace Xabbo.Scripter.Scripting
         /// will be thrown when the script should no longer execute.
         /// </summary>
         public void RunTask(Action action) => Task.Run(action);
-        #endregion
-
-        #region - Metadata -
-        /// <summary>
-        /// Gets the information of the specified item from the furni data.
-        /// </summary>
-        public FurniInfo? GetInfo(IItem item) => FurniData.GetInfo(item);
-
-        /// <summary>
-        /// Gets the name of the specified item from the furni data.
-        /// </summary>
-        public string? GetName(IItem item) => FurniData.GetInfo(item)?.Name;
-
-        /// <summary>
-        /// Gets the category of the specified item from the furni data.
-        /// </summary>
-        public FurniCategory GetCategory(IItem item) => FurniData.GetInfo(item)?.Category ?? FurniCategory.Unknown;
         #endregion
 
         #region - Assertion -
@@ -375,7 +320,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         /// <param name="header">The header of the message to send.</param>
         /// <param name="values">The values to write to the packet.</param>
-        public void Send(Header header, params object[] values) => Send(Packet.Compose(Interceptor.ClientType, header, values));
+        public void Send(Header header, params object[] values) => Send(Packet.Compose(Interceptor.Client, header, values));
 
         /// <summary>
         /// Sends the specified packet to the client or server.
@@ -503,34 +448,9 @@ namespace Xabbo.Scripter.Scripting
 
         #region - Room -
         /// <summary>
-        /// Gets the data of the room the user is currently in.
-        /// </summary>
-        public IRoomData? RoomData => _roomManager.Data;
-
-        /// <summary>
-        /// Gets the ID of the current/last room that the user is/was in.
+        /// Gets the ID of the current room that the user is in, or <c>-1</c> if the user is not in a room.
         /// </summary>
         public long RoomId => _roomManager.CurrentRoomId;
-
-        /// <summary>
-        /// Gets the name of the current room.
-        /// </summary>
-        public string? RoomName => _roomManager.Data?.Name;
-
-        /// <summary>
-        /// Gets the description of the current room.
-        /// </summary>
-        public string? RoomDescription => _roomManager.Data?.Description;
-
-        /// <summary>
-        /// Gets the owner's ID of the current room.
-        /// </summary>
-        public long RoomOwnerId => _roomManager.Data?.OwnerId ?? -1;
-
-        /// <summary>
-        /// Gets the owner's name of the current room.
-        /// </summary>
-        public string? RoomOwnerName => _roomManager.Data?.OwnerName;
 
         /// <summary>
         /// Gets if the user is ringing the doorbell.
@@ -568,7 +488,7 @@ namespace Xabbo.Scripter.Scripting
         public Tile? DoorTile => Room?.DoorTile;
 
         /// <summary>
-        /// Gets the height map of the room.
+        /// Gets the heightmap of the room.
         /// </summary>
         public IHeightmap? Heightmap => Room?.Heightmap;
 
@@ -777,7 +697,7 @@ namespace Xabbo.Scripter.Scripting
         public string UserMotto => UserData.Motto;
 
         /// <summary>
-        /// Gets if the user's name can be changed.
+        /// Gets whether the user's name can be changed.
         /// </summary>
         public bool IsNameChangeable => UserData.IsNameChangeable;
 
@@ -852,6 +772,18 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IEnumerable<IRoomInfo> GetRooms(int timeout = DEFAULT_TIMEOUT)
             => SearchNav("my", "", timeout);
+        #endregion
+
+        #region - Inventory -
+        /// <summary>
+        /// Gets the inventory of the user.
+        /// Returns the inventory of the user immediately if it is already loaded and is not invalidated,
+        /// otherwise attempts to retrieve it from the server.
+        /// The user must be in a room for the server to return a response.
+        /// </summary>
+        /// <param name="timeout">The time to wait for a response from the server.</param>
+        public IInventory LoadInventory(int timeout = DEFAULT_TIMEOUT) =>
+            _inventoryManager.GetInventoryAsync(timeout, Ct).GetAwaiter().GetResult();
         #endregion
 
         #region - Currency -
@@ -1371,7 +1303,7 @@ namespace Xabbo.Scripter.Scripting
         /// Places a sticky at the specified location using a sticky pole.
         /// </summary>
         public void PlaceStickyWithPole(long itemId, WallLocation location, string color, string text)
-            => Send(Out.AddSpamWallPostIt, itemId, location, color, text);
+            => Send(Out.AddSpamWallPostIt, (LegacyLong)itemId, location, color, text);
 
         /// <summary>
         /// Gets the sticky data for the specified wall item.
@@ -1518,7 +1450,15 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Places a wall item at the specified location.
         /// </summary>
-        public void PlaceWallItem(long itemId, WallLocation location) => Send(Out.PlaceWallItem, (LegacyLong)itemId, location);
+        public void PlaceWallItem(long itemId, WallLocation location)
+        {
+            switch (ClientType)
+            {
+                case ClientType.Flash: Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
+                case ClientType.Unity: Send(Out.PlaceWallItem, itemId, location); break;
+                default: throw new Exception("Unknown client protocol.");
+            }
+        }
 
         /// <summary>
         /// Places a wall item at the specified location.
@@ -1665,7 +1605,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the item with the specified item id in the trade.
         /// </summary>
-        public void Offer(long itemId) => Send(Out.TradeAddItem, itemId);
+        public void Offer(long itemId) => Send(Out.TradeAddItem, (LegacyLong)itemId);
 
         /// <summary>
         /// Offers the specified inventory items in the trade.
@@ -1675,7 +1615,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the items with the specified item ids in the trade.
         /// </summary>
-        public void Offer(IEnumerable<long> itemIds) => Send(Out.TradeAddItems, itemIds);
+        public void Offer(IEnumerable<long> itemIds) => Send(Out.TradeAddItems, itemIds.Cast<LegacyLong>());
 
         /// <summary>
         /// Cancels the offer for the specified item in the trade.
@@ -1777,13 +1717,6 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IUserProfile GetProfile(int userId, int timeout = DEFAULT_TIMEOUT)
             => new GetProfileTask(Interceptor, userId).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Gets the inventory of the user. The user must be in a room for the server to return a response.
-        /// </summary>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IInventory GetInventory(int timeout = DEFAULT_TIMEOUT)
-            => new GetInventoryTask(Interceptor).Execute(timeout, Ct);
         #endregion
 
         #region - Navigator -
@@ -1846,14 +1779,6 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IEnumerable<IRoomInfo> SearchNavByGroup(string group, int timeout = DEFAULT_TIMEOUT)
             => GetNav("query", $"group:{group}", timeout).GetRooms();
-        #endregion
-
-        #region - Catalog -
-        public ICatalog GetCatalog(string mode = "NORMAL", int timeout = DEFAULT_TIMEOUT)
-            => new GetCatalogTask(Interceptor, mode).Execute(timeout, Ct);
-
-        public ICatalogPage GetCatalogPage(int pageId, string mode = "NORMAL", int timeout = DEFAULT_TIMEOUT)
-            => new GetCatalogPageTask(Interceptor, pageId, mode).Execute(timeout, Ct);
         #endregion
 
         #region - Marketplace -
@@ -2159,12 +2084,12 @@ namespace Xabbo.Scripter.Scripting
         /// Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnUserDataUpdated(Action<UserDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
+        public void OnUserDataUpdated(Action<EntityDataUpdatedEventArgs> callback) => Register(_roomManager, nameof(_roomManager.EntityDataUpdated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a user's figure, gender, motto or achievement score is updated.
         /// </summary>
         /// <param name="callback"></param>
-        public void OnUserDataUpdated(Func<UserDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.UserDataUpdated), callback);
+        public void OnUserDataUpdated(Func<EntityDataUpdatedEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityDataUpdated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when an entity's idle status changes.
@@ -2240,38 +2165,38 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when a trade is started.
         /// </summary>
-        public void OnTradeStart(Action<TradeStartEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Start), callback);
+        public void OnTradeOpened(Action<TradeStartEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Opened), callback);
         /// <summary>
         /// Registers a callback that is invoked when a trade is started.
         /// </summary>
-        public void OnTradeStart(Func<TradeStartEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Start), callback);
+        public void OnTradeOpened(Func<TradeStartEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Opened), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a trade fails to start.
         /// </summary>
-        public void OnTradeStartFail(Action<TradeStartFailEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.StartFail), callback);
+        public void OnTradeOpenFailed(Action<TradeStartFailEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.OpenFailed), callback);
         /// <summary>
         /// Registers a callback that is invoked when a trade fails to start.
         /// </summary>
-        public void OnTradeStartFail(Func<TradeStartFailEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.StartFail), callback);
+        public void OnTradeOpenFailed(Func<TradeStartFailEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.OpenFailed), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a trade is updated.
         /// </summary>
-        public void OnTradeUpdate(Action<TradeOfferEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Update), callback);
+        public void OnTradeUpdated(Action<TradeOfferEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Updated), callback);
         /// <summary>
         /// Registers a callback that is invoked when a trade is updated.
         /// </summary>
-        public void OnTradeUpdate(Func<TradeOfferEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Update), callback);
+        public void OnTradeUpdated(Func<TradeOfferEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Updated), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a user accepts the trade.
         /// </summary>
-        public void OnTradeAccept(Action<TradeAcceptEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Accept), callback);
+        public void OnTradeAccepted(Action<TradeAcceptEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Accepted), callback);
         /// <summary>
         /// Registers a callback that is invoked when a user accepts the trade.
         /// </summary>
-        public void OnTradeAccept(Func<TradeAcceptEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Accept), callback);
+        public void OnTradeAccepted(Func<TradeAcceptEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Accepted), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when both users have accepted the trade and are waiting for each other's confirmation.
@@ -2285,20 +2210,20 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback that is invoked when a trade is stopped.
         /// </summary>
-        public void OnTradeStop(Action<TradeStopEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Stop), callback);
+        public void OnTradeClosed(Action<TradeStopEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Closed), callback);
         /// <summary>
         /// Registers a callback that is invoked when a trade is stopped.
         /// </summary>
-        public void OnTradeStop(Func<TradeStopEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Stop), callback);
+        public void OnTradeClosed(Func<TradeStopEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Closed), callback);
 
         /// <summary>
         /// Registers a callback that is invoked when a trade completes successfully.
         /// </summary>
-        public void OnTradeComplete(Action<TradeCompleteEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Complete), callback);
+        public void OnTradeCompleted(Action<TradeCompleteEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Completed), callback);
         /// <summary>
         /// Registers a callback that is invoked when a trade completes successfully.
         /// </summary>
-        public void OnTradeComplete(Func<TradeCompleteEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Complete), callback);
+        public void OnTradeCompleted(Func<TradeCompleteEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Completed), callback);
         #endregion
 
         #endregion

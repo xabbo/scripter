@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,13 +18,43 @@ namespace Xabbo.Scripter.Util
             {
                 StringBuilder sb = new();
                 for (int i = 0; i < hash.Length; i++)
-                    sb.Append($"{i:x2}");
+                    sb.Append($"{hash[i]:x2}");
                 return sb.ToString();
             }
             else
             {
                 throw new Exception("Failed to generate hash.");
             }
+        }
+
+        public static string Stringify(object o, int maxLength = 200)
+        {
+            StringBuilder sb = new();
+
+            if (o is IEnumerable enumerable)
+            {
+                sb.Append('[');
+
+                int index = 0;
+                foreach (object x in enumerable)
+                {
+                    int stringIndex = sb.Length;
+                    if (index++ > 0)
+                    {
+                        sb.Append(", ");
+                    }
+
+                    sb.Append(Stringify(o));
+                }
+
+                sb.Append(']');
+            }
+            else
+            {
+                sb.Append(o.ToString());
+            }
+
+            return sb.ToString();
         }
     }
 }

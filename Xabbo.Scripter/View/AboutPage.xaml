@@ -8,9 +8,19 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="root">
     <Grid>
-        <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto">
-            <FlowDocument PagePadding="4" FontFamily="Consolas" FontSize="14" Foreground="DarkSlateGray"
-                          Hyperlink.RequestNavigate="Hyperlink_RequestNavigate">
+        <FlowDocumentScrollViewer Margin="2"
+                                  VerticalScrollBarVisibility="Auto"
+                                  SelectionOpacity="0.33"
+                                  SelectionBrush="#F0F">
+            <FlowDocument PagePadding="6" FontFamily="{StaticResource FontCode}" FontSize="14"
+                          Background="#150015"
+                        Foreground="#C4C">
+                <FlowDocument.Resources>
+                    <Style TargetType="{x:Type Hyperlink}">
+                        <Setter Property="Foreground" Value="#F0F" />
+                        <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate" />
+                    </Style>
+                </FlowDocument.Resources>
                 <Paragraph>
                     C# scripting interface created by
                     <Hyperlink NavigateUri="https://www.github.com/b7c">b7</Hyperlink> for

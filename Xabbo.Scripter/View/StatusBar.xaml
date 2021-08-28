@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Xabbo.Scripter"
+             xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:control="clr-namespace:Xabbo.Scripter.WPF.Controls"
              mc:Ignorable="d" 
              d:DesignWidth="800" 
              FontFamily="Consolas" FontSize="12" 
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:StatusBarViewManager}}">
     <Grid>
         <DockPanel>
             <!-- Interceptor icon -->
@@ -59,6 +61,25 @@
                         </Style.Triggers>
                     </Style>
                 </control:GrayscaleImage.Style>
+                <control:GrayscaleImage.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold" FontSize="12" Text="Connection" />
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Text" Value="Game is not connected." />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsGameConnected}" Value="True">
+                                                <Setter Property="Text" Value="Game is connected." />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </control:GrayscaleImage.ToolTip>
             </control:GrayscaleImage>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right"
                         Visibility="{Binding IsGameConnected, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=1}">
@@ -68,81 +89,85 @@
                     <control:GrayscaleImage Source="/Xabbo.Scripter;component/Resources/Images/users.png"
                        DockPanel.Dock="Right" Margin="2" HorizontalAlignment="Right" Width="16" Height="16"
                        IsGrayscale="{Binding IsInRoom, Converter={StaticResource NotConverter}}"
-                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}"/>
-                    <TextBlock DockPanel.Dock="Right" Margin="2"
-                           VerticalAlignment="Center"
-                           Foreground="LightSlateGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding UserCount}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserCount}" Value="-1">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}">
+                        <control:GrayscaleImage.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" Text="Users" />
+                                    <TextBlock Text="The number of users in the room." />
+                                </StackPanel>
+                            </ToolTip>
+                        </control:GrayscaleImage.ToolTip>
+                    </control:GrayscaleImage>
+                    <TextBlock DockPanel.Dock="Right" 
+                               Margin="2" VerticalAlignment="Center"
+                               Foreground="LightSlateGray"
+                               Text="{Binding UserCount}" />
                     <!-- Bot count -->
                     <control:GrayscaleImage DockPanel.Dock="Right" 
                                     Margin="2" HorizontalAlignment="Right" Width="16" Height="16"
                                     Source="/Xabbo.Scripter;component/Resources/Images/bot.png"
                                     IsGrayscale="{Binding IsInRoom, Converter={StaticResource NotConverter}}"
-                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}"/>
-                    <TextBlock DockPanel.Dock="Right"
-                       Margin="2" VerticalAlignment="Center"
-                       Foreground="LightSlateGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding BotCount}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding BotCount}" Value="-1">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}">
+                        <control:GrayscaleImage.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" Text="Bots" />
+                                    <TextBlock Text="The number of bots in the room." />
+                                </StackPanel>
+                            </ToolTip>
+                        </control:GrayscaleImage.ToolTip>
+                    </control:GrayscaleImage>
+                    <TextBlock DockPanel.Dock="Right" 
+                               Margin="2" VerticalAlignment="Center"
+                               Foreground="LightSlateGray"
+                               Text="{Binding BotCount}" />
                     <!-- Pet count -->
                     <control:GrayscaleImage DockPanel.Dock="Right" 
                                     Margin="2" HorizontalAlignment="Right" Width="16" Height="16"
                                     Source="/Xabbo.Scripter;component/Resources/Images/pet.png"
                                     IsGrayscale="{Binding IsInRoom, Converter={StaticResource NotConverter}}"
-                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}" />
-                    <TextBlock DockPanel.Dock="Right"
-                       Margin="2" VerticalAlignment="Center"
-                       Foreground="LightSlateGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding PetCount}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PetCount}" Value="-1">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.7,0.5'}">
+                        <control:GrayscaleImage.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" Text="Pets" />
+                                    <TextBlock Text="The number of pets in the room." />
+                                </StackPanel>
+                            </ToolTip>
+                        </control:GrayscaleImage.ToolTip>
+                    </control:GrayscaleImage>
+                    <TextBlock DockPanel.Dock="Right" 
+                               Margin="2" VerticalAlignment="Center"
+                               Foreground="LightSlateGray"
+                               Text="{Binding PetCount}" />
                     <!-- Furni count -->
                     <control:GrayscaleImage DockPanel.Dock="Right" 
                                     Margin="2" HorizontalAlignment="Right" Width="16" Height="16"
                                     Source="/Xabbo.Scripter;component/Resources/Images/furni.png"
                                     IsGrayscale="{Binding IsInRoom, Converter={StaticResource NotConverter}}"
-                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.5,0.5'}" />
+                                    Opacity="{Binding IsInRoom, Converter={StaticResource DoubleSelector}, ConverterParameter='0.5,0.5'}">
+                        <control:GrayscaleImage.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" Text="Furni" />
+                                    <TextBlock Text="The number of furni in the room."/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontWeight="Bold" Text="Floor items: " />
+                                        <TextBlock Text="{Binding FloorItemCount}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontWeight="Bold" Text="Wall items: " />
+                                        <TextBlock Text="{Binding WallItemCount}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </ToolTip>
+                        </control:GrayscaleImage.ToolTip>
+                    </control:GrayscaleImage>
                     <TextBlock DockPanel.Dock="Right" 
-                       Margin="2" VerticalAlignment="Center"
-                       Foreground="LightSlateGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding FurniCount}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding FurniCount}" Value="-1">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                               Margin="2" VerticalAlignment="Center"
+                               Foreground="LightSlateGray"
+                               Text="{Binding FurniCount}" />
                 </StackPanel>
                 <!-- Room status -->
                 <control:GrayscaleImage Source="/Xabbo.Scripter;component/Resources/Images/room.png"
@@ -156,13 +181,10 @@
                                 <TextBlock>
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Text" Value="Room manager is unavailable." />
+                                            <Setter Property="Text" Value="Room state is not currently being tracked. Re-enter room to initialize the room state." />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RoomManagerAvailable}" Value="True">
-                                                    <Setter Property="Text" Value="Room state is not currently being tracked. Re-enter room to initialize the room state." />
-                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding BeenInRoom}" Value="True">
-                                                    <Setter Property="Text" Value="Room state is not currently being tracked." />
+                                                    <Setter Property="Text" Value="User is not in a room." />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsInRoom}" Value="True">
                                                     <Setter Property="Text" Value="Room state is being tracked." />
@@ -189,15 +211,18 @@
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Text" Value="User data is unavailable." />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding UserDataAvailable}" Value="True">
-                                                    <Setter Property="Text" Value="User data is loading." />
+                                                <DataTrigger Binding="{Binding IsGameConnected}" Value="True">
+                                                    <Setter Property="Text" Value="User data is loading..." />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding HasUserData}" Value="True">
-                                                    <Setter Property="Text" Value="User data is available." />
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Visibility="{Binding HasUserData, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=1}">
+                                    User data is available. (<Run Text="{Binding UserName, Mode=OneWay}" />)
                                 </TextBlock>
                             </StackPanel>
                         </ToolTip>
