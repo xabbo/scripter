@@ -5,12 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
 using Xabbo.Interceptor.Tasks;
 using Xabbo.Interceptor.Dispatcher;
-
 using Xabbo.Core;
 using Xabbo.Core.Events;
 using Xabbo.Core.Game;
@@ -20,7 +20,6 @@ using Xabbo.Core.Tasks;
 using Xabbo.Scripter.Runtime;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Tasks;
-using System.ComponentModel;
 
 namespace Xabbo.Scripter.Scripting
 {
@@ -30,7 +29,9 @@ namespace Xabbo.Scripter.Scripting
     /// </summary>
     public partial class G : IDisposable
     {
-        private const int DEFAULT_TIMEOUT = 10000;
+        private const int
+            DEFAULT_TIMEOUT = 10000,
+            DEFAULT_LONG_TIMEOUT = 3000; 
 
         private readonly IScriptHost _scriptHost;
         private readonly IScript _script;
@@ -772,18 +773,6 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IEnumerable<IRoomInfo> GetRooms(int timeout = DEFAULT_TIMEOUT)
             => SearchNav("my", "", timeout);
-        #endregion
-
-        #region - Inventory -
-        /// <summary>
-        /// Gets the inventory of the user.
-        /// Returns the inventory of the user immediately if it is already loaded and is not invalidated,
-        /// otherwise attempts to retrieve it from the server.
-        /// The user must be in a room for the server to return a response.
-        /// </summary>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IInventory LoadInventory(int timeout = DEFAULT_TIMEOUT) =>
-            _inventoryManager.GetInventoryAsync(timeout, Ct).GetAwaiter().GetResult();
         #endregion
 
         #region - Currency -
@@ -1577,72 +1566,6 @@ namespace Xabbo.Scripter.Scripting
         public void Dismount(IPet pet) => Ride(pet.Id, false);
         #endregion
 
-        #region - Trading -
-        public bool IsTrading => _tradeManager.IsTrading;
-        public bool IsTrader => _tradeManager.IsTrader;
-        public bool HasAcceptedTrade => _tradeManager.HasAccepted;
-        public bool HasPartnerAcceptedTrade => _tradeManager.HasPartnerAccepted;
-        public bool IsTradeWaitingConfirmation => _tradeManager.IsWaitingConfirmation;
-        public IRoomUser? TradePartner => _tradeManager.Partner;
-        public ITradeOffer? OwnTradeOffer => _tradeManager.OwnOffer;
-        public ITradeOffer? PartnerTradeOffer => _tradeManager.PartnerOffer;
-
-        /// <summary>
-        /// Trades the specified user.
-        /// </summary>
-        public void Trade(IRoomUser user) => Trade(user.Index);
-
-        /// <summary>
-        /// Trades the user with the specified index.
-        /// </summary>
-        public void Trade(int userIndex) => Send(Out.TradeOpen, userIndex);
-
-        /// <summary>
-        /// Offers the specified inventory item in the trade.
-        /// </summary>
-        public void Offer(IInventoryItem item) => Offer(item.ItemId);
-
-        /// <summary>
-        /// Offers the item with the specified item id in the trade.
-        /// </summary>
-        public void Offer(long itemId) => Send(Out.TradeAddItem, (LegacyLong)itemId);
-
-        /// <summary>
-        /// Offers the specified inventory items in the trade.
-        /// </summary>
-        public void Offer(IEnumerable<IInventoryItem> items) => Offer(items.Select(item => item.ItemId));
-
-        /// <summary>
-        /// Offers the items with the specified item ids in the trade.
-        /// </summary>
-        public void Offer(IEnumerable<long> itemIds) => Send(Out.TradeAddItems, itemIds.Cast<LegacyLong>());
-
-        /// <summary>
-        /// Cancels the offer for the specified item in the trade.
-        /// </summary>
-        public void CancelOffer(IInventoryItem item) => CancelOffer(item.ItemId);
-
-        /// <summary>
-        /// Cancels the offer for the item with the specified item id in the trade.
-        /// </summary>
-        public void CancelOffer(long itemId) => Send(Out.TradeRemoveItem, itemId);
-
-        /// <summary>
-        /// Cancels the trade.
-        /// </summary>
-        public void CancelTrade() => Send(Out.TradeClose);
-
-        /// <summary>
-        /// Accepts the trade.
-        /// </summary>
-        public void AcceptTrade() => Send(Out.TradeAccept);
-
-        /// <summary>
-        /// Confirms the trade.
-        /// </summary>
-        public void ConfirmTrade() => Send(Out.TradeConfirmAccept);
-        #endregion
-
         #region - Groups -
         /// <summary>
         /// Joins the group with the specified ID.
@@ -1779,48 +1702,6 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IEnumerable<IRoomInfo> SearchNavByGroup(string group, int timeout = DEFAULT_TIMEOUT)
             => GetNav("query", $"group:{group}", timeout).GetRooms();
-        #endregion
-
-        #region - Marketplace -
-        /// <summary>
-        /// Gets the user's own marketplace offers.
-        /// </summary>
-        /// <param name="timeout">The time in milliseconds to wait for a response from the server.</param>
-        public IUserMarketplaceOffers GetUserMarketplaceOffers(int timeout = DEFAULT_TIMEOUT)
-            => new GetUserMarketplaceOffersTask(Interceptor).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Searches for open offers in the marketplace.
-        /// </summary>
-        /// <param name="searchText">The name of the item to search for.</param>
-        /// <param name="from">The minimum offer price in credits.</param>
-        /// <param name="to">The maximum offer price in credits.</param>
-        /// <param name="sort">The order in which to sort the results.</param>
-        /// <param name="timeout">The time in milliseconds to wait for a response from the server.</param>
-        /// <returns>The list of matching marketplace offers.</returns>
-        public IEnumerable<IMarketplaceOffer> SearchMarketplace(string? searchText = null,
-            int? from = null, int? to = null,
-            MarketplaceSortOrder sort = MarketplaceSortOrder.HighestPrice,
-            int timeout = DEFAULT_TIMEOUT)
-            => new SearchMarketplaceTask(Interceptor, searchText, from, to, sort).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Gets the marketplace information for the specified item type and kind.
-        /// </summary>
-        public IMarketplaceItemInfo GetMarketplaceInfo(ItemType type, int kind, int timeout = DEFAULT_TIMEOUT)
-            => new GetMarketplaceInfoTask(Interceptor, type, kind).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Gets the marketplace information for the specified item.
-        /// </summary>
-        public IMarketplaceItemInfo GetMarketplaceInfo(IItem item, int timeout = DEFAULT_TIMEOUT)
-            => new GetMarketplaceInfoTask(Interceptor, item.Type, item.Kind).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Gets the marketplace information for the specified furni.
-        /// </summary>
-        public IMarketplaceItemInfo GetMarketplaceInfo(FurniInfo furniInfo, int timeout = DEFAULT_TIMEOUT)
-            => new GetMarketplaceInfoTask(Interceptor, furniInfo.Type, furniInfo.Kind).Execute(timeout, Ct);
         #endregion
 
         #region - Events -
@@ -2160,72 +2041,6 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void OnChat(Func<EntityChatEventArgs, Task> callback) => Register(_roomManager, nameof(_roomManager.EntityChat), callback);
         #endregion
-
-        #region - Trade events -
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is started.
-        /// </summary>
-        public void OnTradeOpened(Action<TradeStartEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Opened), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is started.
-        /// </summary>
-        public void OnTradeOpened(Func<TradeStartEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Opened), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when a trade fails to start.
-        /// </summary>
-        public void OnTradeOpenFailed(Action<TradeStartFailEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.OpenFailed), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a trade fails to start.
-        /// </summary>
-        public void OnTradeOpenFailed(Func<TradeStartFailEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.OpenFailed), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is updated.
-        /// </summary>
-        public void OnTradeUpdated(Action<TradeOfferEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Updated), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is updated.
-        /// </summary>
-        public void OnTradeUpdated(Func<TradeOfferEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Updated), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when a user accepts the trade.
-        /// </summary>
-        public void OnTradeAccepted(Action<TradeAcceptEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Accepted), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a user accepts the trade.
-        /// </summary>
-        public void OnTradeAccepted(Func<TradeAcceptEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Accepted), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when both users have accepted the trade and are waiting for each other's confirmation.
-        /// </summary>
-        public void OnTradeWaitingConfirm(Action<EventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.WaitingConfirm), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when both users have accepted the trade and are waiting for each other's confirmation.
-        /// </summary>
-        public void OnTradeWaitingConfirm(Func<EventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.WaitingConfirm), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is stopped.
-        /// </summary>
-        public void OnTradeClosed(Action<TradeStopEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Closed), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a trade is stopped.
-        /// </summary>
-        public void OnTradeClosed(Func<TradeStopEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Closed), callback);
-
-        /// <summary>
-        /// Registers a callback that is invoked when a trade completes successfully.
-        /// </summary>
-        public void OnTradeCompleted(Action<TradeCompleteEventArgs> callback) => Register(_tradeManager, nameof(_tradeManager.Completed), callback);
-        /// <summary>
-        /// Registers a callback that is invoked when a trade completes successfully.
-        /// </summary>
-        public void OnTradeCompleted(Func<TradeCompleteEventArgs, Task> callback) => Register(_tradeManager, nameof(_tradeManager.Completed), callback);
-        #endregion
-
         #endregion
     }
 }
