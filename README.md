@@ -4,7 +4,7 @@ A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) po
 [Xabbo.GEarth](https://www.github.com/b7c/Xabbo.GEarth) and
 [Xabbo.Core](https://www.github.com/b7c/Xabbo.Core) libraries.
 
-![image](https://user-images.githubusercontent.com/58299468/126180247-449ca08d-9329-4a09-abd6-9dcb0e1cf695.png)
+![image](https://user-images.githubusercontent.com/58299468/132536592-c9da767c-6c70-4c44-8974-331d7b95eed9.png)
 
 ## Usage
 ### Accessing message headers
