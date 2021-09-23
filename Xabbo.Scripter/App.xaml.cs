@@ -44,15 +44,13 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            /*_mutex = new Mutex(false, "Xabbo.Scripter");
+            _mutex = new Mutex(false, "Xabbo.Scripter");
             if (!_mutex.WaitOne(0, false))
             {
                 MessageBox.Show("An instance of the scripter is already running.", "xabbo scripter");
                 Shutdown();
                 return;
-            }*/
-
-            // new FileSystemWatcher()
+            }
 
             _host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) => {
