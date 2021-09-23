@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -17,8 +18,8 @@ namespace Xabbo.Scripter.ViewModel
         private readonly IUIContext _uiContext;
         private readonly IGameDataManager _gameDataManager;
 
-        private readonly ObservableCollection<FurniInfoViewModel> _furni = new();
-        public ICollectionView Furni { get; }
+        private ObservableCollection<FurniInfoViewModel> _furni = null!;
+        public ICollectionView Furni { get; private set; } = null!;
 
         private string _filterText = string.Empty;
         public string FilterText
@@ -35,9 +36,6 @@ namespace Xabbo.Scripter.ViewModel
         {
             _uiContext = uiContext;
             _gameDataManager = gameDataManager;
-
-            Furni = CollectionViewSource.GetDefaultView(_furni);
-            Furni.Filter = Filter;
 
             Task initializeTask = Task.Run(InitializeAsync);
         }
@@ -75,10 +73,12 @@ namespace Xabbo.Scripter.ViewModel
 
             await _uiContext.InvokeAsync(() =>
             {
-                foreach (var info in furniData)
-                {
-                    _furni.Add(new FurniInfoViewModel(info));
-                }
+                _furni = new ObservableCollection<FurniInfoViewModel>(
+                    furniData.Select(x => new FurniInfoViewModel(x))
+                );
+                Furni = CollectionViewSource.GetDefaultView(_furni);
+                Furni.Filter = Filter;
+                RaisePropertyChanged(nameof(Furni));
             });
         }
     }

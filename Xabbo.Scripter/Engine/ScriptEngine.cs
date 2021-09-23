@@ -32,6 +32,7 @@ namespace Xabbo.Scripter.Engine
 
         private readonly ILogger _logger;
 
+        private readonly List<string> _referenceAssemblyNames;
         private readonly List<Assembly> _referenceAssemblies;
 
         public string Directory { get; }
@@ -47,18 +48,24 @@ namespace Xabbo.Scripter.Engine
             Directory = Path.GetFullPath("scripts");
             Host = host;
 
-            _referenceAssemblies = new List<Assembly>()
+            _referenceAssemblyNames = new()
             {
-                typeof(object).Assembly, // System
-                Assembly.Load("Xabbo.Scripter.Common"),
-                Assembly.Load("Xabbo.Common"),
-                Assembly.Load("Xabbo.Core")
+                "Xabbo.Scripter.Common",
+                "Xabbo.Common",
+                "Xabbo.Core"
             };
+
+            _referenceAssemblies = new() { typeof(object).Assembly, };
         }
 
         public void Initialize()
         {
             _logger.LogInformation("Initializing script engine...");
+
+            foreach (string assemblyName in _referenceAssemblyNames)
+            {
+                _referenceAssemblies.Add(Assembly.Load(assemblyName));
+            }
 
             BaseScriptOptions = ScriptOptions.Default
                 .WithLanguageVersion(LanguageVersion.CSharp8)
@@ -79,7 +86,8 @@ namespace Xabbo.Scripter.Engine
                     "Xabbo.Messages",
                     "Xabbo.Core",
                     "Xabbo.Scripter.Runtime",
-                    "Xabbo.Scripter.Runtime.PacketTypes"
+                    "Xabbo.Scripter.Runtime.PacketTypes",
+                    "System.Runtime.CompilerServices.ITuple"
                 });
 
             RoslynHost = new ScripterRoslynHost(

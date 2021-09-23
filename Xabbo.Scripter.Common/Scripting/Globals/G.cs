@@ -31,7 +31,7 @@ namespace Xabbo.Scripter.Scripting
     {
         private const int
             DEFAULT_TIMEOUT = 10000,
-            DEFAULT_LONG_TIMEOUT = 3000; 
+            DEFAULT_LONG_TIMEOUT = 30000; 
 
         private readonly IScriptHost _scriptHost;
         private readonly IScript _script;
@@ -330,41 +330,47 @@ namespace Xabbo.Scripter.Scripting
         public void Send(IReadOnlyPacket packet) => Interceptor.Send(packet);
 
         /// <summary>
-        /// Captures a packet being sent to the client with a header that matches any of the defined target headers.
+        /// Captures a packet with a header that matches any of the specified headers.
         /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be received.</param>
-        /// <param name="targetHeaders">The incoming message headers to listen for.</param>
-        /// <returns>The first packet received with a header that matches one of the target headers.</returns>
-        public IReadOnlyPacket Receive(int timeout, params Header[] targetHeaders)
-            => ReceiveAsync(timeout, targetHeaders).GetAwaiter().GetResult();
+        /// <param name="headers">The message headers to listen for.</param>
+        /// <param name="timeout">The time to wait for a packet to be captured.</param>
+        /// <param name="block">Whether to block the captured packet.</param>
+        /// <returns>The first packet with a header that matches one of the specified headers.</returns>
+        public IReadOnlyPacket Receive(HeaderSet headers, int timeout = -1, bool block = false)
+            => ReceiveAsync(headers, timeout, block).GetAwaiter().GetResult();
+
+        public IReadOnlyPacket Receive(ITuple tuple, int timeout = -1, bool block = false)
+        {
+            return Receive(HeaderSet.FromTuple(tuple), timeout, block);
+        }
 
         /// <summary>
-        /// Asynchronously captures a packet being sent to the client with a header that matches any of the defined target headers.
+        /// Asynchronously captures a packet with a header that matches any of specified headers.
         /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be received.</param>
-        /// <param name="targetHeaders">The incoming message headers to listen for.</param>
-        /// <returns>The first packet received with a header that matches one of the target headers.</returns>
-        public Task<IPacket> ReceiveAsync(int timeout, params Header[] targetHeaders)
+        /// <param name="headers">The message headers to listen for.</param>
+        /// <param name="timeout">The time to wait for a packet to be captured.</param>
+        /// <param name="block">Whether to block the captured packet.</param>
+        /// <returns>The first packet with a header that matches one of the specified headers.</returns>
+        public Task<IPacket> ReceiveAsync(HeaderSet headers, int timeout = -1, bool block = false)
         {
-            AssertTargetHeaders(Destination.Client, targetHeaders);
-
-            return new CaptureMessageTask(Interceptor, Destination.Client, false, targetHeaders)
+            return new CaptureMessageTask(Interceptor, headers, block)
                 .ExecuteAsync(timeout, Ct);
         }
 
         /// <summary>
-        /// Attempts to capture a packet being sent to the client with a header that matches any of the defined target headers.
+        /// Attempts to capture a packet with a header that matches any of the specified headers.
         /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be received.</param>
+        /// <param name="headers">The message headers to listen for.</param>
+        /// <param name="timeout">The time to wait for a packet to be captured.</param>
         /// <param name="packet">The packet that was captured.</param>
-        /// <param name="targetHeaders">The incoming message headers to listen for.</param>
+        /// <param name="block">Whether to block the captured packet.</param>
         /// <returns>True if a packet was successfully captured, or false if the operation timed out.</returns>
-        public bool TryReceive(int timeout, out IReadOnlyPacket? packet, params Header[] targetHeaders)
+        public bool TryReceive(HeaderSet headers, out IReadOnlyPacket? packet, int timeout = -1, bool block = false)
         {
             packet = null;
             try
             {
-                packet = Receive(timeout, targetHeaders);
+                packet = Receive(headers, timeout, block);
                 return true;
             }
             catch (OperationCanceledException)
@@ -372,43 +378,6 @@ namespace Xabbo.Scripter.Scripting
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Captures a packet being sent to the server with a header that matches any of the defined target headers.
-        /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be captured.</param>
-        /// <param name="targetHeaders">The outgoing message headers to listen for.</param>
-        /// <returns>The first packet captured with a header that matches one of the target headers.</returns>
-        public IReadOnlyPacket CaptureOut(int timeout, params Header[] targetHeaders)
-            => CaptureOutAsync(timeout, targetHeaders).GetAwaiter().GetResult();
-
-        /// <summary>
-        /// Asynchronously a packet being sent to the server with a header that matches any of the defined target headers.
-        /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be captured.</param>
-        /// <param name="targetHeaders">The outgoing message headers to listen for.</param>
-        /// <returns>The first packet captured with a header that matches one of the target headers.</returns>
-        public Task<IPacket> CaptureOutAsync(int timeout, params Header[] targetHeaders)
-        {
-            AssertTargetHeaders(Destination.Server, targetHeaders);
-
-            return new CaptureMessageTask(Interceptor, Destination.Server, false, targetHeaders)
-                .ExecuteAsync(timeout, Ct);
-        }
-
-        /// <summary>
-        /// Attempts to capture a packet being sent to the server with a header that matches any of the defined target headers.
-        /// </summary>
-        /// <param name="timeout">The time to wait for a packet to be captured.</param>
-        /// <param name="packet">The packet that was captured.</param>
-        /// <param name="targetHeaders">The outgoing message headers to listen for.</param>
-        /// <returns>True if a packet was successfully captured, or false if the operation timed out.</returns>
-        public bool TryCaptureOut(int timeout, out IReadOnlyPacket? packet, params Header[] targetHeaders)
-        {
-            packet = null;
-            try { packet = CaptureOut(timeout, targetHeaders); return true; }
-            catch (OperationCanceledException) when (!Ct.IsCancellationRequested) { return false; }
         }
 
         /// <summary>
@@ -422,11 +391,16 @@ namespace Xabbo.Scripter.Scripting
                 _intercepts.Add(new Intercept(Interceptor.Dispatcher, header, callback));
             }
         }
+
+        /// <summary>
+        /// Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
+        /// </summary>
+        public void OnIntercept(ITuple headers, Action<InterceptArgs> callback) => OnIntercept(HeaderSet.FromTuple(headers), callback);
         
         /// <summary>
         /// Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
         /// </summary>
-        public void OnIntercept(Header[] headers, Action<InterceptArgs> callback)
+        public void OnIntercept(HeaderSet headers, Action<InterceptArgs> callback)
         {
             foreach (Header header in headers)
             {
@@ -443,7 +417,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
         /// </summary>
-        public void OnIntercept(Header[] headers, Func<InterceptArgs, Task> callback)
+        public void OnIntercept(HeaderSet headers, Func<InterceptArgs, Task> callback)
            => OnIntercept(headers, e => { callback(e); });
         #endregion
 
@@ -749,7 +723,7 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public List<GroupInfo> GetGroups(int timeout = DEFAULT_TIMEOUT)
         {
-            var receiveTask = ReceiveAsync(timeout, In.GuildMemberships);
+            var receiveTask = ReceiveAsync(In.GuildMemberships, timeout);
             Send(Out.GetGuildMemberships);
             var packet = receiveTask.GetAwaiter().GetResult();
 
@@ -797,54 +771,6 @@ namespace Xabbo.Scripter.Scripting
         public int Duckets => Points[ActivityPointType.Ducket];
         #endregion
 
-        #region - Friends -
-        public IEnumerable<IFriend> Friends => _friendManager.Friends;
-
-        /// <summary>
-        /// Accepts a friend request from the specified user.
-        /// </summary>
-        public void AcceptFriendRequest(long userId) => AcceptFriendRequests(userId);
-
-        /// <summary>
-        /// Accepts friend requests from the specified users.
-        /// </summary>
-        public void AcceptFriendRequests(params long[] userIds) => Send(Out.AcceptFriend, userIds);
-
-        /// <summary>
-        /// Declines a friend request from the specified user.
-        /// </summary>
-        public void DeclineFriendRequest(long userId) => DeclineFriendRequests(userId);
-
-        /// <summary>
-        /// Declines friend requests from the specified users.
-        /// </summary>
-        public void DeclineFriendRequests(params long[] userIds) => Send(Out.DeclineFriend, false, userIds);
-
-        /// <summary>
-        /// Declines all incoming friend requests.
-        /// </summary>
-        public void DeclineAllFriendRequests() => Send(Out.DeclineFriend, true, 0);
-
-        /// <summary>
-        /// Sends a friend request to the specified user.
-        /// </summary>
-        public void AddFriend(string name) => Send(Out.RequestFriend, name);
-
-        /// <summary>
-        /// Removes the specified user from the user's friend list.
-        /// </summary>
-        public void RemoveFriend(long userId) => RemoveFriends(userId);
-
-        /// <summary>
-        /// Removes the specified users from the user's friend list.
-        /// </summary>
-        public void RemoveFriends(params long[] userIds) => Send(Out.RemoveFriend, userIds);
-
-        /// <summary>
-        /// Sends a private message to a friend with the specified ID.
-        /// </summary>
-        public void SendMessage(long userId, string message) => Send(Out.SendMessage, userId, message);
-        #endregion
 
         #region - Rooms -
         /// <summary>
@@ -907,7 +833,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Attempts to enter the room with the specified ID, and optionally, a password.
         /// </summary>
-        public RoomEntryResult EnterRoom(long roomId, string password = "", int timeout = DEFAULT_TIMEOUT)
+        public RoomEntryResult EnsureEnterRoom(long roomId, string password = "", int timeout = DEFAULT_TIMEOUT)
             => new EnterRoomTask(Interceptor, roomId, password).Execute(timeout, Ct);
             // => Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
 
@@ -959,247 +885,6 @@ namespace Xabbo.Scripter.Scripting
 
                 SetHomeRoom()
         */
-        #endregion
-
-        #region - Actions -
-        /// <summary>
-        /// Makes the user perform the specified action.
-        /// </summary>
-        public void Action(int action) => Send(Out.Expression, action);
-
-        /// <summary>
-        /// Makes the user perform the specified action.
-        /// </summary>
-        public void Action(Actions action) => Action((int)action);
-
-        /// <summary>
-        /// Makes the user unidle.
-        /// </summary>
-        public void Unidle() => Action(Actions.None);
-
-        /// <summary>
-        /// Makes the user wave.
-        /// </summary>
-        public void Wave() => Action(Actions.Wave);
-
-        /// <summary>
-        /// Makes the user idle.
-        /// </summary>
-        public void Idle() => Action(Actions.Idle);
-
-        /// <summary>
-        /// Makes the user thumbs up.
-        /// </summary>
-        public void ThumbsUp() => Action(Actions.ThumbsUp);
-
-        /// <summary>
-        /// Makes the user sit if <c>true</c>, or stand if <c>false</c> is passed in.
-        /// </summary>
-        /// <param name="sit"><c>true</c> to sit, or <c>false</c> to stand.</param>
-        public void Sit(bool sit) => Send(Out.Posture, sit ? 1 : 0);
-
-        /// <summary>
-        /// Makes the user sit.
-        /// </summary>
-        public void Sit() => Send(Out.Posture, 1);
-
-        /// <summary>
-        /// Makes the user stand.
-        /// </summary>
-        public void Stand() => Send(Out.Posture, 0);
-
-        /// <summary>
-        /// Makes the user show the specified sign.
-        /// </summary>
-        public void Sign(int sign) => Send(Out.ShowSign, sign);
-
-        /// <summary>
-        /// Makes the user show the specified sign.
-        /// </summary>
-        public void Sign(Signs sign) => Sign((int)sign);
-
-        /// <summary>
-        /// Makes the user perform the specfied dance.
-        /// </summary>
-        public void Dance(int dance) => Send(Out.Dance, dance);
-
-        /// <summary>
-        /// Makes the user perform the specfied dance.
-        /// </summary>
-        public void Dance(Dances dance) => Dance((int)dance);
-
-        /// <summary>
-        /// Makes the user dance.
-        /// </summary>
-        public void Dance() => Dance(1);
-
-        /// <summary>
-        /// Makes the user stop dancing.
-        /// </summary>
-        public void StopDancing() => Dance(0);
-        #endregion
-
-        #region - Effects -
-        /// <summary>
-        /// Activates the specified effect. (Warning: this will consume the effect if it is not permanent)
-        /// </summary>
-        public void ActivateEffect(int effectId) => Send(Out.ActivateAvatarEffect, effectId);
-
-        /// <summary>
-        /// Enables the specified effect.
-        /// </summary>
-        public void EnableEffect(int effectId) => Send(Out.UseAvatarEffect, effectId);
-
-        /// <summary>
-        /// Disables the current effect.
-        /// </summary>
-        public void DisableEffect() => EnableEffect(-1);
-        #endregion
-
-        #region - Movement -
-        /// <summary>
-        /// Moves to the specified location.
-        /// </summary>
-        public void Move(int x, int y) => Send(Out.Move, x, y);
-
-        /// <summary>
-        /// Moves to the specified location.
-        /// </summary>
-        public void Move((int X, int Y) location) => Move(location.X, location.Y);
-
-        /// <summary>
-        /// Moves to the specified location.
-        /// </summary>
-        public void Move(Tile location) => Move(location.X, location.Y);
-
-        /// <summary>
-        /// Makes the user look to the specified location.
-        /// </summary>
-        public void LookTo(int x, int y) => Send(Out.LookTo, x, y);
-
-        /// <summary>
-        /// Makes the user look to the specified location.
-        /// </summary>
-        public void LookTo((int X, int Y) location) => LookTo(location.X, location.Y);
-
-        /// <summary>
-        /// Makes the user look to the specified location.
-        /// </summary>
-        public void LookTo(Tile location) => LookTo(location.X, location.Y);
-
-        /// <summary>
-        /// Makes the user look to the specified direction.
-        /// </summary>
-        public void Turn(int dir) => LookTo(H.GetMagicVector(dir));
-
-        /// <summary>
-        /// Makes the user look to the specified direction.
-        /// </summary>
-        public void Turn(Directions dir) => Turn((int)dir);
-        #endregion
-
-        #region - Chat -
-        /// <summary>
-        /// Sends a chat message with the specified message and chat bubble style.
-        /// </summary>
-        public void Chat(ChatType chatType, string message, int bubble = 0)
-        {
-            switch (chatType)
-            {
-                case ChatType.Talk:
-                    Send(Out.Chat, message, bubble, -1);
-                    break;
-                case ChatType.Shout:
-                    Send(Out.Shout, message, bubble);
-                    break;
-                case ChatType.Whisper:
-                    Send(Out.Whisper, message, bubble, -1);
-                    break;
-                default:
-                    throw new Exception($"Unknown chat type: {chatType}.");
-            }
-        }
-
-        /// <summary>
-        /// Whispers a user with the specified message and chat bubble style.
-        /// </summary>
-        public void Whisper(RoomUser recipient, string message, int bubble = 0)
-            => Chat(ChatType.Whisper, $"{recipient.Name} {message}", bubble);
-
-        /// <summary>
-        /// Whispers a user with the specified message and chat bubble style.
-        /// </summary>
-        public void Whisper(string recipient, string message, int bubble = 0)
-            => Chat(ChatType.Whisper, $"{recipient} {message}", bubble);
-
-        /// <summary>
-        /// Talks with the specified message and chat bubble style.
-        /// </summary>
-        public void Talk(string message, int bubble = 0)
-            => Chat(ChatType.Talk, message, bubble);
-
-        /// <summary>
-        /// Shouts with the specified message and chat bubble style.
-        /// </summary>
-        public void Shout(string message, int bubble = 0)
-            => Chat(ChatType.Shout, message, bubble);
-        #endregion
-
-        #region - Room moderation -
-        /// <summary>
-        /// Mutes a user for the specified number of minutes.
-        /// </summary>
-        public void Mute(long userId, long roomId, int minutes) => Send(Out.RoomMuteUser, userId, roomId, minutes);
-
-        /// <summary>
-        /// Mutes a user for the specified number of minutes.
-        /// </summary>
-        public void Mute(IRoomUser user, int minutes) => Send(Out.RoomMuteUser, user.Id, RoomId, minutes);
-
-        /// <summary>
-        /// Kicks the specified user from the room.
-        /// </summary>
-        public void Kick(IRoomUser user) => Kick(user.Id);
-
-        /// <summary>
-        /// Kicks the specified user from the room.
-        /// </summary>
-        public void Kick(long userId) => Send(Out.KickUser, userId);
-
-        /// <summary>
-        /// Bans a user for the specified duration.
-        /// </summary>
-        public void Ban(long userId, long roomId, BanDuration duration) => Send(Out.RoomBanWithDuration, userId, roomId, duration.GetValue());
-
-        /// <summary>
-        /// Bans a user for the specified duration.
-        /// </summary>
-        public void Ban(IRoomUser user, BanDuration duration) => Send(Out.RoomBanWithDuration, user.Id, RoomId, duration.GetValue());
-
-        /// <summary>
-        /// Unbans a user from the specified room.
-        /// </summary>
-        public void Unban(long userId, long roomId) => Send(Out.RoomUnbanUser, userId, roomId);
-
-        /// <summary>
-        /// Unbans the specified user.
-        /// </summary>
-        public void Unban(IRoomUser user) => Unban(user.Id);
-
-        /// <summary>
-        /// Unbans the specified user.
-        /// </summary>
-        public void Unban(long userId) => Send(Out.RoomUnbanUser, userId, RoomId);
-
-        /// <summary>
-        /// Gives rights to the current room to the specified user.
-        /// </summary>
-        public void GiveRights(long userId) => Send(Out.AssignRights, userId);
-
-        /// <summary>
-        /// Removes rights to the current room from the specified users.
-        /// </summary>
-        public void RemoveRights(params long[] userIds) => Send(Out.RemoveRights, userIds);
         #endregion
 
         #region - Furni interaction -
@@ -1266,68 +951,6 @@ namespace Xabbo.Scripter.Scripting
         /// Uses the specified one-way gate.
         /// </summary>
         public void UseGate(IFloorItem item) => UseGate(item.Id);
-
-        /// <summary>
-        /// Places a sticky at the specified location.
-        /// </summary>
-        public void PlaceSticky(IInventoryItem item, WallLocation location)
-        {
-            if (item.Category != FurniCategory.Sticky)
-                throw new InvalidOperationException("Item is not a sticky note");
-            Send(Out.PlacePostIt, item.ItemId, location);
-        }
-
-        /// <summary>
-        /// Places a sticky at the specified location.
-        /// </summary>
-        public void PlaceSticky(int itemId, WallLocation location) => Send(Out.PlacePostIt, itemId, location);
-
-        /// <summary>
-        /// Places a sticky at the specified location using a sticky pole.
-        /// </summary>
-        public void PlaceStickyWithPole(IInventoryItem item, WallLocation location, string color, string text)
-            => PlaceStickyWithPole(item.ItemId, location, color, text);
-
-        /// <summary>
-        /// Places a sticky at the specified location using a sticky pole.
-        /// </summary>
-        public void PlaceStickyWithPole(long itemId, WallLocation location, string color, string text)
-            => Send(Out.AddSpamWallPostIt, (LegacyLong)itemId, location, color, text);
-
-        /// <summary>
-        /// Gets the sticky data for the specified wall item.
-        /// </summary>
-        /// <param name="item">The sticky item to get data for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public Sticky GetSticky(IWallItem item, int timeout = DEFAULT_TIMEOUT) => GetSticky(item.Id, timeout);
-
-        /// <summary>
-        /// Gets the sticky data for the specified wall item.
-        /// </summary>
-        /// <param name="itemId">The item ID of the sticky to get data for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public Sticky GetSticky(long itemId, int timeout = DEFAULT_TIMEOUT)
-            => new GetStickyTask(Interceptor, itemId).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Updates the specified sticky.
-        /// </summary>
-        public void UpdateSticky(Sticky sticky) => UpdateSticky(sticky.Id, sticky.Color, sticky.Text);
-
-        /// <summary>
-        /// Updates the specified sticky.
-        /// </summary>
-        public void UpdateSticky(IWallItem item, string color, string text) => UpdateSticky(item.Id, color, text);
-
-        /// <summary>
-        /// Updates the specified sticky.
-        /// </summary>
-        public void UpdateSticky(long itemId, string color, string text) => Send(Out.SetStickyData, (LegacyLong)itemId, color, text);
-
-        /// <summary>
-        /// Deletes the specified sticky.
-        /// </summary>
-        public void DeleteSticky(Sticky sticky) => DeleteWallItem(sticky.Id);
 
         /// <summary>
         /// Deletes the specified wall item. Used for stickies, photos.
@@ -1642,67 +1265,7 @@ namespace Xabbo.Scripter.Scripting
             => new GetProfileTask(Interceptor, userId).Execute(timeout, Ct);
         #endregion
 
-        #region - Navigator -
-        /// <summary>
-        /// Searches the navigator by category/filter and returns the list of navigator search results.
-        /// </summary>
-        /// <param name="category">The category to search.</param>
-        /// <param name="filter">The filter text. Can be left empty.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public NavigatorSearchResults GetNav(string category, string filter = "", int timeout = DEFAULT_TIMEOUT)
-            => new SearchNavigatorTask(Interceptor, category, filter).Execute(timeout, Ct);
-
-        /// <summary>
-        /// Searches the navigator by category/filter and returns a flattened view of <see cref="RoomInfo"/>.
-        /// </summary>
-        /// <param name="category">The category to search.</param>
-        /// <param name="filter">The filter text. Can be left empty.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IEnumerable<IRoomInfo> SearchNav(string category, string filter = "", int timeout = DEFAULT_TIMEOUT)
-            => GetNav(category, filter, timeout).GetRooms();
-
-        /// <summary>
-        /// Queries the navigator and returns a flattened view of <see cref="RoomInfo"/>.
-        /// This is the same as searching by 'Anything' in the game client.
-        /// </summary>
-        /// <param name="query">The query text.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IEnumerable<IRoomInfo> QueryNav(string query, int timeout = DEFAULT_TIMEOUT)
-            => GetNav("query", query, timeout).GetRooms();
-
-        /// <summary>
-        /// Searches the navigator by room name and returns a flattened view of <see cref="RoomInfo"/>.
-        /// </summary>
-        /// <param name="roomName">The room name to search for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        /// <returns></returns>
-        public IEnumerable<IRoomInfo> SearchNavByName(string roomName, int timeout = DEFAULT_TIMEOUT)
-            => GetNav("query", $"roomname:{roomName}", timeout).GetRooms();
-
-        /// <summary>
-        /// Searches the navigator by owner name and returns a flattened view of <see cref="RoomInfo"/>.
-        /// </summary>
-        /// <param name="ownerName">The room owner name to search for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IEnumerable<IRoomInfo> SearchNavByOwner(string ownerName, int timeout = DEFAULT_TIMEOUT)
-            => GetNav("query", $"owner:{ownerName}", timeout).GetRooms();
-
-        /// <summary>
-        /// Searches the navigator by tag and returns a flattened view of <see cref="RoomInfo"/>.
-        /// </summary>
-        /// <param name="tag">The tag to search for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IEnumerable<IRoomInfo> SearchNavByTag(string tag, int timeout = DEFAULT_TIMEOUT)
-            => GetNav("query", $"tag:{tag}", timeout).GetRooms();
-
-        /// <summary>
-        /// Searches the navigator by group name and returns a flattened view of <see cref="RoomInfo"/>.
-        /// </summary>
-        /// <param name="group">The group name to search for.</param>
-        /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IEnumerable<IRoomInfo> SearchNavByGroup(string group, int timeout = DEFAULT_TIMEOUT)
-            => GetNav("query", $"group:{group}", timeout).GetRooms();
-        #endregion
+        
 
         #region - Events -
         private void Register<TEventSource, TEventArgs>(TEventSource source, string eventName, Func<TEventArgs, Task> callback)

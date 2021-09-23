@@ -4,32 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Xabbo.Scripter.View"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModel:FurniDataViewManager}}">
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:FurniDataViewManager}}"
+             Background="{StaticResource MaterialDesignPaper}"
+             TextElement.FontSize="16"
+             TextElement.Foreground="{StaticResource MaterialDesignBody}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel>
-            <TextBlock
-                DockPanel.Dock="Left"
-                Margin="2"
-                VerticalAlignment="Center"
-                Text="Filter"
-            />
             <TextBox
                 DockPanel.Dock="Right"
-                Margin="2" Padding="1"
+                Margin="4" Padding="2"
                 VerticalContentAlignment="Center"
                 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                md:HintAssist.Hint="Filter"
             />
         </DockPanel>
         <ListView Grid.Row="1"
-                  Margin="2"
-                  ItemsSource="{Binding Furni}">
+                  ItemsSource="{Binding Furni}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Foreground" Value="DarkSlateGray" />

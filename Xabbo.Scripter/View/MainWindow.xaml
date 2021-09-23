@@ -1,46 +1,110 @@
-﻿<Window x:Class="Xabbo.Scripter.View.MainWindow"
+﻿<mde:MaterialWindow x:Class="Xabbo.Scripter.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:windows="clr-namespace:System.Windows;assembly=PresentationFramework"
         xmlns:view="clr-namespace:Xabbo.Scripter.View"
         xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"
-        Title="{Binding Title}" Height="450" Width="800"
-        FontFamily="{StaticResource FontUI}" FontSize="12"
-        Topmost="{Binding IsChecked, ElementName=checkBoxTopMost}">
-    <Grid Margin="2">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <CheckBox
-            x:Name="checkBoxTopMost"
-            Margin="5" Panel.ZIndex="9999"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top" VerticalContentAlignment="Center"
-            Opacity="0.33"
-            IsChecked="True"
-            ToolTip="Stay on top"
-        />
-        <TabControl Margin="2">
-            <TabItem Header="Log">
-                <view:LogView DataContext="{Binding Log}" />
-            </TabItem>
-            <TabItem Header="Scripts">
-                <view:ScriptsView DataContext="{Binding Scripts}" />
-            </TabItem>
-            <TabItem Header="Tools">
-                <view:ToolsView DataContext="{Binding Tools}" />
-            </TabItem>
-            <TabItem Header="Status" Visibility="Collapsed">
-                <view:StatusView />
-            </TabItem>
-            <TabItem Header="About">
-                <view:AboutPage DataContext="{Binding About}" />
-            </TabItem>
-        </TabControl>
-        <view:StatusBar Grid.Row="1" Margin="2" DataContext="{Binding StatusBar}" />
-    </Grid>
-</Window>
+        Width="800" Height="450"
+        Title="{Binding Title}" 
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        FadeContentIfInactive="False"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontSize="14">
+    <!-- Title bar -->
+    <mde:MaterialWindow.TitleTemplate>
+        <DataTemplate>
+            <DockPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                <ToggleButton
+                    DockPanel.Dock="Right"
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                    Margin="4" Height="24" Width="24"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                    IsChecked="{Binding Topmost}"
+                    Content="{md:PackIcon Kind=Pin}"
+                />
+                <TextBlock
+                    DockPanel.Dock="Left"  
+                    Margin="8,0"
+                    VerticalAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    Text="{Binding Title}"
+                />
+            </DockPanel>
+        </DataTemplate>
+    </mde:MaterialWindow.TitleTemplate>
+    <!-- Main content -->
+    <md:DialogHost>
+        <md:DialogHost.Resources>
+            <DataTemplate DataType="{x:Type viewModel:MessageBoxViewModel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <UniformGrid Rows="1">
+                        <Button
+                            Content="{Binding CancelButtonText}"
+                            Visibility="{Binding ShowCancelButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
+                            CommandParameter="{Binding CancelResult}"
+                        />
+                        <Button
+                            Content="{Binding DeclineButtonText}"
+                            Visibility="{Binding ShowDeclineButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
+                            CommandParameter="{Binding DeclineResult}"
+                        />
+                        <Button
+                            Content="{Binding ConfirmButtonText}"
+                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
+                        />
+                    </UniformGrid>
+                </Grid>
+            </DataTemplate>
+        </md:DialogHost.Resources>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TabControl md:ColorZoneAssist.Mode="Dark">
+                <TabControl.Style>
+                    <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MaterialDesignNavigatilRailTabControl}" />
+                </TabControl.Style>
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}"
+                           BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}">
+                        <Setter Property="Padding" Value="4" />
+                        <Setter Property="Width" Value="Auto" />
+                        <Setter Property="Height" Value="Auto" />
+                        <Style.Resources>
+                        </Style.Resources>
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabItem Header="{md:PackIcon Kind=Text, Size=24}">
+                    <view:LogView DataContext="{Binding Log}" />
+                </TabItem>
+                <TabItem Header="{md:PackIcon Kind=ScriptText, Size=24}">
+                    <view:ScriptsView DataContext="{Binding Scripts}" />
+                </TabItem>
+                <TabItem Header="{md:PackIcon Kind=Tools, Size=24}">
+                    <view:ToolsView DataContext="{Binding Tools}" />
+                </TabItem>
+                <TabItem Header="{md:PackIcon Kind=InfoCircle, Size=24}">
+                    <view:AboutPage DataContext="{Binding About}" />
+                </TabItem>
+            </TabControl>
+            <view:StatusBar Grid.Row="1" DataContext="{Binding StatusBar}" />
+        </Grid>
+    </md:DialogHost>
+</mde:MaterialWindow>

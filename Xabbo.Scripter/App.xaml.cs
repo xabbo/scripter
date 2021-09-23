@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Threading;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +21,7 @@ using Xabbo.Core.Game;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.View;
 using Xabbo.Scripter.Engine;
-using System.Threading;
+using System.IO;
 
 namespace Xabbo.Scripter
 {
@@ -35,7 +36,6 @@ namespace Xabbo.Scripter
         };
 
         private IHost _host = null!;
-
         private Mutex? _mutex;
 
         public App() { }
@@ -44,11 +44,17 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            // TODO Check existing process
-            _mutex = new Mutex(false, "Xabbo.Scripter:9092");
-            if (_mutex.WaitOne(0, false))
+            /*_mutex = new Mutex(false, "Xabbo.Scripter");
+            if (!_mutex.WaitOne(0, false))
             {
-                _host = Host.CreateDefaultBuilder()
+                MessageBox.Show("An instance of the scripter is already running.", "xabbo scripter");
+                Shutdown();
+                return;
+            }*/
+
+            // new FileSystemWatcher()
+
+            _host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) => {
                     ConfigureAppConfiguration(context, config);
                     config.AddCommandLine(e.Args, _switchMappings);
@@ -56,13 +62,7 @@ namespace Xabbo.Scripter
                 .ConfigureServices(ConfigureServices)
                 .Build();
 
-                _host.Start();
-            }
-            else
-            {
-                MessageBox.Show("Instance already running");
-                Shutdown();
-            }
+            _host.Start();
         }
 
         protected override void OnExit(ExitEventArgs e)

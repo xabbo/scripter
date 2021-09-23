@@ -14,7 +14,7 @@ namespace Xabbo.Scripter.Scripting
         /// Call <see cref="EnsureInventory(int)"/> before accessing this
         /// property to ensure that the user's inventory has been loaded.
         /// </summary>
-        IInventory? Inventory => _inventoryManager.Inventory;
+        public IInventory? Inventory => _inventoryManager.Inventory;
 
         /// <summary>
         /// Ensures that the inventory of the user is loaded.

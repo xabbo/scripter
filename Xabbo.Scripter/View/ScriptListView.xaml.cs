@@ -27,8 +27,8 @@ namespace Xabbo.Scripter.View
 
         private void ListViewItem_MouseDoubleClick(object? sender, MouseButtonEventArgs e)
         {
-            if (sender is not ListViewItem item ||
-                item.DataContext is not ScriptViewModel script)
+            if (sender is not FrameworkElement element ||
+                element.DataContext is not ScriptViewModel script)
             {
                 return;
             }

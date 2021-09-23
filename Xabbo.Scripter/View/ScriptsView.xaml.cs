@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -17,8 +18,8 @@ namespace Xabbo.Scripter.View
 
         private void ScriptTab_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is not TabItem tabItem ||
-                tabItem.DataContext is not ScriptViewModel scriptViewModel)
+            if (sender is not FrameworkElement element ||
+                element.DataContext is not ScriptViewModel scriptViewModel)
             {
                 return;
             }

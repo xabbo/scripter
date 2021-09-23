@@ -2,40 +2,90 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Xabbo.Scripter"
-             xmlns:svc="clr-namespace:Xabbo.Scripter.Services"
              xmlns:converters="clr-namespace:Xabbo.Scripter.WPF.Converters"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />-->
-
-                <!-- material design styles -->
-
-                <!--<materialDesign:BundledTheme
-                    BaseTheme="Dark"
-                    PrimaryColor="Purple"
-                    SecondaryColor="Yellow"
-                />
+                <md:BundledTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Yellow" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />-->
-
-
-                <!--<ResourceDictionary>
-                    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{Binding Color, Source={StaticResource MaterialDesignPaper}}" />
-                </ResourceDictionary>-->
-
-                <!--<ResourceDictionary>
-                    <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
-                        <Setter Property="md:ScrollViewerAssist.IgnorePadding" Value="False" />
-                    </Style>
-                </ResourceDictionary>-->
-
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type DataGridColumnHeader}"
+                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="BorderThickness" Value="0,0,1,0" />
+                        <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
+                    </Style>
+                    <Style TargetType="{x:Type DataGridCell}"
+                           BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </Style.Resources>
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="SelectionMode" Value="Extended" />
+                <Setter Property="SelectionUnit" Value="FullRow" />
+                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="4" />
+                <Setter Property="md:DataGridAssist.CellPadding" Value="8" />
+            </Style>
+            
+            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
+                            </Style>
+                        </Style.Resources>
+                        <Setter Property="BorderThickness" Value="0,0,1,0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </Style.Resources>
+                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="2" />
+                <Setter Property="md:ListViewAssist.ListViewItemPadding" Value="4" />
+            </Style>
+
+            <Style x:Key="MaterialDesignTabablzSlimControlStyle"
+                   TargetType="{x:Type dragablz:TabablzControl}"
+                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}">
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Height" Value="30" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MaterialDesignAlternateTabablzSlimControlStyle"
+                   TargetType="{x:Type dragablz:TabablzControl}"
+                   BasedOn="{StaticResource MaterialDesignAlternateTabablzControlStyle}">
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Height" Value="30" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzSlimControlStyle}" />
+
             <!-- Fonts -->
             <FontFamily x:Key="FontUI">Segoe UI</FontFamily>
             <FontFamily x:Key="FontCode">Fira Code,Hack,Consolas</FontFamily>
@@ -50,6 +100,8 @@
             <converters:EqualityConverter x:Key="EqualityConverter" />
             <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
             <converters:DoubleSelector x:Key="DoubleSelector" />
+            <converters:ChainConverter x:Key="ChainConverter" />
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

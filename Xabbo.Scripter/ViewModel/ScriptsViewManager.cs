@@ -15,6 +15,8 @@ using GalaSoft.MvvmLight.Command;
 using Xabbo.Scripter.Model;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Engine;
+using Dragablz;
+using Xabbo.Scripter.Tabs;
 
 namespace Xabbo.Scripter.ViewModel
 {
@@ -23,19 +25,13 @@ namespace Xabbo.Scripter.ViewModel
         private readonly IUIContext _uiContext;
         private readonly ScriptEngine _engine;
 
-        public ScriptEngine Engine => _engine;
-
-        private readonly object _newScriptTab = new { Header = "+" };
-        private readonly ObservableCollection<ScriptViewModel> _scripts;
-        private readonly CompositeCollection _tabCollection;
-
         private int _currentScriptIndex = 0;
 
-        public ICollectionView Tabs { get; }
-        public ICollectionView Scripts { get; }
-        public ICollectionView OpenScripts { get; }
+        private readonly ObservableCollection<ScriptViewModel> _scripts;
 
-        public string Header { get; } = "*";
+        public ScriptEngine Engine => _engine;
+        public ICollectionView Scripts { get; }
+        public ObservableCollection<ScriptViewModel> OpenTabs { get; } = new();
 
         private object? selectedItem;
         public object? SelectedItem
@@ -44,40 +40,29 @@ namespace Xabbo.Scripter.ViewModel
             set => Set(ref selectedItem, value);
         }
 
-        private int selectedIndex;
+        private int selectedIndex = -1;
         public int SelectedIndex
         {
             get => selectedIndex;
             set => Set(ref selectedIndex, value);
         }
 
+        public ICommand OpenScriptListCommand { get; }
         public ICommand NewTabCommand { get; }
         public ICommand CloseTabCommand { get; }
 
+        public IInterTabClient InterTabClient { get; }
+        public Func<object> NewItemFactory { get; }
+
         public ScriptsViewManager(IUIContext uiContext, ScriptEngine engine)
         {
+            InterTabClient = new ScripterInterTabClient(this);
+
             _uiContext = uiContext;
             _engine = engine;
 
             _scripts = new ObservableCollection<ScriptViewModel>();
-
             Scripts = CollectionViewSource.GetDefaultView(_scripts);
-            OpenScripts = new CollectionViewSource { Source = _scripts }.View;
-            OpenScripts.Filter = obj =>
-            {
-                return
-                    obj is ScriptViewModel scriptViewModel &&
-                    scriptViewModel.IsOpen;
-            };
-
-            _tabCollection = new CompositeCollection()
-            {
-                new CollectionContainer { Collection = new object[] { this } },
-                new CollectionContainer { Collection = OpenScripts },
-                new CollectionContainer { Collection = new object[] { _newScriptTab } }
-            };
-
-            Tabs = CollectionViewSource.GetDefaultView(_tabCollection);
 
             if (uiContext is WpfContext wpfContext)
             {
@@ -90,10 +75,18 @@ namespace Xabbo.Scripter.ViewModel
                 timer.Start();
             }
 
+            OpenScriptListCommand = new RelayCommand(OpenScriptList);
             NewTabCommand = new RelayCommand(AddNewScript);
             CloseTabCommand = new RelayCommand(CloseCurrentScript);
 
             LoadScripts();
+
+            NewItemFactory = () => CreateNewScript();
+        }
+
+        private void OpenScriptList()
+        {
+            SelectedIndex = -1;
         }
 
         private void LoadScripts()
@@ -120,10 +113,23 @@ namespace Xabbo.Scripter.ViewModel
 
                 _scripts.Add(new ScriptViewModel(Engine, model)
                 {
-                    IsOpen = false,
                     IsSavedToDisk = true
                 });
             }
+        }
+
+        public ScriptViewModel CreateNewScript()
+        {
+            ScriptModel model = new ScriptModel
+            {
+                FileName = $"script-{++_currentScriptIndex}.csx"
+            };
+
+            ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
+
+            _scripts.Add(scriptViewModel);
+
+            return scriptViewModel;
         }
 
         public void AddNewScript()
@@ -142,15 +148,14 @@ namespace Xabbo.Scripter.ViewModel
 
         public void SelectScript(ScriptViewModel script)
         {
-            if (!script.IsOpen)
+            if (!OpenTabs.Contains(script))
             {
                 if (!script.IsLoaded)
                 {
                     script.Load();
                 }
 
-                script.IsOpen = true;
-                OpenScripts.Refresh();
+                OpenTabs.Add(script);
             }
 
             SelectedItem = script;
@@ -159,19 +164,28 @@ namespace Xabbo.Scripter.ViewModel
         public void DeleteScript(ScriptViewModel script)
         {
             _scripts.Remove(script);
+
+            OpenTabs.Remove(script);
         }
 
         public void CloseScript(ScriptViewModel script)
         {
-            if (SelectedItem == script)
+            if (SelectedIndex != -1)
             {
-                if (SelectedIndex == _scripts.Count(x => x.IsOpen))
-                    SelectedIndex--;
-                else
-                    SelectedIndex++;
+                if (SelectedItem == script)
+                {
+                    if (SelectedIndex == (OpenTabs.Count - 1))
+                    {
+                        SelectedIndex--;
+                    }
+                    else
+                    {
+                        SelectedIndex++;
+                    }
+                }
             }
 
-            script.IsOpen = false;
+            OpenTabs.Remove(script);
 
             if (!script.IsModified &&
                 string.IsNullOrWhiteSpace(script.Code) &&
@@ -179,9 +193,6 @@ namespace Xabbo.Scripter.ViewModel
             {
                 DeleteScript(script);
             }
-
-            OpenScripts.Refresh();
-            Tabs.Refresh();
         }
 
         public void CloseCurrentScript()
@@ -197,19 +208,6 @@ namespace Xabbo.Scripter.ViewModel
             foreach (ScriptViewModel viewModel in _scripts)
             {
                 viewModel.UpdateRuntime();
-            }
-        }
-
-        public override void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            base.RaisePropertyChanged(propertyName);
-
-            if (propertyName == nameof(SelectedItem))
-            {
-                if (SelectedItem == _newScriptTab)
-                {
-                    AddNewScript();
-                }
             }
         }
     }

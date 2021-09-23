@@ -16,6 +16,11 @@ using RoslynPad.Roslyn;
 using Xabbo.Scripter.Scripting;
 using Xabbo.Scripter.ViewModel;
 using Xabbo.Scripter.Events;
+using Xabbo.Scripter.Theme;
+using System.Xml;
+
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace Xabbo.Scripter.View
 {
@@ -31,11 +36,19 @@ namespace Xabbo.Scripter.View
             codeEditor.Options.ConvertTabsToSpaces = true;
             codeEditor.Options.IndentationSize = 2;
             codeEditor.CreatingDocument += CodeEditor_CreatingDocument;
+            codeEditor.TextArea.Margin = new Thickness(8);
 
             Loaded += ScriptView_Loaded;
             Unloaded += ScriptView_Unloaded;
 
             DataContextChanged += ScriptView_DataContextChanged;
+
+            textBoxLog.TextChanged += TextBoxLog_TextChanged;
+        }
+
+        private void TextBoxLog_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxLog.ScrollToEnd();
         }
 
         private void ScriptView_Unloaded(object sender, RoutedEventArgs e)
@@ -481,6 +494,12 @@ namespace Xabbo.Scripter.View
         private void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
             Loaded -= CodeEditor_Loaded;
+
+            using (Stream s = File.OpenRead("theme.xshd"))
+            {
+                using XmlTextReader reader = new XmlTextReader(s);
+                codeEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            }
 
             codeEditor.Initialize(
                 Script.Engine.RoslynHost,

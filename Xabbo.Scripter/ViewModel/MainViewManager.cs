@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 using Microsoft.Extensions.Logging;
 
@@ -35,6 +36,16 @@ namespace Xabbo.Scripter.ViewModel
         public ToolsViewManager Tools { get; }
         public AboutViewManager About { get; }
         public StatusBarViewManager StatusBar { get; }
+
+        private GridLength _logHeight = GridLength.Auto;
+        public GridLength LogHeight
+        {
+            get => _logHeight;
+            set
+            {
+                Set(ref _logHeight, value);
+            }
+        }
 
         public MainViewManager(
             ILogger<MainViewManager> logger,
@@ -76,7 +87,7 @@ namespace Xabbo.Scripter.ViewModel
         {
             try
             {
-                await Task.Run(() => _scriptEngine.Initialize(), cancellationToken);
+                await Task.Run(() => _scriptEngine.Initialize(), cancellationToken).ConfigureAwait(false);
                 await _gameDataManager.UpdateAsync();
 
                 _logger.LogInformation($"xabbo scripter initialized.");

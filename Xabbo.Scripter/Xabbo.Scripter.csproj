@@ -7,8 +7,8 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Xabbo.Scripter</RootNamespace>
     <ApplicationIcon>Resources\xs.ico</ApplicationIcon>
-    <AssemblyVersion>0.2.0</AssemblyVersion>
-    <FileVersion>0.2.0</FileVersion>
+    <AssemblyVersion>0.3.0</AssemblyVersion>
+    <FileVersion>0.3.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dragablz" Version="0.0.3.223" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
     <PackageReference Include="MaterialDesignExtensions" Version="3.3.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
@@ -42,13 +44,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(SolutionDir)\Xabbo.Common\Xabbo.Common\messages.ini">
+    <None Include="$(SolutionDir)\Xabbo.Messages\messages.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="theme.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

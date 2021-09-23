@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+
+using MaterialDesignExtensions.Controls;
 
 using Xabbo.Scripter.ViewModel;
 
 namespace Xabbo.Scripter.View
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : MaterialWindow
     {
         public MainWindow(MainViewManager manager)
         {
@@ -21,7 +24,8 @@ namespace Xabbo.Scripter.View
         {
             Loaded -= MainWindow_Loaded;
 
-            await ((MainViewManager)DataContext).InitializeAsync(CancellationToken.None);
+            MainViewManager mainViewManager = (MainViewManager)DataContext;
+            await Task.Run(() => mainViewManager.InitializeAsync(CancellationToken.None));
         }
     }
 }

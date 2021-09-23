@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Reflection;
 
 using Microsoft.CodeAnalysis;
@@ -43,7 +44,8 @@ namespace Xabbo.Scripter.Engine
             if (compilationOptions is CSharpCompilationOptions csharpCompilationOptions)
             {
                 compilationOptions = csharpCompilationOptions
-                    .WithNullableContextOptions(NullableContextOptions.Disable);
+                    .WithNullableContextOptions(NullableContextOptions.Disable)
+                    .WithSourceReferenceResolver(_scriptOptions.SourceResolver);
             }
 
             solution = solution.AddProject(ProjectInfo.Create(

@@ -12,12 +12,14 @@ namespace Xabbo.Scripter.ViewModel
 {
     public class StatusBarViewManager : ObservableObject
     {
-        private readonly IRemoteInterceptor _interceptor;
+        public IRemoteInterceptor Interceptor { get; }
+
         private readonly IGameManager _gameManager;
 
         protected IRoom? Room => _gameManager.RoomManager.Room;
 
         #region - Remote state -
+
         private bool isRemoteConnected;
         public bool IsRemoteConnected
         {
@@ -123,12 +125,12 @@ namespace Xabbo.Scripter.ViewModel
         public StatusBarViewManager(IRemoteInterceptor interceptor,
             IGameManager gameManager)
         {
-            _interceptor = interceptor;
-            _interceptor.InterceptorConnected += OnInterceptorConnected;
-            _interceptor.Initialized += OnInterceptorInitialized;
-            _interceptor.Connected += OnConnectionStart;
-            _interceptor.Disconnected += OnConnectionEnd;
-            _interceptor.InterceptorDisconnected += OnInterceptorDisconnected;
+            Interceptor = interceptor;
+            Interceptor.InterceptorConnected += OnInterceptorConnected;
+            Interceptor.Initialized += OnInterceptorInitialized;
+            Interceptor.Connected += OnConnectionStart;
+            Interceptor.Disconnected += OnConnectionEnd;
+            Interceptor.InterceptorDisconnected += OnInterceptorDisconnected;
 
             _gameManager = gameManager;
             _gameManager.ProfileManager.LoadedUserData += OnLoadedUserData;

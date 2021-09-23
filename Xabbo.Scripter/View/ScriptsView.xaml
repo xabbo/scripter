@@ -3,41 +3,84 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Xabbo.Scripter.View"
+             xmlns:view="clr-namespace:Xabbo.Scripter.View"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}">
     <Grid>
-        <TabControl x:Name="tabControl"
-                    Margin="2"
-                    ItemsSource="{Binding Tabs, Mode=OneWay}"
-                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                    FontFamily="Segoe UI"
-                    FontSize="12">
-            <TabControl.InputBindings>
-                <KeyBinding Key="T" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
-                <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
-            </TabControl.InputBindings>
-            <TabControl.Resources>
-                <Style TargetType="{x:Type TabItem}">
-                    <Setter Property="HeaderTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Header, Mode=OneWay}" />
-                            </DataTemplate>
-                        </Setter.Value>
-                    </Setter>
+        <dragablz:TabablzControl
+            x:Name="TabablzControl"
+            ItemsSource="{Binding OpenTabs}"
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+            SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+            NewItemFactory="{Binding NewItemFactory, Mode=OneWay}"
+            BorderThickness="0" ShowDefaultAddButton="True">
+
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
+            </dragablz:TabablzControl.InterTabController>
+
+            <dragablz:TabablzControl.Style>
+                <Style TargetType="{x:Type dragablz:TabablzControl}"
+                       BasedOn="{StaticResource MaterialDesignAlternateTabablzControlStyle}">
+                </Style>
+            </dragablz:TabablzControl.Style>
+
+            <dragablz:TabablzControl.HeaderPrefixContent>
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Padding="4"
+                        md:ButtonAssist.CornerRadius="0"
+                        Command="{Binding OpenScriptListCommand}">
+                    <Button.Content>
+                        <md:PackIcon Kind="Code" Width="24" Height="24" />
+                    </Button.Content>
+                </Button>
+            </dragablz:TabablzControl.HeaderPrefixContent>
+
+            <dragablz:TabablzControl.HeaderItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+            </dragablz:TabablzControl.HeaderItemTemplate>
+
+            <dragablz:TabablzControl.ItemContainerStyle>
+                <Style TargetType="{x:Type dragablz:DragablzItem}"
+                       BasedOn="{StaticResource MaterialDesignAlternateDragableTabItemStyle}">
+                    <Setter Property="Height" Value="32" />
+                    <Setter Property="Padding" Value="8,0" />
                     <EventSetter Event="MouseDown" Handler="ScriptTab_MouseDown" />
                 </Style>
-                <DataTemplate DataType="{x:Type viewModel:ScriptsViewManager}">
-                    <local:ScriptListView />
-                </DataTemplate>
+            </dragablz:TabablzControl.ItemContainerStyle>
+
+            <dragablz:TabablzControl.Resources>
                 <DataTemplate DataType="{x:Type viewModel:ScriptViewModel}">
-                    <local:ScriptView />
+                    <view:ScriptView />
                 </DataTemplate>
-            </TabControl.Resources>
-        </TabControl>
+            </dragablz:TabablzControl.Resources>
+
+            <dragablz:TabablzControl.InputBindings>
+                <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
+                <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+            </dragablz:TabablzControl.InputBindings>
+
+        </dragablz:TabablzControl>
+
+        <Grid Margin="0,32,0,0">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedIndex}" Value="-1">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <view:ScriptListView />
+        </Grid>
     </Grid>
 </UserControl>

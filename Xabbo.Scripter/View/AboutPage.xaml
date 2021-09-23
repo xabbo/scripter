@@ -8,8 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="root">
     <Grid>
-        <FlowDocumentScrollViewer Margin="2"
-                                  VerticalScrollBarVisibility="Auto"
+        <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto"
                                   SelectionOpacity="0.33"
                                   SelectionBrush="#F0F">
             <FlowDocument PagePadding="6" FontFamily="{StaticResource FontCode}" FontSize="14"
@@ -47,10 +46,6 @@
                     <LineBreak />
                     Xabbo.Core
                     <Run Text="{Binding XabboCoreVersion}" />
-                </Paragraph>
-                <Paragraph>
-                    Free icons used from
-                    <Hyperlink NavigateUri="https://www.icons8.com/">Icons8</Hyperlink>.
                 </Paragraph>
             </FlowDocument>
         </FlowDocumentScrollViewer>

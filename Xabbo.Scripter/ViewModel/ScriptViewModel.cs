@@ -110,13 +110,6 @@ namespace Xabbo.Scripter.ViewModel
             }
         }
 
-        private bool _isOpen = true;
-        public bool IsOpen
-        {
-            get => _isOpen;
-            set => Set(ref _isOpen, value);
-        }
-
         private bool _isSavedToDisk;
         public bool IsSavedToDisk
         {
@@ -180,9 +173,37 @@ namespace Xabbo.Scripter.ViewModel
             set
             {
                 if (Set(ref _status, value))
+                {
+                    RaisePropertyChanged(nameof(IsRed));
+                    RaisePropertyChanged(nameof(IsYellow));
+                    RaisePropertyChanged(nameof(IsGreen));
                     RaisePropertyChanged(nameof(StatusText));
+                }
             }
         }
+
+        public bool IsRed => Status switch
+        {
+            ScriptStatus.FileNotFound or
+            ScriptStatus.CompileError or
+            ScriptStatus.RuntimeError or
+            ScriptStatus.TimedOut or
+            ScriptStatus.Aborted => true,
+            _ => false
+        };
+
+        public bool IsYellow => Status switch
+        {
+            ScriptStatus.Compiling or 
+            ScriptStatus.Cancelling => true,
+            _ => false
+        };
+
+        public bool IsGreen => Status switch
+        {
+            ScriptStatus.Running => true,
+            _ => false
+        };
 
         public string StatusText => _status switch
         {
@@ -274,6 +295,16 @@ namespace Xabbo.Scripter.ViewModel
         public event EventHandler<CompileErrorEventArgs>? CompileError;
         public event EventHandler<RuntimeErrorEventArgs>? RuntimeError;
 
+        private GridLength _logHeight = GridLength.Auto;
+        public GridLength LogHeight
+        {
+            get => _logHeight;
+            set
+            {
+                Set(ref _logHeight, value);
+            }
+        }
+
         public ScriptViewModel(ScriptEngine engine, ScriptModel scriptModel)
         {
             Engine = engine;
@@ -336,7 +367,7 @@ namespace Xabbo.Scripter.ViewModel
         {
             Task.Run(() => Engine.Run(this));
         }
-
+        
         private void OnSave()
         {
             if (!IsLoaded) return;

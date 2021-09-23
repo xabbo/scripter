@@ -3,130 +3,164 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:controls="clr-namespace:Xabbo.Scripter.WPF.Controls"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:roslynPad="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptViewModel}}"
-             FontFamily="Consolas"
-             x:Name="root">
+             x:Name="root"
+             Background="{DynamicResource MaterialDesignLightBackground}"
+             TextElement.Foreground="{DynamicResource MaterialDesignDarkBackground}">
     <Grid x:Name="layoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="0" />
+                <RowDefinition Height="4" />
+                <RowDefinition Height="{Binding LogHeight}" MinHeight="0" />
+            </Grid.RowDefinitions>
+
             <!-- Code editor -->
-            <roslynPad:RoslynCodeEditor
-                x:Name="codeEditor"
-                Margin="2"
-                SyntaxHighlighting="C#"
-                ShowLineNumbers="True"
-                FontFamily="Fira Code,Hack,Consolas" FontSize="9pt"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="{Binding IsRunning}"
-                Loaded="CodeEditor_Loaded"
-                KeyDown="CodeEditor_KeyDown"
-                TextChanged="CodeEditor_TextChanged" 
-                PreviewMouseWheel="CodeEditor_MouseWheel">
-                <roslynPad:RoslynCodeEditor.InputBindings>
-                    <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
-                </roslynPad:RoslynCodeEditor.InputBindings>
-            </roslynPad:RoslynCodeEditor>
-            <!-- Overlay -->
-            <Canvas x:Name="overlayCanvas" IsHitTestVisible="False" Background="White">
-                <Canvas.Style>
-                    <Style TargetType="{x:Type Canvas}">
-                        <Setter Property="Opacity" Value="0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                <Setter Property="Opacity" Value="0.5" />
-                            </DataTrigger>
-                        </Style.Triggers>
+            <Grid md:ThemeAssist.Theme="Light">
+                <Grid.Resources>
+                    <Style TargetType="{x:Type ToolTip}">
+                        <Setter Property="ToolTipService.Placement" Value="Mouse" />
                     </Style>
-                </Canvas.Style>
-            </Canvas>
-        </Grid>
-        <!-- Status bar -->
-        <DockPanel Grid.Row="1">
-            <!-- Execute button -->
-            <Button x:Name="buttonExecute" DockPanel.Dock="Right"
-                    Margin="2" Padding="2" VerticalAlignment="Bottom">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="False" />
-                        <Setter Property="Content" Value="Execute" />
-                        <Setter Property="Command" Value="{Binding ExecuteCommand}" />
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Host.CanExecute}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="IsEnabled" Value="True" />
-                            </MultiDataTrigger>
-                            <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                <Setter Property="Content" Value="Cancel" />
-                                <Setter Property="Command" Value="{Binding CancelCommand}" />
-                                <Setter Property="IsEnabled" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsCancelling}" Value="True">
-                                <Setter Property="IsEnabled" Value="False" />
-                            </DataTrigger>
-                        </Style.Triggers>
+                </Grid.Resources>
+                <roslynPad:RoslynCodeEditor
+                    x:Name="codeEditor"
+                    SyntaxHighlighting="C#"
+                    ShowLineNumbers="True"
+                    Background="Transparent"
+                    FontFamily="Fira Code,Hack,Consolas" FontSize="9pt"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="{Binding IsRunning}"
+                    IsModified="{Binding IsModified}"
+                    Loaded="CodeEditor_Loaded"
+                    KeyDown="CodeEditor_KeyDown"
+                    TextChanged="CodeEditor_TextChanged" 
+                    PreviewMouseWheel="CodeEditor_MouseWheel">
+                    <roslynPad:RoslynCodeEditor.InputBindings>
+                        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+                    </roslynPad:RoslynCodeEditor.InputBindings>
+                </roslynPad:RoslynCodeEditor>
+                <!-- Overlay -->
+                <Canvas x:Name="overlayCanvas" IsHitTestVisible="False" Background="White">
+                    <Canvas.Style>
+                        <Style TargetType="{x:Type Canvas}">
+                            <Setter Property="Opacity" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                    <Setter Property="Opacity" Value="0.5" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Canvas.Style>
+                </Canvas>
+            </Grid>
+
+            <GridSplitter
+                Grid.Row="1"
+                Margin="0" Padding="0"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                Background="{StaticResource MaterialDesignDarkBackground}">
+                <GridSplitter.Style>
+                    <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource MaterialDesignGridSplitter}">
                     </Style>
-                </Button.Style>
-                <Button.Content>
-                    <controls:GrayscaleImage IsGrayscale="{Binding IsEnabled, ElementName=buttonExecute, Converter={StaticResource NotConverter}}"
-                                             Width="16" Height="16">
-                        <controls:GrayscaleImage.Style>
-                            <Style TargetType="{x:Type controls:GrayscaleImage}">
-                                <Setter Property="Source" Value="/Xabbo.Scripter;component/Resources/Images/play.png" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                        <Setter Property="Source" Value="/Xabbo.Scripter;component/Resources/Images/stop.png" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:GrayscaleImage.Style>
-                    </controls:GrayscaleImage>
-                </Button.Content>
-                <Button.ToolTip>
-                    <ToolTip>
-                        <ToolTip.Style>
-                            <Style TargetType="{x:Type ToolTip}">
-                                <Setter Property="Content" Value="Execute (F5)" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                        <Setter Property="Content" Value="Cancel" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToolTip.Style>
-                    </ToolTip>
-                </Button.ToolTip>
-            </Button>
+                </GridSplitter.Style>
+            </GridSplitter>
+
             <!-- Status log -->
-            <TextBox x:Name="textBoxLog" DockPanel.Dock="Left" 
-                     Margin="2" Padding="2"
-                     VerticalScrollBarVisibility="Auto"
-                     VerticalContentAlignment="Center"
-                     IsReadOnly="True" MaxLines="10"
-                     BorderThickness="1"
-                     BorderBrush="#FFF"
-                     TextWrapping="Wrap" Text="{Binding ResultText}">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="Foreground" Value="DarkSlateGray" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsFaulted}" Value="True">
-                                <Setter Property="FontWeight" Value="Bold" />
-                                <Setter Property="Foreground" Value="DarkRed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
-        </DockPanel>
+            <Grid Grid.Row="2">
+                <TextBox
+                    x:Name="textBoxLog"
+                    Margin="0" Padding="0"
+                    VerticalScrollBarVisibility="Auto"
+                    BorderThickness="0"
+                    Background="{StaticResource MaterialDesignPaper}"
+                    FontFamily="{StaticResource FontCode}" FontSize="11"
+                    Text="{Binding ResultText}"
+                    TextAlignment="Left" TextWrapping="Wrap"
+                    IsReadOnly="True"
+                    md:TextFieldAssist.TextBoxViewMargin="4"
+                    md:TextFieldAssist.DecorationVisibility="Hidden">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
+                            <Setter Property="Foreground" Value="{StaticResource MaterialDesignBodyLight}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsFaulted}" Value="True">
+                                    <Setter Property="Foreground" Value="OrangeRed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+        </Grid>
+
+        <!-- Floating execute/cancel button -->
+        <Button Grid.RowSpan="2"
+                Margin="16"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Width="36" Height="36"
+                md:ShadowAssist.ShadowDepth="Depth1"
+                md:ShadowAssist.Darken="False"
+                md:ButtonProgressAssist.IsIndeterminate="True"
+                md:ButtonProgressAssist.IndicatorBackground="Transparent"
+                md:ButtonProgressAssist.IndicatorForeground="{DynamicResource PrimaryHueMidBrush}"
+                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}"
+                ToolTipService.ShowOnDisabled="True">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <md:PackIcon Kind="Play" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Command" Value="{Binding ExecuteCommand}" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Host.CanExecute}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsWorking}" Value="True">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <md:PackIcon Kind="Stop" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Command" Value="{Binding CancelCommand}" />
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsCancelling}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            <Button.ToolTip>
+                <ToolTip>
+                    <ToolTip.Style>
+                        <Style TargetType="{x:Type ToolTip}">
+                            <Setter Property="Content" Value="Execute (F5)" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                    <Setter Property="Content" Value="Cancel" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsCancelling}" Value="True">
+                                    <Setter Property="Content" Value="Cancelling..." />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToolTip.Style>
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
+
     </Grid>
 </UserControl>
