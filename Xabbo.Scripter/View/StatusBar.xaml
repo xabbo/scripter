@@ -67,6 +67,10 @@
                         IsGrayscale="{Binding IsRemoteConnected, Converter={StaticResource NotConverter}}"
                     />
                 </Button>
+                <TextBlock Visibility="{Binding HasUserData, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=1}">
+                                        <Run Text="{Binding UserName, Mode=OneWay}" />
+                </TextBlock>
+                
                 <!-- Connection status -->
                 <Grid DockPanel.Dock="Right">
                     <Grid.ToolTip>
