@@ -44,15 +44,11 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            _mutex = new Mutex(false, "Xabbo.Scripter");
-            if (!_mutex.WaitOne(0, false))
+            // TODO Check existing process
+            _mutex = new Mutex(false, "Xabbo.Scripter:" + string.Join(":", e.Args));
+            if (_mutex.WaitOne(0, false))
             {
-                MessageBox.Show("An instance of the scripter is already running.", "xabbo scripter");
-                Shutdown();
-                return;
-            }
-
-            _host = Host.CreateDefaultBuilder()
+                _host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) => {
                     ConfigureAppConfiguration(context, config);
                     config.AddCommandLine(e.Args, _switchMappings);
@@ -60,7 +56,13 @@ namespace Xabbo.Scripter
                 .ConfigureServices(ConfigureServices)
                 .Build();
 
-            _host.Start();
+                _host.Start();
+            }
+            else
+            {
+                MessageBox.Show("Instance already running");
+                Shutdown();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
