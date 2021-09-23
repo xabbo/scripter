@@ -6,6 +6,7 @@
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:controls="clr-namespace:Xabbo.Scripter.WPF.Controls"
              xmlns:roslynPad="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
+             xmlns:attachedProperties="clr-namespace:Xabbo.Scripter.AttachedProperties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptViewModel}}"
@@ -114,6 +115,7 @@
                      IsReadOnly="True" MaxLines="10"
                      BorderThickness="1"
                      BorderBrush="#FFF"
+                     attachedProperties:TextBoxAttachedProperties.AutoScrollToEnd="True"
                      TextWrapping="Wrap" Text="{Binding ResultText}">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}">

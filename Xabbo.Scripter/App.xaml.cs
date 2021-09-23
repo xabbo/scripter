@@ -45,7 +45,7 @@ namespace Xabbo.Scripter
             base.OnStartup(e);
 
             // TODO Check existing process
-            _mutex = new Mutex(false, "Xabbo.Scripter:9092");
+            _mutex = new Mutex(false, "Xabbo.Scripter:" + string.Join(":", e.Args));
             if (_mutex.WaitOne(0, false))
             {
                 _host = Host.CreateDefaultBuilder()
