@@ -4,8 +4,8 @@
              xmlns:local="clr-namespace:Xabbo.Scripter"
              xmlns:converters="clr-namespace:Xabbo.Scripter.WPF.Converters"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
-             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
@@ -29,6 +29,19 @@
                     <Style TargetType="{x:Type DataGridCell}"
                            BasedOn="{StaticResource MaterialDesignDataGridCell}">
                         <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <ContentPresenter
+                                            Margin="{Binding Path=(md:DataGridAssist.CellPadding), RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                            VerticalAlignment="Center"
+                                        />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis" />
                     </Style>
                 </Style.Resources>
                 <Setter Property="AutoGenerateColumns" Value="False" />
@@ -37,7 +50,7 @@
                 <Setter Property="SelectionMode" Value="Extended" />
                 <Setter Property="SelectionUnit" Value="FullRow" />
                 <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="4" />
-                <Setter Property="md:DataGridAssist.CellPadding" Value="8" />
+                <Setter Property="md:DataGridAssist.CellPadding" Value="4" />
             </Style>
             
             <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">

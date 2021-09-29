@@ -26,82 +26,37 @@
                 md:HintAssist.Hint="Filter"
             />
         </DockPanel>
-        <ListView Grid.Row="1"
+        <DataGrid Grid.Row="1"
                   ItemsSource="{Binding Furni}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Extended"
+                  SelectionUnit="Cell"
                   VirtualizingPanel.IsVirtualizing="True"
-                  VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                  VirtualizingPanel.VirtualizationMode="Recycling">
-            <ListView.Resources>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Foreground" Value="DarkSlateGray" />
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="name" Width="200">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="identifier" Width="120">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        TextTrimming="CharacterEllipsis"
-                                        FontFamily="{StaticResource FontCode}"
-                                        FontSize="11"
-                                        Text="{Binding Identifier}"
-                                    />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="type / kind" Width="80">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock TextTrimming="CharacterEllipsis">
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  md:DataGridAssist.CellPadding="4">
+            <DataGrid.Columns>
+                <md:DataGridTextColumn Header="name" Width="200" Binding="{Binding Name}" />
+                <md:DataGridTextColumn Header="identifier" Width="120" Binding="{Binding Identifier}" />
+                <DataGridTemplateColumn x:Name="ColumnTypeKind" Header="type/kind" Width="120"
+                                        CopyingCellClipboardContent="DataGridTemplateColumn_CopyingCellClipboardContent">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextTrimming="CharacterEllipsis">
                                         <Run Text="{Binding Type, Mode=OneWay}" />
                                         <Run Text="{Binding Kind, Mode=OneWay}" FontFamily="{StaticResource FontCode}" FontSize="11" />
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="line" Width="80">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        TextTrimming="CharacterEllipsis"
-                                        FontFamily="{StaticResource FontCode}"
-                                        FontSize="11"
-                                        Text="{Binding Line}"
-                                    />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="category" Width="80">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Category}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="category name" Width="80">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        TextTrimming="CharacterEllipsis"
-                                        FontFamily="{StaticResource FontCode}"
-                                        FontSize="11"
-                                        Text="{Binding CategoryName}"
-                                    />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <md:DataGridTextColumn Header="line" Width="120" Binding="{Binding Line}"
+                                       TextElement.FontFamily="{StaticResource FontCode}"
+                                       TextElement.FontSize="10" />
+                <md:DataGridTextColumn Header="category" Width="120" Binding="{Binding Category}" />
+                <md:DataGridTextColumn Header="category name" Width="120" Binding="{Binding CategoryName}"
+                                       TextElement.FontFamily="{StaticResource FontCode}"
+                                       TextElement.FontSize="10" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
