@@ -44,11 +44,7 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            // TODO Check existing process
-            _mutex = new Mutex(false, "Xabbo.Scripter:" + string.Join(":", e.Args));
-            if (_mutex.WaitOne(0, false))
-            {
-                _host = Host.CreateDefaultBuilder()
+            _host = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) => {
                     ConfigureAppConfiguration(context, config);
                     config.AddCommandLine(e.Args, _switchMappings);
@@ -56,11 +52,22 @@ namespace Xabbo.Scripter
                 .ConfigureServices(ConfigureServices)
                 .Build();
 
+            GEarthOptions gEarthOptions = _host.Services.GetRequiredService<GEarthOptions>();
+
+            _mutex = new Mutex(false, $"Xabbo.Scripter:{gEarthOptions.Port}");
+
+            if (_mutex.WaitOne(0, false))
+            {
                 _host.Start();
             }
             else
             {
-                MessageBox.Show("Instance already running");
+                MessageBox.Show(
+                    $"An instance of the scripter is already running for port {gEarthOptions.Port}.",
+                    "xabbo scripter",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                );
                 Shutdown();
             }
         }
