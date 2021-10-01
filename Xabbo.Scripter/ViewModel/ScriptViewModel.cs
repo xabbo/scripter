@@ -295,7 +295,7 @@ namespace Xabbo.Scripter.ViewModel
         public event EventHandler<CompileErrorEventArgs>? CompileError;
         public event EventHandler<RuntimeErrorEventArgs>? RuntimeError;
 
-        private GridLength _logHeight = GridLength.Auto;
+        private GridLength _logHeight = new GridLength(40);
         public GridLength LogHeight
         {
             get => _logHeight;
