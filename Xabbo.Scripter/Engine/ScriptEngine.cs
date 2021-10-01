@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Reflection;
@@ -55,7 +54,10 @@ namespace Xabbo.Scripter.Engine
                 "Xabbo.Core"
             };
 
-            _referenceAssemblies = new() { typeof(object).Assembly, };
+            _referenceAssemblies = new() {
+                typeof(object).Assembly,
+                typeof(System.Windows.Media.Geometry).Assembly
+            };
         }
 
         public void Initialize()
