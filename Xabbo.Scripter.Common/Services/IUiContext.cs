@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Xabbo.Scripter.Services
 {
-    public interface IUIContext
+    public interface IUiContext
     {
         bool IsSynchronized { get; }
         void Invoke(Action callback);

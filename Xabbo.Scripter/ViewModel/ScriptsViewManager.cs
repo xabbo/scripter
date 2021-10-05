@@ -1,28 +1,26 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Threading;
 using System.Windows.Input;
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Dragablz;
 
 using Xabbo.Scripter.Model;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Engine;
-using Dragablz;
 using Xabbo.Scripter.Tabs;
 
 namespace Xabbo.Scripter.ViewModel
 {
     public class ScriptsViewManager : ObservableObject
     {
-        private readonly IUIContext _uiContext;
+        private readonly IUiContext _uiContext;
         private readonly ScriptEngine _engine;
 
         private int _currentScriptIndex = 0;
@@ -54,7 +52,7 @@ namespace Xabbo.Scripter.ViewModel
         public IInterTabClient InterTabClient { get; }
         public Func<object> NewItemFactory { get; }
 
-        public ScriptsViewManager(IUIContext uiContext, ScriptEngine engine)
+        public ScriptsViewManager(IUiContext uiContext, ScriptEngine engine)
         {
             InterTabClient = new ScripterInterTabClient(this);
 
@@ -91,7 +89,8 @@ namespace Xabbo.Scripter.ViewModel
 
         private void LoadScripts()
         {
-            DirectoryInfo directory = Directory.CreateDirectory("scripts");
+            DirectoryInfo directory = new(Engine.ScriptDirectory);
+            if (!directory.Exists) return;
 
             foreach (FileInfo file in directory.EnumerateFiles("*.csx", SearchOption.TopDirectoryOnly))
             {

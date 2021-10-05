@@ -16,6 +16,11 @@ namespace Xabbo.Scripter.Services
         bool CanExecute { get; }
 
         /// <summary>
+        /// Gets the UI context of the application.
+        /// </summary>
+        IUiContext UiContext { get; }
+
+        /// <summary>
         /// Provides an interface to the message manager.
         /// </summary>
         IMessageManager MessageManager { get; }

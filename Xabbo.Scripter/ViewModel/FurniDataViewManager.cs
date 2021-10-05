@@ -15,7 +15,7 @@ namespace Xabbo.Scripter.ViewModel
 {
     public class FurniDataViewManager : ObservableObject
     {
-        private readonly IUIContext _uiContext;
+        private readonly IUiContext _uiContext;
         private readonly IGameDataManager _gameDataManager;
 
         private ObservableCollection<FurniInfoViewModel> _furni = null!;
@@ -32,7 +32,7 @@ namespace Xabbo.Scripter.ViewModel
             }
         }
 
-        public FurniDataViewManager(IUIContext uiContext, IGameDataManager gameDataManager)
+        public FurniDataViewManager(IUiContext uiContext, IGameDataManager gameDataManager)
         {
             _uiContext = uiContext;
             _gameDataManager = gameDataManager;

@@ -91,7 +91,7 @@ namespace Xabbo.Scripter
             services.AddSingleton<IHostLifetime, WpfLifetime>();
             services.AddSingleton<Application>(this);
             services.AddSingleton<Window, MainWindow>();
-            services.AddSingleton<IUIContext, WpfContext>();
+            services.AddSingleton<IUiContext, WpfContext>();
             services.AddSingleton(Dispatcher);
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
 

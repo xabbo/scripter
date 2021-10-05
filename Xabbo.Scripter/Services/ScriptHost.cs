@@ -40,6 +40,8 @@ namespace Xabbo.Scripter.Services
             set => Set(ref _canExecute, value);
         }
 
+        public IUiContext UiContext { get; private set; }
+
         public IGameDataManager GameDataManager { get; private set; }
 
         public IGameManager GameManager { get; private set; }
@@ -58,6 +60,7 @@ namespace Xabbo.Scripter.Services
 
         public ScriptHost(
             IHostApplicationLifetime lifetime,
+            IUiContext uiContext,
             IMessageManager messageManager,
             IInterceptor interceptor,
             IGameDataManager gameDataManager,
@@ -77,6 +80,7 @@ namespace Xabbo.Scripter.Services
 
             _lifetime = lifetime;
 
+            UiContext = uiContext;
             MessageManager = messageManager;
             Interceptor = interceptor;
             GameDataManager = gameDataManager;

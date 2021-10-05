@@ -4,7 +4,7 @@ using System.Windows.Threading;
 
 namespace Xabbo.Scripter.Services
 {
-    public class WpfContext : IUIContext
+    public class WpfContext : IUiContext
     {
         public Dispatcher Dispatcher { get; }
 
