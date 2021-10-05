@@ -518,7 +518,7 @@ namespace Xabbo.Scripter.View
                 //Script.Engine.BaseDocumentId,
                 new DocumentCreationArgs(
                     e.TextContainer,
-                    Path.GetFullPath(Script.Engine.Directory),
+                    Path.GetFullPath(Script.Engine.ScriptDirectory),
                     e.ProcessDiagnostics
                 )
             );

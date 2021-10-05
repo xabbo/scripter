@@ -19,6 +19,7 @@ using RoslynPad.Roslyn;
 using Xabbo.Scripter.ViewModel;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Scripting;
+using Microsoft.Extensions.Configuration;
 
 namespace Xabbo.Scripter.Engine
 {
@@ -34,17 +35,23 @@ namespace Xabbo.Scripter.Engine
         private readonly List<string> _referenceAssemblyNames;
         private readonly List<Assembly> _referenceAssemblies;
 
-        public string Directory { get; }
+        public string ScriptDirectory { get; }
         public IScriptHost Host { get; }
         public RoslynHost RoslynHost { get; private set; } = null!;
         public ScriptOptions BaseScriptOptions { get; private set; }
 
-        public ScriptEngine(ILogger<ScriptEngine> logger, IScriptHost host)
+        public ScriptEngine(ILogger<ScriptEngine> logger, IConfiguration config, IScriptHost host)
         {
             _logger = logger;
             BaseScriptOptions = ScriptOptions.Default;
 
-            Directory = Path.GetFullPath("scripts");
+            ScriptDirectory = config.GetValue<string>("Scripter:ScriptDirectory");
+            ScriptDirectory = Environment.ExpandEnvironmentVariables(ScriptDirectory);
+            ScriptDirectory = Path.GetFullPath(ScriptDirectory);
+
+            if (!Directory.Exists(ScriptDirectory))
+                Directory.CreateDirectory(ScriptDirectory);
+
             Host = host;
 
             _referenceAssemblyNames = new()
@@ -73,7 +80,7 @@ namespace Xabbo.Scripter.Engine
                 .WithLanguageVersion(LanguageVersion.CSharp8)
                 .WithEmitDebugInformation(true)
                 .WithOptimizationLevel(OptimizationLevel.Debug)
-                .WithSourceResolver(new SourceFileResolver(new[] { "." }, Directory))
+                .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
                 // TODO : Metadata reference resolver
                 .WithReferences(_referenceAssemblies)
                 .WithImports(new[]
