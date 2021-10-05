@@ -5,9 +5,6 @@ using Xabbo.Scripter.ViewModel;
 
 namespace Xabbo.Scripter.View
 {
-    /// <summary>
-    /// Interaction logic for FurniDataView.xaml
-    /// </summary>
     public partial class FurniDataView : UserControl
     {
         public FurniDataView()

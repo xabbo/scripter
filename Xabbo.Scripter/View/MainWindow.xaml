@@ -87,8 +87,6 @@
                         <Setter Property="Padding" Value="4" />
                         <Setter Property="Width" Value="Auto" />
                         <Setter Property="Height" Value="Auto" />
-                        <Style.Resources>
-                        </Style.Resources>
                     </Style>
                 </TabControl.ItemContainerStyle>
                 <TabItem Header="{md:PackIcon Kind=Text, Size=24}">
