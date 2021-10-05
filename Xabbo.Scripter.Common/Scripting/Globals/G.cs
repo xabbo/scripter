@@ -49,9 +49,16 @@ namespace Xabbo.Scripter.Scripting
         private InventoryManager _inventoryManager => _scriptHost.GameManager.InventoryManager;
         private TradeManager _tradeManager => _scriptHost.GameManager.TradeManager;
 
+        /// <summary>
+        /// Gets the interceptor service.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IInterceptor Interceptor => _scriptHost.Interceptor;
-        public ClientType ClientType => Interceptor.Client;
+
+        /// <summary>
+        /// Gets the currently connected client type.
+        /// </summary>
+        public ClientType CurrentClient => Interceptor.Client;
 
         /// <summary>
         /// Gets the cancellation token which signals when the script has been
@@ -284,7 +291,7 @@ namespace Xabbo.Scripter.Scripting
                 header.Destination == destination;
         }
 
-        private bool CheckHeader(Header header) => header.GetClientHeader(ClientType) is not null;
+        private bool CheckHeader(Header header) => header.GetClientHeader(CurrentClient) is not null;
 
         private void AssertTargetHeaders(Destination destination, Header[] headers)
         {
@@ -302,7 +309,7 @@ namespace Xabbo.Scripter.Scripting
 
             var invalidHeaders = headers
                 .Where(header => !CheckHeader(header))
-                .Select(header => new Identifier(destination, header.GetName(ClientType) ?? ""))
+                .Select(header => new Identifier(destination, header.GetName(CurrentClient) ?? ""))
                 .ToArray();
 
             if (invalidHeaders.Any())
@@ -317,7 +324,7 @@ namespace Xabbo.Scripter.Scripting
 
         #region - Net -
         /// <summary>
-        /// Constructs a packet with the specified header and values, then sends it to the server.
+        /// Constructs a packet with the specified header and values, then sends it to the destination specified by the header.
         /// </summary>
         /// <param name="header">The header of the message to send.</param>
         /// <param name="values">The values to write to the packet.</param>
@@ -335,10 +342,17 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="headers">The message headers to listen for.</param>
         /// <param name="timeout">The time to wait for a packet to be captured.</param>
         /// <param name="block">Whether to block the captured packet.</param>
-        /// <returns>The first packet with a header that matches one of the specified headers.</returns>
+        /// <returns>The first packet captured with a header that matches one of the specified headers.</returns>
         public IReadOnlyPacket Receive(HeaderSet headers, int timeout = -1, bool block = false)
             => ReceiveAsync(headers, timeout, block).GetAwaiter().GetResult();
 
+        /// <summary>
+        /// Captures a packet with a header that matches any of the specified headers.
+        /// </summary>
+        /// <param name="tuple">The message headers to listen for.</param>
+        /// <param name="timeout">The time to wait for a packet to be captured.</param>
+        /// <param name="block">Whether to block the captured packet.</param>
+        /// <returns>The first packet captured with a header that matches one of the specified headers.</returns>
         public IReadOnlyPacket Receive(ITuple tuple, int timeout = -1, bool block = false)
         {
             return Receive(HeaderSet.FromTuple(tuple), timeout, block);
@@ -387,7 +401,7 @@ namespace Xabbo.Scripter.Scripting
         {
             lock (_intercepts)
             {
-                _dispatcher.AddIntercept(header, callback, ClientType);
+                _dispatcher.AddIntercept(header, callback, CurrentClient);
                 _intercepts.Add(new Intercept(Interceptor.Dispatcher, header, callback));
             }
         }
@@ -1039,7 +1053,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void PlaceFloorItem(long itemId, int x, int y, int dir = 0)
         {
-            if (ClientType == ClientType.Flash)
+            if (CurrentClient == ClientType.Flash)
             {
                 Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}");
             }
@@ -1064,7 +1078,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void PlaceWallItem(long itemId, WallLocation location)
         {
-            switch (ClientType)
+            switch (CurrentClient)
             {
                 case ClientType.Flash: Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
                 case ClientType.Unity: Send(Out.PlaceWallItem, itemId, location); break;
