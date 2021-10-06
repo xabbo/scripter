@@ -453,7 +453,7 @@ namespace Xabbo.Scripter.ViewModel
 
         public void Load()
         {
-            string filePath = Path.Combine("Scripts", FileName);
+            string filePath = Path.Combine(Engine.ScriptDirectory, FileName);
 
             Code = File.ReadAllText(filePath);
             UpdateHash();
