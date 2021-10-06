@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using System.Windows.Input;
@@ -43,6 +44,20 @@ namespace Xabbo.Scripter.ViewModel
         {
             get => selectedIndex;
             set => Set(ref selectedIndex, value);
+        }
+
+        private double fontSize = 12;
+        public double FontSize
+        {
+            get => fontSize;
+            set => Set(ref fontSize, value);
+        }
+
+        private GridLength _logHeight = new GridLength(60);
+        public GridLength LogHeight
+        {
+            get => _logHeight;
+            set => Set(ref _logHeight, value);
         }
 
         public ICommand OpenScriptListCommand { get; }

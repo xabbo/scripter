@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:view="clr-namespace:Xabbo.Scripter.View"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:controls="clr-namespace:Xabbo.Scripter.WPF.Controls"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -21,7 +22,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="0" />
                 <RowDefinition Height="4" />
-                <RowDefinition Height="{Binding LogHeight}" MinHeight="0" />
+                <RowDefinition Height="{Binding Path=DataContext.LogHeight, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}}" MinHeight="0" />
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
@@ -36,7 +37,8 @@
                     SyntaxHighlighting="C#"
                     ShowLineNumbers="True"
                     Background="Transparent"
-                    FontFamily="Fira Code,Hack,Consolas" FontSize="9pt"
+                    FontFamily="{StaticResource FontCode}"
+                    FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}, Mode=TwoWay}"
                     HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="{Binding IsRunning}"
                     IsModified="{Binding IsModified}"
