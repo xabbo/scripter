@@ -46,30 +46,7 @@
     <md:DialogHost>
         <md:DialogHost.Resources>
             <DataTemplate DataType="{x:Type viewModel:MessageBoxViewModel}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <UniformGrid Rows="1">
-                        <Button
-                            Content="{Binding CancelButtonText}"
-                            Visibility="{Binding ShowCancelButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
-                            CommandParameter="{Binding CancelResult}"
-                        />
-                        <Button
-                            Content="{Binding DeclineButtonText}"
-                            Visibility="{Binding ShowDeclineButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
-                            CommandParameter="{Binding DeclineResult}"
-                        />
-                        <Button
-                            Content="{Binding ConfirmButtonText}"
-                            Command="{x:Static md:DialogHost.CloseDialogCommand}"
-                        />
-                    </UniformGrid>
-                </Grid>
+                <view:MessageBoxView />
             </DataTemplate>
         </md:DialogHost.Resources>
         <Grid>
