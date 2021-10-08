@@ -120,6 +120,9 @@ namespace Xabbo.Scripter.Scripting
             Ct = _cts.Token;
         }
 
+        /// <summary>
+        /// Disposes of the globals class - cancels the script, deregisters intercept callbacks and unsubscribes from events.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             _cts.Cancel();
@@ -281,45 +284,6 @@ namespace Xabbo.Scripter.Scripting
         /// will be thrown when the script should no longer execute.
         /// </summary>
         public void RunTask(Action action) => Task.Run(action);
-        #endregion
-
-        #region - Assertion -
-        private static bool CheckDest(Destination destination, Header header)
-        {
-            return
-                header.Destination == Destination.Unknown ||
-                header.Destination == destination;
-        }
-
-        private bool CheckHeader(Header header) => header.GetClientHeader(CurrentClient) is not null;
-
-        private void AssertTargetHeaders(Destination destination, Header[] headers)
-        {
-            if (headers == null || headers.Length == 0)
-                throw new Exception("At least one target header must be specified.");
-
-            var incorrectDest = headers.Where(header => !CheckDest(destination, header));
-            if (incorrectDest.Any())
-            {
-                throw new Exception(
-                    $"Invalid {destination.ToDirection().ToString().ToLower()} target headers: " +
-                    string.Join(", ", incorrectDest) + "."
-                );
-            }
-
-            var invalidHeaders = headers
-                .Where(header => !CheckHeader(header))
-                .Select(header => new Identifier(destination, header.GetName(CurrentClient) ?? ""))
-                .ToArray();
-
-            if (invalidHeaders.Any())
-            {
-                throw new Exception(
-                    $"Unresolved/invalid target headers: " +
-                    new Identifiers(invalidHeaders).ToString()
-                );
-            }
-        }
         #endregion
 
         #region - Net -
@@ -644,9 +608,17 @@ namespace Xabbo.Scripter.Scripting
         #endregion
 
         #region - Client-side -
-        public void Info(string message) => ShowBubble(message, 34);
-
-        public void ShowBubble(string message, int bubble = 34, int index = -1)
+        /// <summary>
+        /// Shows a client-side chat bubble.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="index">
+        /// The index of the entity to display the chat bubble from.
+        /// If set to <c>-1</c>, this will attempt to use the user's own index.
+        /// </param>
+        /// <param name="bubble">The bubble style.</param>
+        /// <param name="type">The type of chat bubble to display.</param>
+        public void ShowBubble(string message, int index = -1, int bubble = 30, ChatType type = ChatType.Whisper)
         {
             if (index == -1) index = Self?.Index ?? -1;
 
@@ -701,14 +673,14 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sets the user's motto.
         /// </summary>
-        /// <param name="motto">The motto to set.</param>
+        /// <param name="motto">The new motto.</param>
         public void SetMotto(string motto) => Send(Out.ChangeAvatarMotto, motto);
 
         /// <summary>
         /// Sets the user's figure.
         /// </summary>
         /// <param name="figureString">The figure string.</param>
-        /// <param name="gender">The gender of the figrue.</param>
+        /// <param name="gender">The gender of the figure.</param>
         public void SetFigure(string figureString, Gender gender)
             => Send(Out.UpdateAvatar, gender.ToShortString(), figureString);
 
@@ -725,7 +697,7 @@ namespace Xabbo.Scripter.Scripting
         }
 
         /// <summary>
-        /// Gets the list of badges owned by the user.
+        /// Gets the user's badges.
         /// </summary>
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public List<Badge> GetBadges(int timeout = DEFAULT_TIMEOUT)
@@ -745,11 +717,12 @@ namespace Xabbo.Scripter.Scripting
             int n = packet.ReadInt();
             for (int i = 0; i < n; i++)
                 list.Add(GroupInfo.Parse(packet));
+
             return list;
         }
 
         /// <summary>
-        /// Gets the list of achievements of the user.
+        /// Gets the user's achievements.
         /// </summary>
         /// <param name="timeout">The time to wait for a response from the server.</param>
         public IAchievements GetAchievements(int timeout = DEFAULT_TIMEOUT)
@@ -788,35 +761,20 @@ namespace Xabbo.Scripter.Scripting
 
         #region - Rooms -
         /// <summary>
-        /// Ensures the user is in a room, and displays an error message
-        /// in the output log if the user is not in a room or has not re-entered
-        /// the room after opening the scripter.
-        /// </summary>
-        public void AssertRoom()
-        {
-            if (!IsInRoom)
-            {
-                throw new ScriptException(
-                    "This script requires you to be in a room. " +
-                    "If you opened the scripter after you entered a room " +
-                    "you will need to re-enter to initialize the room state."
-                );
-            }
-        }
-
-        /// <summary>
         /// Gets the data of the specified room.
         /// </summary>
         /// <param name="roomId">The ID of the room.</param>
         /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IRoomData GetRoomData(int roomId, int timeout = DEFAULT_TIMEOUT)
+        public IRoomData GetRoomData(long roomId, int timeout = DEFAULT_TIMEOUT)
             => new GetRoomDataTask(Interceptor, roomId).Execute(timeout, Ct);
 
         /// <summary>
         /// Sends a request to create a room with the specified parameters.
         /// </summary>
         public void CreateRoom(string name, string description, string model,
-            RoomCategory category, int maxUsers, TradePermissions trading)
+            RoomCategory category = RoomCategory.PersonalSpace,
+            int maxUsers = 50,
+            TradePermissions trading = TradePermissions.NotAllowed)
         {
             Send(
                 Out.CreateNewFlat,
@@ -831,7 +789,7 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="roomId">The ID of the room.</param>
         /// <param name="timeout">The time to wait for a response from the server.</param>
         /// <returns></returns>
-        public RoomSettings GetRoomSettings(int roomId, int timeout = DEFAULT_TIMEOUT) =>
+        public RoomSettings GetRoomSettings(long roomId, int timeout = DEFAULT_TIMEOUT) =>
             new GetRoomSettingsTask(Interceptor, roomId).Execute(timeout, Ct);
 
         /// <summary>
@@ -842,17 +800,21 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sends a request to delete a room with the specified ID.
         /// </summary>
-        public void DeleteRoom(long roomId) => Send(Out.DeleteFlat, roomId);
+        public void DeleteRoom(long roomId) => Send(Out.DeleteFlat, (LegacyLong)roomId);
 
         /// <summary>
-        /// Attempts to enter the room with the specified ID, and optionally, a password.
+        /// Attempts to enter the specified room.
         /// </summary>
         public RoomEntryResult EnsureEnterRoom(long roomId, string password = "", int timeout = DEFAULT_TIMEOUT)
             => new EnterRoomTask(Interceptor, roomId, password).Execute(timeout, Ct);
-            // => Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
 
         /// <summary>
-        /// Leaves the room.
+        /// Sends a request to enter the specified room.
+        /// </summary>
+        public void EnterRoom(long roomId, string password = "") => Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
+
+        /// <summary>
+        /// Sends a request to leave the room.
         /// </summary>
         public void LeaveRoom() => Send(Out.Quit);
 
@@ -907,17 +869,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void UseFurni(IFurni furni)
         {
-            if (furni.Type == ItemType.Floor)
+            switch (furni.Type)
             {
-                UseFloorItem(furni.Id);
-            }
-            else if (furni.Type == ItemType.Wall)
-            {
-                UseWallItem(furni.Id);
-            }
-            else
-            {
-                throw new Exception($"Unknown furni type: {furni.Type}");
+                case ItemType.Floor: UseFloorItem(furni.Id); break;
+                case ItemType.Wall: UseWallItem(furni.Id); break;
+                default: throw new Exception($"Unknown item type: {furni.Type}.");
             }
         }
 
@@ -936,13 +892,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void ToggleFurni(IFurni furni, int state)
         {
-            if (furni.Type == ItemType.Floor)
+            switch (furni.Type)
             {
-                ToggleFloorItem(furni.Id, state);
-            }
-            else if (furni.Type == ItemType.Wall)
-            {
-                ToggleWallItem(furni.Id, state);
+                case ItemType.Floor: ToggleFloorItem(furni.Id, state); break;
+                case ItemType.Wall: ToggleWallItem(furni.Id, state); break;
+                default: throw new Exception($"Unknown item type: {furni.Type}.");
             }
         }
 
@@ -982,7 +936,7 @@ namespace Xabbo.Scripter.Scripting
         public void Place(IInventoryItem item, int x, int y, int dir = 0)
         {
             if (item.Type != ItemType.Floor)
-                throw new InvalidOperationException("The item is not a floor item.");
+                throw new InvalidOperationException("The specified item is not a floor item.");
             PlaceFloorItem(item.ItemId, x, y, dir);
         }
 
@@ -1004,7 +958,7 @@ namespace Xabbo.Scripter.Scripting
         public void Place(IInventoryItem item, WallLocation location)
         {
             if (item.Type != ItemType.Wall)
-                throw new InvalidOperationException("Item is not a wall item.");
+                throw new InvalidOperationException("The specified item is not a wall item.");
             PlaceWallItem(item.ItemId, location);
         }
 
@@ -1038,13 +992,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void Pickup(IFurni furni)
         {
-            if (furni.Type == ItemType.Floor)
+            switch (furni.Type)
             {
-                PickupFloorItem(furni.Id);
-            }
-            else
-            {
-                PickupWallItem(furni.Id);
+                case ItemType.Floor: PickupFloorItem(furni.Id); break;
+                case ItemType.Wall: PickupWallItem(furni.Id); break;
+                default: throw new Exception($"Unknown item type: {furni.Type}.");
             }
         }
 
@@ -1053,13 +1005,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void PlaceFloorItem(long itemId, int x, int y, int dir = 0)
         {
-            if (CurrentClient == ClientType.Flash)
+            switch (CurrentClient)
             {
-                Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}");
-            }
-            else
-            {
-                Send(Out.PlaceRoomItem, itemId, x, y, dir);
+                case ClientType.Flash: Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}"); break;
+                case ClientType.Unity: Send(Out.PlaceRoomItem, itemId, x, y, dir); break;
+                default: throw new Exception("Unknown client protocol.");
             }
         }
 
@@ -1151,7 +1101,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Respects the specified user.
         /// </summary>
-        public void Respect(long userId) => Send(Out.RespectUser, userId);
+        public void Respect(long userId) => Send(Out.RespectUser, (LegacyLong)userId);
 
         /// <summary>
         /// Respects the specified user.
@@ -1161,7 +1111,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Scratches (or treats) the specified pet.
         /// </summary>
-        public void Scratch(long petId) => Send(Out.RespectPet, petId);
+        public void Scratch(long petId) => Send(Out.RespectPet, (LegacyLong)petId);
 
         /// <summary>
         /// Scratches (or treats) the specified pet.
@@ -1173,7 +1123,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         /// <param name="petId">The id of the pet to (dis)mount.</param>
         /// <param name="mount">Whether to mount or dismount.</param>
-        public void Ride(long petId, bool mount) => Send(Out.MountPet, petId, mount);
+        public void Ride(long petId, bool mount) => Send(Out.MountPet, (LegacyLong)petId, mount);
 
         /// <summary>
         /// Mounts or dismounts the specified pet.
@@ -1207,19 +1157,24 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Joins the group with the specified ID.
         /// </summary>
-        public void JoinGroup(long groupId) => Send(Out.JoinHabboGroup, groupId);
+        public void JoinGroup(long groupId) => Send(Out.JoinHabboGroup, (LegacyLong)groupId);
 
         /// <summary>
-        /// Leaves the group with the specified ID. <see cref="Feature.UserData"/> must be available.
+        /// Leaves the group with the specified ID.
         /// </summary>
-        [RequiredOut(nameof(Outgoing.KickMember))] // TODO RequiredFeature(Feature.UserData)
-        public void LeaveGroup(long groupId) => Send(Out.KickMember, groupId, UserId, false);
+        public void LeaveGroup(long groupId) => Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)UserId, false);
 
-        [RequiredOut(nameof(Outgoing.SelectFavouriteHabboGroup))]
-        public void SetGroupFavorite(long groupId) => Send(Out.SelectFavouriteHabboGroup, groupId);
+        /// <summary>
+        /// Sets the specified group as the user's favourite group.
+        /// </summary>
+        /// <param name="groupId">The ID of the group to set as the user's favourite.</param>
+        public void SetGroupFavourite(long groupId) => Send(Out.SelectFavouriteHabboGroup, groupId);
 
-        [RequiredOut(nameof(Outgoing.DeselectFavouriteHabboGroup))]
-        public void RemoveGroupFavorite(long groupId) => Send(Out.DeselectFavouriteHabboGroup, groupId);
+        /// <summary>
+        /// Unsets the specified group as the user's favourite group.
+        /// </summary>
+        /// <param name="groupId">The ID of the group to remove from the user's favourite.</param>
+        public void RemoveGroupFavourite(long groupId) => Send(Out.DeselectFavouriteHabboGroup, groupId);
 
         /// <summary>
         /// Gets the group information of the specified group.
@@ -1241,14 +1196,20 @@ namespace Xabbo.Scripter.Scripting
             GroupMemberSearchType searchType = GroupMemberSearchType.Members, int timeout = DEFAULT_TIMEOUT)
             => new GetGroupMembersTask(Interceptor, groupId, page, filter, searchType).Execute(timeout, Ct);
 
-        [RequiredOut(nameof(Outgoing.ApproveMembershipRequest))]
-        public void AcceptGroupMember(long groupId, long userId) => Send(Out.ApproveMembershipRequest, groupId, userId);
+        /// <summary>
+        /// Accepts a user into the specified group.
+        /// </summary>
+        public void AcceptGroupMember(long groupId, long userId) => Send(Out.ApproveMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
 
-        [RequiredOut(nameof(Outgoing.RejectMembershipRequest))]
-        public void DeclineGroupMember(long groupId, long userId) => Send(Out.RejectMembershipRequest, groupId, userId);
+        /// <summary>
+        /// Rejects a user from joining the specified group.
+        /// </summary>
+        public void RejectGroupMember(long groupId, long userId) => Send(Out.RejectMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
 
-        [RequiredOut(nameof(Outgoing.KickMember))]
-        public void RemoveGroupMember(long groupId, long userId) => Send(Out.KickMember, groupId, userId, false); // ?
+        /// <summary>
+        /// Kicks a user from the specified group.
+        /// </summary>
+        public void KickGroupMember(long groupId, long userId) => Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)userId, false);
         #endregion
 
         #region - Tasks -
@@ -1264,9 +1225,19 @@ namespace Xabbo.Scripter.Scripting
                 GetPetInfo(petId)
         */
 
+        /// <summary>
+        /// Searches for the specified user by name and returns the matching search result if it exists.
+        /// </summary>
+        /// <param name="name">The name of the user to search for.</param>
+        /// <param name="timeout">The time to wait for a response from the server.</param>
         public UserSearchResult? SearchUser(string name, int timeout = DEFAULT_TIMEOUT)
             => new SearchUserTask(Interceptor, name).Execute(timeout, Ct).GetResult(name);
 
+        /// <summary>
+        /// Searches for users by name and returns the results.
+        /// </summary>
+        /// <param name="name">The name of the user to search for.</param>
+        /// <param name="timeout">The time to wait for a response from the server.</param>
         public UserSearchResults SearchUsers(string name, int timeout = DEFAULT_TIMEOUT)
             => new SearchUserTask(Interceptor, name).Execute(timeout, Ct);
 
@@ -1275,7 +1246,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <param name="timeout">The time to wait for a response from the server.</param>
-        public IUserProfile GetProfile(int userId, int timeout = DEFAULT_TIMEOUT)
+        public IUserProfile GetProfile(long userId, int timeout = DEFAULT_TIMEOUT)
             => new GetProfileTask(Interceptor, userId).Execute(timeout, Ct);
         #endregion
 
