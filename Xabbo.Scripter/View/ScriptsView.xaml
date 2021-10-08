@@ -15,8 +15,8 @@
         <dragablz:TabablzControl
             x:Name="TabablzControl"
             ItemsSource="{Binding OpenTabs}"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-            SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+            SelectedItem="{Binding SelectedTabItem, Mode=TwoWay}"
+            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
             NewItemFactory="{Binding NewItemFactory, Mode=OneWay}"
             BorderThickness="0" ShowDefaultAddButton="True">
 
@@ -65,6 +65,7 @@
             <dragablz:TabablzControl.InputBindings>
                 <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
                 <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+                <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveScriptCommand}" />
             </dragablz:TabablzControl.InputBindings>
 
         </dragablz:TabablzControl>
@@ -74,7 +75,7 @@
                 <Style TargetType="{x:Type Grid}">
                     <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedIndex}" Value="-1">
+                        <DataTrigger Binding="{Binding SelectedTabIndex}" Value="-1">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>

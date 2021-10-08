@@ -8,8 +8,9 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Xabbo.Scripter</RootNamespace>
     <ApplicationIcon>Resources\xs.ico</ApplicationIcon>
-    <AssemblyVersion>0.3.1</AssemblyVersion>
-    <FileVersion>0.3.1</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <InformationalVersion>1.0.0-beta</InformationalVersion>
     <Configurations>Debug;Release;Develop</Configurations>
   </PropertyGroup>
 
@@ -39,6 +40,7 @@
   <!-- References -->
   <ItemGroup>
     <PackageReference Include="Dragablz" Version="0.0.3.223" />
+    <PackageReference Include="Humanizer.Core" Version="2.11.10" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
     <PackageReference Include="MaterialDesignExtensions" Version="3.3.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
@@ -47,6 +49,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="RoslynPad.Editor.Windows" Version="1.2.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
     <ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
   </ItemGroup>
 

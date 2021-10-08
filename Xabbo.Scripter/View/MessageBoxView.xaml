@@ -8,13 +8,19 @@
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="400"
+             MinWidth="200"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:MessageBoxViewModel}}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
+            <Setter Property="md:ButtonAssist.CornerRadius" Value="0" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Margin="4" Text="{Binding Message}" />
+        <TextBlock Grid.Row="0" Margin="16" Text="{Binding Message}" />
         <UniformGrid Grid.Row="1" Rows="1">
             <Button
                 Content="{Binding CancelButtonText}"
@@ -31,6 +37,7 @@
             <Button
                 Content="{Binding ConfirmButtonText}"
                 Command="{x:Static md:DialogHost.CloseDialogCommand}"
+                CommandParameter="{Binding ConfirmResult}"
             />
         </UniformGrid>
     </Grid>

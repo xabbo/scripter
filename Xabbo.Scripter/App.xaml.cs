@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using MaterialDesignThemes.Wpf;
+
 using Xabbo.Messages;
 using Xabbo.Interceptor;
 using Xabbo.GEarth;
@@ -21,7 +23,6 @@ using Xabbo.Core.Game;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.View;
 using Xabbo.Scripter.Engine;
-using System.IO;
 
 namespace Xabbo.Scripter
 {
@@ -94,10 +95,11 @@ namespace Xabbo.Scripter
             services.AddSingleton<IUiContext, WpfContext>();
             services.AddSingleton(Dispatcher);
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
+            services.AddSingleton<ISnackbarMessageQueue, SnackbarMessageQueue>();
 
             // Interceptor
             string interceptorService = context.Configuration.GetValue("Xabbo:Interceptor:Service", "G-Earth").ToLower();
-
+            
             switch (interceptorService)
             {
                 case "g-earth":

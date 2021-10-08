@@ -12,6 +12,8 @@ using Xabbo.Interceptor;
 
 using Xabbo.Scripter.Engine;
 using Xabbo.Scripter.Services;
+using System.Diagnostics;
+using MaterialDesignThemes.Wpf;
 
 namespace Xabbo.Scripter.ViewModel
 {
@@ -31,6 +33,8 @@ namespace Xabbo.Scripter.ViewModel
             set => Set(ref _title, value);
         }
 
+        public ISnackbarMessageQueue SnackbarMessageQueue { get; }
+
         public LogViewManager Log { get; }
         public ScriptsViewManager Scripts { get; }
         public ToolsViewManager Tools { get; }
@@ -49,6 +53,7 @@ namespace Xabbo.Scripter.ViewModel
 
         public MainViewManager(
             ILogger<MainViewManager> logger,
+            ISnackbarMessageQueue snackbarMessageQueue,
             ScriptEngine scriptEngine,
             IGameDataManager gameDataManager,
             IRemoteInterceptor interceptor,
@@ -58,14 +63,18 @@ namespace Xabbo.Scripter.ViewModel
             AboutViewManager about,
             StatusBarViewManager statusBar)
         {
-            Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+            string? version = Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion;
+
             if (version is not null)
-                Title += $" v{version.ToString(3)}";
+                Title += $" v{version}";
 #if DEBUG
             Title += " [DEBUG]";
 #endif
 
             _logger = logger;
+            SnackbarMessageQueue = snackbarMessageQueue;
 
             _scriptEngine = scriptEngine;
             _gameDataManager = gameDataManager;

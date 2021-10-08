@@ -26,5 +26,12 @@ namespace Xabbo.Scripter.View
 
             Manager.SelectScript(script);
         }
+
+        private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not DataGrid dataGrid) return;
+
+            Manager.SelectedItems = dataGrid.SelectedItems;
+        }
     }
 }

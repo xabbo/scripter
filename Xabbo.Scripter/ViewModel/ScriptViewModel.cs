@@ -17,8 +17,6 @@ using Xabbo.Scripter.Engine;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Events;
 using Xabbo.Scripter.Util;
-using System.Windows;
-using Microsoft.Win32;
 
 namespace Xabbo.Scripter.ViewModel
 {
@@ -257,7 +255,6 @@ namespace Xabbo.Scripter.ViewModel
 
         public ScriptRunner<object>? Runner { get; set; }
 
-        public ICommand SaveCommand { get; }
         public ICommand ExecuteCommand { get; }
         public ICommand CancelCommand { get; }
 
@@ -302,7 +299,6 @@ namespace Xabbo.Scripter.ViewModel
 
             _code = new StringBuilder();
 
-            SaveCommand = new RelayCommand(OnSave);
             ExecuteCommand = new RelayCommand(OnExecute);
             CancelCommand = new RelayCommand(OnCancel);
 
@@ -357,70 +353,6 @@ namespace Xabbo.Scripter.ViewModel
         {
             Task.Run(() => Engine.Run(this));
         }
-        
-        private void OnSave()
-        {
-            if (!IsLoaded) return;
-
-            try
-            {
-                if (IsModified)
-                {
-                    if (IsSavedToDisk)
-                    {
-                        Save();
-                    }
-                    else
-                    {
-                        SaveFileDialog dialog = new SaveFileDialog
-                        {
-                            Title = "Save script",
-                            OverwritePrompt = true,
-                            Filter = "C# script (.csx)|*.csx",
-                            AddExtension = true,
-                            FileName = FileName,
-                            InitialDirectory = Path.GetFullPath("scripts"),
-                            CheckPathExists = true,
-                            ValidateNames = true
-                        };
-
-                        if (dialog.ShowDialog() != true) return;
-
-                        string filePath = dialog.FileName;
-                        string directoryPath = Path.GetDirectoryName(filePath) ?? string.Empty;
-
-                        if (!string.Equals(directoryPath, Path.GetFullPath("scripts"), StringComparison.OrdinalIgnoreCase))
-                        {
-                            MessageBox.Show(
-                                "Scripts must be saved into the 'scripts' sub-folder.", "xabbo scripter",
-                                MessageBoxButton.OK, MessageBoxImage.Warning
-                            );
-                            return;
-                        }
-
-                        if (File.Exists(filePath))
-                        {
-                            MessageBox.Show(
-                                "A script with that file name already exists.", "xabbo scripter",
-                                MessageBoxButton.OK, MessageBoxImage.Warning
-                            );
-                            return;
-                        }
-
-                        FileName = Path.GetFileName(filePath);
-
-                        Save();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Failed to save file to disk: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error
-                );
-            }
-        }
 
         private void UpdateHash()
         {
@@ -434,7 +366,7 @@ namespace Xabbo.Scripter.ViewModel
             if (!IsLoaded)
                 throw new InvalidOperationException("Cannot save to disk; file is not loaded.");
 
-            string filePath = Path.Combine("scripts", FileName);
+            string filePath = Path.Combine(Engine.ScriptDirectory, FileName);
 
             UpdateHash();
             File.WriteAllText(filePath, Code);

@@ -43,10 +43,13 @@
         </DataTemplate>
     </mde:MaterialWindow.TitleTemplate>
     <!-- Main content -->
-    <md:DialogHost>
+    <md:DialogHost Identifier="Root">
         <md:DialogHost.Resources>
             <DataTemplate DataType="{x:Type viewModel:MessageBoxViewModel}">
                 <view:MessageBoxView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:TextInputModalViewModel}">
+                <view:TextInputModalView />
             </DataTemplate>
         </md:DialogHost.Resources>
         <Grid>
@@ -80,6 +83,11 @@
                 </TabItem>
             </TabControl>
             <view:StatusBar Grid.Row="1" DataContext="{Binding StatusBar}" />
+
+            <md:Snackbar
+                Margin="8"
+                MessageQueue="{Binding SnackbarMessageQueue}"
+            />
         </Grid>
     </md:DialogHost>
 </mde:MaterialWindow>

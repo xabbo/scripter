@@ -26,9 +26,13 @@
     </UserControl.Resources>
     <Grid>
         <DataGrid ItemsSource="{Binding Scripts}"
+                  SelectionChanged="DataGrid_SelectionChanged"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />
+            </DataGrid.InputBindings>
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="{x:Type DataGridRow}"
                        BasedOn="{StaticResource MaterialDesignDataGridRow}">
@@ -44,8 +48,7 @@
                 <md:DataGridTextColumn
                     Header="name" Width="180"
                     Binding="{Binding Name, Mode=OneWay}"
-                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                >
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}">
                     <md:DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}"
                                BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
@@ -123,57 +126,5 @@
                 />
             </DataGrid.Columns>
         </DataGrid>
-        <ListView Visibility="Hidden" x:Name="listViewScripts" ItemsSource="{Binding Scripts}">
-            <!--<ListView.Style>
-                <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListView}}">
-                    <Style.Resources>
-                        <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                            <Setter Property="Foreground" Value="Red" />
-                            <Setter Property="Background" Value="Orange" />
-                            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
-                        </Style>
-                    </Style.Resources>
-                </Style>
-            </ListView.Style>-->
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MaterialDesignGridViewItem}">
-                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.InputBindings>
-                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
-            </ListView.InputBindings>
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="name" Width="300">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}">
-                                        <TextBlock.ToolTip>
-                                            <TextBlock Text="{Binding FileName}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="status" Width="120">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding StatusText, FallbackValue='?'}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="runtime" Width="100">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Runtime, StringFormat=hh\\:mm\\:ss, FallbackValue='-'}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
     </Grid>
 </UserControl>
