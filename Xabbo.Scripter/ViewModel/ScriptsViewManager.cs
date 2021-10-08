@@ -41,6 +41,8 @@ namespace Xabbo.Scripter.ViewModel
 
         private readonly ObservableCollection<ScriptViewModel> _scripts;
 
+        private readonly Subject<FileSystemEventArgs> _fileUpdate = new();
+
         public ScriptEngine Engine => _engine;
         public ICollectionView Scripts { get; }
         public ObservableCollection<ScriptViewModel> OpenTabs { get; } = new();
@@ -56,7 +58,16 @@ namespace Xabbo.Scripter.ViewModel
         public int SelectedTabIndex
         {
             get => _selectedTabIndex;
-            set => Set(ref _selectedTabIndex, value);
+            set
+            {
+                if (Set(ref _selectedTabIndex, value))
+                {
+                    if (value == -1)
+                    {
+                        Scripts.Refresh();
+                    }
+                }
+            }
         }
 
         public IList SelectedItems { get; set; } = new List<ScriptViewModel>();
@@ -98,6 +109,9 @@ namespace Xabbo.Scripter.ViewModel
 
             _scripts = new ObservableCollection<ScriptViewModel>();
             Scripts = CollectionViewSource.GetDefaultView(_scripts);
+            Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Group), ListSortDirection.Ascending));
+            Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Name), ListSortDirection.Ascending));
+            Scripts.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ScriptViewModel.Group)));
 
             if (uiContext is WpfContext wpfContext)
             {
@@ -117,20 +131,19 @@ namespace Xabbo.Scripter.ViewModel
             SaveScriptCommand = new RelayCommand(SaveCurrentScript);
             DeleteSelectedScriptsCommand = new RelayCommand(DeleteSelectedScripts);
 
-            LoadScripts();
-
             NewItemFactory = () => CreateNewScript();
 
-            Subject<FileSystemEventArgs> fileUpdate = new();
-            fileUpdate
+            LoadScripts();
+
+            _fileUpdate
                 .AsObservable()
                 .Buffer(TimeSpan.FromMilliseconds(200))
                 .Subscribe(HandleFileChanges);
 
             _fsw = new FileSystemWatcher(Engine.ScriptDirectory, "*.csx");
-            _fsw.Created += (s, e) => fileUpdate.OnNext(e);
-            _fsw.Changed += (s, e) => fileUpdate.OnNext(e);
-            _fsw.Deleted += (s, e) => fileUpdate.OnNext(e);
+            _fsw.Created += (s, e) => _fileUpdate.OnNext(e);
+            _fsw.Changed += (s, e) => _fileUpdate.OnNext(e);
+            _fsw.Deleted += (s, e) => _fileUpdate.OnNext(e);
             _fsw.EnableRaisingEvents = true;
         }
 
@@ -163,7 +176,12 @@ namespace Xabbo.Scripter.ViewModel
                     if (match.Success)
                     {
                         model.Name = match.Groups["name"].Value;
-                        break;
+                    }
+
+                    match = ScriptEngine.GroupRegex.Match(line);
+                    if (match.Success)
+                    {
+                        model.Group = match.Groups["group"].Value;
                     }
                 }
 

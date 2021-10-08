@@ -70,8 +70,6 @@ namespace Xabbo.Scripter.View
 
         private void ScriptView_Loaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("ScriptView_Loaded");
-
             if (DataContext is ScriptViewModel viewModel)
             {
                 InitializeFromViewModel(viewModel);

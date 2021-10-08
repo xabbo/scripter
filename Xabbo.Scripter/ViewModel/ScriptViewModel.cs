@@ -105,6 +105,16 @@ namespace Xabbo.Scripter.ViewModel
                 {
                     Name = string.Empty;
                 }
+
+                match = ScriptEngine.GroupRegex.Match(value);
+                if (match.Success)
+                {
+                    Group = match.Groups["group"].Value;
+                }
+                else
+                {
+                    Group = string.Empty;
+                }
             }
         }
 

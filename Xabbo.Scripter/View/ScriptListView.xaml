@@ -14,6 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Purple.Named.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Amber.Named.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Red.Named.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Green.Named.xaml" />
@@ -29,7 +30,8 @@
                   SelectionChanged="DataGrid_SelectionChanged"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  CanUserDeleteRows="False">
+                  CanUserDeleteRows="False"
+                  md:DataGridAssist.CellPadding="6">
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />
             </DataGrid.InputBindings>
@@ -125,6 +127,57 @@
                     CanUserSort="False"
                 />
             </DataGrid.Columns>
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True"
+                                                  Margin="0,-1,0,0"
+                                                  Style="{StaticResource MaterialDesignExpander}"
+                                                  md:ExpanderAssist.HorizontalHeaderPadding="0"
+                                                  md:ExpanderAssist.VerticalHeaderPadding="0"
+                                                  md:ExpanderAssist.HeaderBackground="Transparent"
+                                                  BorderThickness="0,2,0,0">
+                                            <Expander.BorderBrush>
+                                                <SolidColorBrush Color="{StaticResource PurplePrimary700}" />
+                                            </Expander.BorderBrush>
+                                            <Expander.Header>
+                                                <md:Ripple HorizontalContentAlignment="Stretch">
+                                                    <TextBlock
+                                                        Margin="8"
+                                                        FontStyle="Italic"
+                                                        Text="{Binding Name}"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        HorizontalAlignment="Center"
+                                                        TextAlignment="Center"
+                                                    />
+                                                </md:Ripple>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Items[0].Group}" Value="">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Grid>
+                                                    <ItemsPresenter />
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
         </DataGrid>
     </Grid>
 </UserControl>

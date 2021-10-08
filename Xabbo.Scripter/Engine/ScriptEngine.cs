@@ -30,6 +30,11 @@ namespace Xabbo.Scripter.Engine
             RegexOptions.Multiline | RegexOptions.Compiled
         );
 
+        public static readonly Regex GroupRegex = new Regex(
+            @"^///\s*@group[^\S\n]+(?<group>\S.*?)[^\S\n]*$",
+            RegexOptions.Multiline | RegexOptions.Compiled
+        );
+
         private readonly ILogger _logger;
 
         private readonly List<string> _referenceAssemblyNames;
