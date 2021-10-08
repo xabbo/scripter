@@ -5,6 +5,17 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Xabbo.Scripter</RootNamespace>
     <Configurations>Debug;Release;Develop</Configurations>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <InformationalVersion>1.0.0-beta</InformationalVersion>
+  </PropertyGroup>
+  
+  <!-- Configurations -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,8 +33,8 @@
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Xabbo.Common" Version="1.0.0-alpha*" />
-    <PackageReference Include="Xabbo.Core" Version="1.0.0-alpha*" />
+    <PackageReference Include="Xabbo.Common" Version="1.0.0-beta*" />
+    <PackageReference Include="Xabbo.Core" Version="1.0.0-beta*" />
   </ItemGroup>
 
 </Project>
