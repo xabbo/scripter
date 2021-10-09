@@ -42,14 +42,14 @@ Send(In.Chat, -1, "hello, world", 0, 0, 0, 0);
 Receive and read from a packet:
 ```cs
 Send(Out.GetCredits);
-var p = Receive(5000, In.WalletBalance); // wait 5000ms to receive a packet with the WalletBalance header
+var p = Receive(In.WalletBalance, 5000); // wait 5000ms to receive a packet with the WalletBalance header
 p.ReadString() // returns the amount of credits in your wallet
 ```
 If the final statement in a script excludes the semicolon `;` it will become the return value and be output to the log.
 
 Packet deconstruction:
 ```cs
-var p = CaptureOut(-1, Out.Move); // capture an outgoing move packet, use -1 for no timeout
+var p = Receive(Out.Move); // capture an outgoing move packet, omit timout or use -1 for no timeout
 var (x, y) = p.Read<int, int>();
 Log($"Moving to {x}, {y}.");
 ```
@@ -163,7 +163,8 @@ var furni = Furni.First();
 string name = furni.GetName();
 Log($"Item name: {name}");
 var info = furni.GetInfo();
-Log(ToJson(info));
+
+return info;
 ```
 
 Enumerables of `IItem` can be filtered by a furni info:
@@ -173,7 +174,7 @@ Enumerables of `IItem` can be filtered by a furni info:
 // if another furni shares the same name
 var info = FurniData.FindFloorItem("Rubber Duck");
 int count = Furni.OfKind(info).Count();
-Log($"There are {count} {info.Name}'s in the room");
+Log($"There are {count} {info.Name}s in the room");
 ```
 
 Or a furni identifier:
@@ -226,6 +227,7 @@ string dir = $"photos/{Room.Id}";
 Directory.CreateDirectory(dir);
 var photos = WallItems.OfKind("external_image_wallitem_poster_small").ToArray();
 for (int i = 0; i < photos.Length; i++) {
+  Ct.ThrowIfCancellationRequested();
   string filePath = Path.Combine($"photos/{Room.Id}", $"{photos[i].Id}.png");
   if (File.Exists(filePath)) continue;
   Log($"Downloading {i+1}/{photos.Length}");
