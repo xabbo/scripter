@@ -12,6 +12,12 @@
              Background="{StaticResource MaterialDesignPaper}"
              TextElement.FontSize="16"
              TextElement.Foreground="{StaticResource MaterialDesignBody}">
+    <UserControl.Resources>
+        <Style x:Key="TextTrimmingStyle" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,8 +42,12 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   md:DataGridAssist.CellPadding="4">
             <DataGrid.Columns>
-                <md:DataGridTextColumn Header="name" Width="200" Binding="{Binding Name}" />
-                <md:DataGridTextColumn Header="identifier" Width="120" Binding="{Binding Identifier}" />
+                <md:DataGridTextColumn Header="name" Width="200" Binding="{Binding Name}"
+                                       ElementStyle="{StaticResource TextTrimmingStyle}" />
+                <md:DataGridTextColumn Header="identifier" Width="120" Binding="{Binding Identifier}"
+                                       TextElement.FontFamily="{StaticResource FontCode}"
+                                       TextElement.FontSize="10">
+                </md:DataGridTextColumn>
                 <DataGridTemplateColumn x:Name="ColumnTypeKind" Header="type/kind" Width="120"
                                         CopyingCellClipboardContent="DataGridTemplateColumn_CopyingCellClipboardContent">
                     <DataGridTemplateColumn.CellTemplate>
@@ -51,11 +61,14 @@
                 </DataGridTemplateColumn>
                 <md:DataGridTextColumn Header="line" Width="120" Binding="{Binding Line}"
                                        TextElement.FontFamily="{StaticResource FontCode}"
-                                       TextElement.FontSize="10" />
-                <md:DataGridTextColumn Header="category" Width="120" Binding="{Binding Category}" />
+                                       TextElement.FontSize="10"
+                                       ElementStyle="{StaticResource TextTrimmingStyle}" />
+                <md:DataGridTextColumn Header="category" Width="120" Binding="{Binding Category}"
+                                       ElementStyle="{StaticResource TextTrimmingStyle}" />
                 <md:DataGridTextColumn Header="category name" Width="120" Binding="{Binding CategoryName}"
                                        TextElement.FontFamily="{StaticResource FontCode}"
-                                       TextElement.FontSize="10" />
+                                       TextElement.FontSize="10"
+                                       ElementStyle="{StaticResource TextTrimmingStyle}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

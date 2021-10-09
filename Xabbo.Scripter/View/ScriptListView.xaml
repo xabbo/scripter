@@ -48,7 +48,7 @@
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
                 <md:DataGridTextColumn
-                    Header="name" Width="180"
+                    Header="name" Width="300"
                     Binding="{Binding Name, Mode=OneWay}"
                     EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}">
                     <md:DataGridTextColumn.ElementStyle>
@@ -149,7 +149,7 @@
                                                     <TextBlock
                                                         Margin="8"
                                                         FontStyle="Italic"
-                                                        Text="{Binding Name}"
+                                                        Text="{Binding Items/Group}"
                                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                         HorizontalAlignment="Center"
                                                         TextAlignment="Center"
@@ -162,7 +162,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Items[0].Group}" Value="">
+                                <DataTrigger Binding="{Binding Items/Group}" Value="">
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
