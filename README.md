@@ -7,6 +7,15 @@ A C# scripting interface for [G-Earth](https://github.com/sirjonasxx/G-Earth) po
 ![image](https://user-images.githubusercontent.com/58299468/132536592-c9da767c-6c70-4c44-8974-331d7b95eed9.png)
 
 ## Usage
+
+### Naming & grouping scripts
+To name scripts and sort them into groups within the script list,\
+use the following syntax at the top of the file:
+```cs
+/// @name Script name
+/// @group Group name
+```
+
 ### Accessing message headers
 `Out.Move` / `In.Talk`\
 Message names are based on the ones defined in the Unity client.\
