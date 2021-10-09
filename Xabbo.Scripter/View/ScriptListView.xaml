@@ -149,7 +149,7 @@
                                                     <TextBlock
                                                         Margin="8"
                                                         FontStyle="Italic"
-                                                        Text="{Binding Items/Group}"
+                                                        Text="{Binding Items[0].Group}"
                                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                         HorizontalAlignment="Center"
                                                         TextAlignment="Center"
@@ -162,7 +162,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Items/Group}" Value="">
+                                <DataTrigger Binding="{Binding Items[0].Group}" Value="">
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
