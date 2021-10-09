@@ -104,7 +104,8 @@ namespace Xabbo.Scripter
             {
                 case "g-earth":
                     services.AddSingleton(GEarthOptions.Default
-                        .WithTitle("xabbo scripter")
+                        .WithInformationalVersion()
+                        .WithName("xabbo scripter")
                         .WithDescription("C# scripting interface")
                         .WithAuthor("b7")
                         .WithConfiguration(context.Configuration)
