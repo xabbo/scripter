@@ -46,6 +46,11 @@ namespace Xabbo.Scripter.Services
         IJsonSerializer JsonSerializer { get; }
 
         /// <summary>
+        /// Provides an interface to an object formatter.
+        /// </summary>
+        IObjectFormatter ObjectFormatter { get; }
+
+        /// <summary>
         /// Provides the global variables for the scripts.
         /// </summary>
         GlobalVariables GlobalVariables { get; }

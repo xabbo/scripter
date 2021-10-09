@@ -54,9 +54,11 @@ namespace Xabbo.Scripter.Services
 
         IJsonSerializer IScriptHost.JsonSerializer => this;
 
-        public CancellationToken CancellationToken => _globalCts.Token;
+        public CancellationToken CancellationToken => _globalCts?.Token ?? CancellationToken.None;
 
         public Random Random => (_rngLocal ??= CreateRng());
+
+        public IObjectFormatter ObjectFormatter { get; } = new ObjectFormatter();
 
         public ScriptHost(
             IHostApplicationLifetime lifetime,

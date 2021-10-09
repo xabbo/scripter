@@ -45,7 +45,10 @@ namespace Xabbo.Scripter.Engine
         public RoslynHost RoslynHost { get; private set; } = null!;
         public ScriptOptions BaseScriptOptions { get; private set; }
 
-        public ScriptEngine(ILogger<ScriptEngine> logger, IConfiguration config, IScriptHost host)
+        public ScriptEngine(
+            ILogger<ScriptEngine> logger,
+            IConfiguration config,
+            IScriptHost host)
         {
             _logger = logger;
             BaseScriptOptions = ScriptOptions.Default;
@@ -207,7 +210,7 @@ namespace Xabbo.Scripter.Engine
 
                 if (result is not null)
                 {
-                    script.LogMessage(result.ToString() ?? "Execution complete.");
+                    script.LogMessage(Host.ObjectFormatter.FormatObject(result));
                 }
                 else
                 {
