@@ -48,7 +48,12 @@ namespace Xabbo.Scripter.ViewModel
 
         string GetAssemblyVersion(string assemblyName)
         {
-            return "v" + (Assembly.Load(assemblyName).GetName().Version?.ToString(3) ?? " unknown");
+            var asm = Assembly.Load(assemblyName);
+            var attr = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            if (attr is not null)
+                return $"v{attr.InformationalVersion}";
+            else
+                return "v" + (Assembly.Load(assemblyName).GetName().Version?.ToString(3) ?? " unknown");
         }
 
         public AboutViewManager()
