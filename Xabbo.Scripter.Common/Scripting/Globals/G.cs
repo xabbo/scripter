@@ -395,6 +395,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
         /// </summary>
+        public void OnIntercept(ITuple headers, Func<InterceptArgs, Task> callback)
+            => OnIntercept(HeaderSet.FromTuple(headers), callback);
+
+        /// <summary>
+        /// Registers a callback to be invoked when a packet with any of the specified headers is intercepted.
+        /// </summary>
         public void OnIntercept(HeaderSet headers, Func<InterceptArgs, Task> callback)
            => OnIntercept(headers, e => { callback(e); });
         #endregion
