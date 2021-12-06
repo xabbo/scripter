@@ -43,6 +43,8 @@ namespace Xabbo.Scripter.ViewModel
 
         private readonly Subject<FileSystemEventArgs> _fileUpdate = new();
 
+        private readonly Dictionary<string, ScriptGroupViewModel> _groups = new();
+
         public ScriptEngine Engine => _engine;
         public ICollectionView Scripts { get; }
         public ObservableCollection<ScriptViewModel> OpenTabs { get; } = new();
@@ -170,6 +172,8 @@ namespace Xabbo.Scripter.ViewModel
                     Name = Path.GetFileNameWithoutExtension(file.Name)
                 };
 
+                ScriptGroupViewModel? groupViewModel;
+
                 foreach (string line in File.ReadLines(file.FullName))
                 {
                     Match match = ScriptEngine.NameRegex.Match(line);
@@ -181,7 +185,10 @@ namespace Xabbo.Scripter.ViewModel
                     match = ScriptEngine.GroupRegex.Match(line);
                     if (match.Success)
                     {
-                        model.Group = match.Groups["group"].Value;
+                        string name = match.Groups["group"].Value;
+                        if (!_groups.TryGetValue(name, out groupViewModel))
+                            _groups[name] = new ScriptGroupViewModel() { Name = name };
+                        model.GroupName = name;
                     }
                 }
 

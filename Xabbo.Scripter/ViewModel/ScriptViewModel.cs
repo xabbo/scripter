@@ -60,11 +60,11 @@ namespace Xabbo.Scripter.ViewModel
 
         public string Group
         {
-            get => Model.Group;
+            get => Model.GroupName;
             set
             {
-                if (Model.Group == value) return;
-                Model.Group = value;
+                if (Model.GroupName == value) return;
+                Model.GroupName = value;
                 RaisePropertyChanged();
             }
         }
