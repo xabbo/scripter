@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -69,7 +70,10 @@ namespace Xabbo.Scripter.ViewModel
 
         private async Task InitializeAsync()
         {
-            FurniData furniData = await _gameDataManager.GetFurniDataAsync();
+            await _gameDataManager.WaitForLoadAsync(CancellationToken.None);
+
+            FurniData? furniData = _gameDataManager.Furni;
+            if (furniData is null) return;
 
             await _uiContext.InvokeAsync(() =>
             {

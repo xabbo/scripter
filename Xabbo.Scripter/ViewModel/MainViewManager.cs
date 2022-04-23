@@ -8,12 +8,12 @@ using Microsoft.Extensions.Logging;
 
 using GalaSoft.MvvmLight;
 
-using Xabbo.Interceptor;
-
-using Xabbo.Scripter.Engine;
-using Xabbo.Scripter.Services;
-using System.Diagnostics;
 using MaterialDesignThemes.Wpf;
+
+using Xabbo.Interceptor;
+using Xabbo.Core.GameData;
+using Xabbo.Scripter.Engine;
+using Xabbo.Core;
 
 namespace Xabbo.Scripter.ViewModel
 {
@@ -97,7 +97,7 @@ namespace Xabbo.Scripter.ViewModel
             try
             {
                 await Task.Run(() => _scriptEngine.Initialize(), cancellationToken).ConfigureAwait(false);
-                await _gameDataManager.UpdateAsync();
+                await _gameDataManager.LoadAsync(Hotel.FromIdentifier("us"), cancellationToken);
 
                 _logger.LogInformation($"xabbo scripter initialized.");
 

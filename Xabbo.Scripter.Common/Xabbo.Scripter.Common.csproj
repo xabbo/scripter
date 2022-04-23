@@ -22,19 +22,9 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj" />
     <ProjectReference Include="$(SolutionDir)\Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)'=='Develop'">
-    <PackageReference Include="Xabbo.Common" Version="1.0.0-dev" />
-    <PackageReference Include="Xabbo.Core" Version="1.0.0-dev" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Xabbo.Common" Version="1.0.0-beta*" />
-    <PackageReference Include="Xabbo.Core" Version="1.0.0-beta*" />
   </ItemGroup>
 
 </Project>

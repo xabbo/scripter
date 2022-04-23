@@ -11,6 +11,7 @@ using Xabbo.Messages;
 using Xabbo.Interceptor;
 
 using Xabbo.Scripter.Scripting;
+using Xabbo.Core.GameData;
 
 namespace Xabbo.Scripter.Services
 {

@@ -4,6 +4,8 @@ using System.Threading;
 using Xabbo.Messages;
 using Xabbo.Interceptor;
 
+using Xabbo.Core.GameData;
+
 using Xabbo.Scripter.Scripting;
 
 namespace Xabbo.Scripter.Services

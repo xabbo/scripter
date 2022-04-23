@@ -142,10 +142,16 @@ namespace Xabbo.Scripter.Engine
                 script.StartTime = null;
                 script.EndTime = null;
 
+                string scriptFileName = string.IsNullOrWhiteSpace(script.FileName) ? "<unknown>.csx" : script.FileName;
+                string filePath = Path.Combine(ScriptDirectory, scriptFileName);
+
+                if (File.Exists(filePath))
+                    filePath = Path.GetFullPath(filePath);
+
                 Script<object> csharpScript = CSharpScript.Create(
                     script.Code,
                     options: BaseScriptOptions
-                        .WithFilePath("script.csx")
+                        .WithFilePath(filePath)
                         .WithFileEncoding(Encoding.UTF8),
                     globalsType: typeof(G)
                 );

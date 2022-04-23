@@ -19,6 +19,7 @@ using Xabbo.Interceptor;
 using Xabbo.GEarth;
 
 using Xabbo.Core.Game;
+using Xabbo.Core.GameData;
 
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.View;

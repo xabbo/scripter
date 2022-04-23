@@ -89,22 +89,22 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Gets the figure data.
         /// </summary>
-        public FigureData FigureData => _scriptHost.GameDataManager.FigureData ?? throw new Exception("Figure data is unavailable.");
+        public FigureData FigureData => _scriptHost.GameDataManager.Figure ?? throw new Exception("Figure data is unavailable.");
 
         /// <summary>
         /// Gets the furni data.
         /// </summary>
-        public FurniData FurniData => _scriptHost.GameDataManager.FurniData ?? throw new Exception("Furni data is unavailable.");
+        public FurniData FurniData => _scriptHost.GameDataManager.Furni ?? throw new Exception("Furni data is unavailable.");
 
         /// <summary>
         /// Gets the product data.
         /// </summary>
-        public ProductData ProductData => _scriptHost.GameDataManager.ProductData ?? throw new Exception("Product data is unavailable.");
+        public ProductData ProductData => _scriptHost.GameDataManager.Products ?? throw new Exception("Product data is unavailable.");
 
         /// <summary>
         /// Gets the external texts.
         /// </summary>
-        public ExternalTexts Texts => _scriptHost.GameDataManager.ExternalTexts ?? throw new Exception("External texts are unavailable.");
+        public ExternalTexts Texts => _scriptHost.GameDataManager.Texts ?? throw new Exception("External texts are unavailable.");
 
         /// <summary>
         /// Gets the global variables of the scripter.
