@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xabbo.Interceptor;
 using Xabbo.Core;
 
 namespace Xabbo.Scripter.Scripting
@@ -14,13 +15,13 @@ namespace Xabbo.Scripter.Scripting
             switch (chatType)
             {
                 case ChatType.Talk:
-                    Send(Out.Chat, message, bubble, -1);
+                    Interceptor.Send(Out.Chat, message, bubble, -1);
                     break;
                 case ChatType.Shout:
-                    Send(Out.Shout, message, bubble);
+                    Interceptor.Send(Out.Shout, message, bubble);
                     break;
                 case ChatType.Whisper:
-                    Send(Out.Whisper, message, bubble, -1);
+                    Interceptor.Send(Out.Whisper, message, bubble, -1);
                     break;
                 default:
                     throw new Exception($"Unknown chat type: {chatType}.");

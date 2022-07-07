@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xabbo.Interceptor;
 using Xabbo.Core;
 using Xabbo.Core.GameData;
 using Xabbo.Core.Tasks;
@@ -78,7 +79,7 @@ namespace Xabbo.Scripter.Scripting
         /// </param>
         public void Purchase(int pageId, int offerId, int count = 1, string extra = "")
         {
-            Send(Out.PurchaseFromCatalog, pageId, offerId, extra, count);
+            Interceptor.Send(Out.PurchaseFromCatalog, pageId, offerId, extra, count);
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace Xabbo.Scripter.Scripting
 
             int pageId = offer.Page?.Id ?? throw new Exception("Failed to get page ID from catalog offer.");
 
-            Send(Out.PurchaseFromCatalogAsGift,
+            Interceptor.Send(Out.PurchaseFromCatalogAsGift,
                 pageId, offer.Id, extra,
                 recipient, message,
                 giftInfo.Kind, (int)box, (int)decor,

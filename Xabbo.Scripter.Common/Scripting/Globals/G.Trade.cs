@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Xabbo.Messages;
+using Xabbo.Interceptor;
 using Xabbo.Core;
 using Xabbo.Core.Events;
 
@@ -54,7 +55,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Trades the user with the specified index.
         /// </summary>
-        public void Trade(int userIndex) => Send(Out.TradeOpen, userIndex);
+        public void Trade(int userIndex) => Interceptor.Send(Out.TradeOpen, userIndex);
 
         /// <summary>
         /// Offers the specified inventory item in the trade.
@@ -64,7 +65,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the item with the specified item ID in the trade.
         /// </summary>
-        public void Offer(long itemId) => Send(Out.TradeAddItem, (LegacyLong)itemId);
+        public void Offer(long itemId) => Interceptor.Send(Out.TradeAddItem, (LegacyLong)itemId);
 
         /// <summary>
         /// Offers the specified inventory items in the trade.
@@ -74,7 +75,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the items with the specified item IDs in the trade.
         /// </summary>
-        public void Offer(IEnumerable<long> itemIds) => Send(Out.TradeAddItems, itemIds.Cast<LegacyLong>());
+        public void Offer(IEnumerable<long> itemIds) => Interceptor.Send(Out.TradeAddItems, itemIds.Cast<LegacyLong>());
 
         /// <summary>
         /// Cancels the offer for the specified item in the trade.
@@ -84,22 +85,22 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Cancels the offer for the item with the specified item ID in the trade.
         /// </summary>
-        public void CancelOffer(long itemId) => Send(Out.TradeRemoveItem, itemId);
+        public void CancelOffer(long itemId) => Interceptor.Send(Out.TradeRemoveItem, itemId);
 
         /// <summary>
         /// Cancels the trade.
         /// </summary>
-        public void CancelTrade() => Send(Out.TradeClose);
+        public void CancelTrade() => Interceptor.Send(Out.TradeClose);
 
         /// <summary>
         /// Accepts the trade.
         /// </summary>
-        public void AcceptTrade() => Send(Out.TradeAccept);
+        public void AcceptTrade() => Interceptor.Send(Out.TradeAccept);
 
         /// <summary>
         /// Confirms the trade.
         /// </summary>
-        public void ConfirmTrade() => Send(Out.TradeConfirmAccept);
+        public void ConfirmTrade() => Interceptor.Send(Out.TradeConfirmAccept);
 
         /// <summary>
         /// Registers a callback that is invoked when a trade is started.

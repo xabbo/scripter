@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xabbo.Interceptor;
 using Xabbo.Core;
 
 namespace Xabbo.Scripter.Scripting
@@ -9,7 +10,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Makes the user perform the specified action.
         /// </summary>
-        public void Action(int action) => Send(Out.Expression, action);
+        public void Action(int action) => Interceptor.Send(Out.Expression, action);
 
         /// <summary>
         /// Makes the user perform the specified action.
@@ -40,22 +41,22 @@ namespace Xabbo.Scripter.Scripting
         /// Makes the user sit if <c>true</c>, or stand if <c>false</c> is passed in.
         /// </summary>
         /// <param name="sit"><c>true</c> to sit, or <c>false</c> to stand.</param>
-        public void Sit(bool sit) => Send(Out.Posture, sit ? 1 : 0);
+        public void Sit(bool sit) => Interceptor.Send(Out.Posture, sit ? 1 : 0);
 
         /// <summary>
         /// Makes the user sit.
         /// </summary>
-        public void Sit() => Send(Out.Posture, 1);
+        public void Sit() => Interceptor.Send(Out.Posture, 1);
 
         /// <summary>
         /// Makes the user stand.
         /// </summary>
-        public void Stand() => Send(Out.Posture, 0);
+        public void Stand() => Interceptor.Send(Out.Posture, 0);
 
         /// <summary>
         /// Makes the user show the specified sign.
         /// </summary>
-        public void Sign(int sign) => Send(Out.ShowSign, sign);
+        public void Sign(int sign) => Interceptor.Send(Out.ShowSign, sign);
 
         /// <summary>
         /// Makes the user show the specified sign.
@@ -65,7 +66,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Makes the user perform the specfied dance.
         /// </summary>
-        public void Dance(int dance) => Send(Out.Dance, dance);
+        public void Dance(int dance) => Interceptor.Send(Out.Dance, dance);
 
         /// <summary>
         /// Makes the user perform the specfied dance.

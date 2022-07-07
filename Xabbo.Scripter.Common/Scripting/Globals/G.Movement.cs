@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xabbo.Interceptor;
 using Xabbo.Core;
 
 namespace Xabbo.Scripter.Scripting
@@ -9,7 +10,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Moves to the specified location.
         /// </summary>
-        public void Move(int x, int y) => Send(Out.Move, x, y);
+        public void Move(int x, int y) => Interceptor.Send(Out.Move, x, y);
 
         /// <summary>
         /// Moves to the specified location.
@@ -24,7 +25,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Makes the user look to the specified location.
         /// </summary>
-        public void LookTo(int x, int y) => Send(Out.LookTo, x, y);
+        public void LookTo(int x, int y) => Interceptor.Send(Out.LookTo, x, y);
 
         /// <summary>
         /// Makes the user look to the specified location.

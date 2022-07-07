@@ -20,6 +20,7 @@ using Xabbo.Core.Tasks;
 using Xabbo.Scripter.Runtime;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Tasks;
+using Xabbo.Common;
 
 namespace Xabbo.Scripter.Scripting
 {
@@ -287,13 +288,6 @@ namespace Xabbo.Scripter.Scripting
         #endregion
 
         #region - Net -
-        /// <summary>
-        /// Constructs a packet with the specified header and values, then sends it to the destination specified by the header.
-        /// </summary>
-        /// <param name="header">The header of the message to send.</param>
-        /// <param name="values">The values to write to the packet.</param>
-        public void Send(Header header, params object[] values) => Send(Packet.Compose(Interceptor.Client, header, values));
-
         /// <summary>
         /// Sends the specified packet to the client or server.
         /// </summary>
@@ -628,7 +622,7 @@ namespace Xabbo.Scripter.Scripting
         {
             if (index == -1) index = Self?.Index ?? -1;
 
-            Send(In.Whisper, index, message, 0, bubble, 0, 0);
+            Interceptor.Send(In.Whisper, index, message, 0, bubble, 0, 0);
         }
         #endregion
 
@@ -680,7 +674,7 @@ namespace Xabbo.Scripter.Scripting
         /// Sets the user's motto.
         /// </summary>
         /// <param name="motto">The new motto.</param>
-        public void SetMotto(string motto) => Send(Out.ChangeAvatarMotto, motto);
+        public void SetMotto(string motto) => Interceptor.Send(Out.ChangeAvatarMotto, motto);
 
         /// <summary>
         /// Sets the user's figure.
@@ -688,7 +682,7 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="figureString">The figure string.</param>
         /// <param name="gender">The gender of the figure.</param>
         public void SetFigure(string figureString, Gender gender)
-            => Send(Out.UpdateAvatar, gender.ToShortString(), figureString);
+            => Interceptor.Send(Out.UpdateAvatar, gender.ToShortString(), figureString);
 
         /// <summary>
         /// Sets the user's figure, inferring the gender from the figure string.
@@ -716,7 +710,7 @@ namespace Xabbo.Scripter.Scripting
         public List<GroupInfo> GetGroups(int timeout = DEFAULT_TIMEOUT)
         {
             var receiveTask = ReceiveAsync(In.GuildMemberships, timeout);
-            Send(Out.GetGuildMemberships);
+            Interceptor.Send(Out.GetGuildMemberships);
             var packet = receiveTask.GetAwaiter().GetResult();
 
             var list = new List<GroupInfo>();
@@ -782,7 +776,7 @@ namespace Xabbo.Scripter.Scripting
             int maxUsers = 50,
             TradePermissions trading = TradePermissions.NotAllowed)
         {
-            Send(
+            Interceptor.Send(
                 Out.CreateNewFlat,
                 name, description, model,
                 (int)category, maxUsers, (int)trading
@@ -801,12 +795,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Saves the specified room settings.
         /// </summary>
-        public void SaveRoomSettings(RoomSettings settings) => Send(Out.SaveRoomSettings, settings);
+        public void SaveRoomSettings(RoomSettings settings) => Interceptor.Send(Out.SaveRoomSettings, settings);
 
         /// <summary>
         /// Sends a request to delete a room with the specified ID.
         /// </summary>
-        public void DeleteRoom(long roomId) => Send(Out.DeleteFlat, (LegacyLong)roomId);
+        public void DeleteRoom(long roomId) => Interceptor.Send(Out.DeleteFlat, (LegacyLong)roomId);
 
         /// <summary>
         /// Attempts to enter the specified room.
@@ -817,12 +811,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sends a request to enter the specified room.
         /// </summary>
-        public void EnterRoom(long roomId, string password = "") => Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
+        public void EnterRoom(long roomId, string password = "") => Interceptor.Send(Out.FlatOpc, (LegacyLong)roomId, password, 0, -1, -1);
 
         /// <summary>
         /// Sends a request to leave the room.
         /// </summary>
-        public void LeaveRoom() => Send(Out.Quit);
+        public void LeaveRoom() => Interceptor.Send(Out.Quit);
 
         /// <summary>
         /// Gets the list of users with rights to the current room.
@@ -909,17 +903,17 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Toggles the state of the specified floor item.
         /// </summary>
-        public void ToggleFloorItem(long itemId, int state) => Send(Out.UseStuff, (LegacyLong)itemId, state);
+        public void ToggleFloorItem(long itemId, int state) => Interceptor.Send(Out.UseStuff, (LegacyLong)itemId, state);
 
         /// <summary>
         /// Toggles the state of the specified wall item.
         /// </summary>
-        public void ToggleWallItem(long itemId, int state) => Send(Out.UseWallItem, (LegacyLong)itemId, state);
+        public void ToggleWallItem(long itemId, int state) => Interceptor.Send(Out.UseWallItem, (LegacyLong)itemId, state);
 
         /// <summary>
         /// Uses the specified one-way gate.
         /// </summary>
-        public void UseGate(long itemId) => Send(Out.EnterOneWayDoor, (LegacyLong)itemId);
+        public void UseGate(long itemId) => Interceptor.Send(Out.EnterOneWayDoor, (LegacyLong)itemId);
 
         /// <summary>
         /// Uses the specified one-way gate.
@@ -934,7 +928,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Deletes the specified wall item. Used for stickies, photos.
         /// </summary>
-        public void DeleteWallItem(long itemId) => Send(Out.RemoveItem, (LegacyLong)itemId);
+        public void DeleteWallItem(long itemId) => Interceptor.Send(Out.RemoveItem, (LegacyLong)itemId);
 
         /// <summary>
         /// Places a floor item at the specified location.
@@ -1013,8 +1007,8 @@ namespace Xabbo.Scripter.Scripting
         {
             switch (CurrentClient)
             {
-                case ClientType.Flash: Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}"); break;
-                case ClientType.Unity: Send(Out.PlaceRoomItem, itemId, x, y, dir); break;
+                case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}"); break;
+                case ClientType.Unity: Interceptor.Send(Out.PlaceRoomItem, itemId, x, y, dir); break;
                 default: throw new Exception("Unknown client protocol.");
             }
         }
@@ -1022,12 +1016,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Moves a floor item to the specified location.
         /// </summary>
-        public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Send(Out.MoveRoomItem, (LegacyLong)itemId, x, y, dir);
+        public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, (LegacyLong)itemId, x, y, dir);
 
         /// <summary>
         /// Picks up the specified floor item.
         /// </summary>
-        public void PickupFloorItem(long itemId) => Send(Out.PickItemUpFromRoom, 2, (LegacyLong)itemId);
+        public void PickupFloorItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 2, (LegacyLong)itemId);
 
         /// <summary>
         /// Places a wall item at the specified location.
@@ -1036,8 +1030,8 @@ namespace Xabbo.Scripter.Scripting
         {
             switch (CurrentClient)
             {
-                case ClientType.Flash: Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
-                case ClientType.Unity: Send(Out.PlaceWallItem, itemId, location); break;
+                case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
+                case ClientType.Unity: Interceptor.Send(Out.PlaceWallItem, itemId, location); break;
                 default: throw new Exception("Unknown client protocol.");
             }
         }
@@ -1050,7 +1044,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Moves a wall item to the specified location.
         /// </summary>
-        public void MoveWallItem(long itemId, WallLocation location) => Send(Out.MoveWallItem, (LegacyLong)itemId, location);
+        public void MoveWallItem(long itemId, WallLocation location) => Interceptor.Send(Out.MoveWallItem, (LegacyLong)itemId, location);
 
         /// <summary>
         /// Moves a wall item to the specified location.
@@ -1060,7 +1054,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Picks up the specified wall item.
         /// </summary>
-        public void PickupWallItem(long itemId) => Send(Out.PickItemUpFromRoom, 1, (LegacyLong)itemId);
+        public void PickupWallItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 1, (LegacyLong)itemId);
 
         /// <summary>
         /// Updates the stack tile to the specified height.
@@ -1070,7 +1064,7 @@ namespace Xabbo.Scripter.Scripting
         /// Updates the stack tile to the specified height.
         /// </summary>
         public void UpdateStackTile(long stackTileId, double height)
-            => Send(Out.StackingHelperSetCaretHeight, (LegacyLong)stackTileId, (int)Math.Round(height * 100.0));
+            => Interceptor.Send(Out.StackingHelperSetCaretHeight, (LegacyLong)stackTileId, (int)Math.Round(height * 100.0));
         #endregion
 
         #region - Entity interaction -
@@ -1082,7 +1076,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Ignores the specified user.
         /// </summary>
-        public void Ignore(string name) => Send(Out.IgnoreUser, name);
+        public void Ignore(string name) => Interceptor.Send(Out.IgnoreUser, name);
 
         /// <summary>
         /// Unignores the specified user.
@@ -1092,7 +1086,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Unignores the specified user.
         /// </summary>
-        public void Unignore(string name) => Send(Out.UnignoreUser, name);
+        public void Unignore(string name) => Interceptor.Send(Out.UnignoreUser, name);
 
         /// <summary>
         /// Sends a friend request to the specified user.
@@ -1102,12 +1096,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sends a friend request to the specified user.
         /// </summary>
-        public void FriendRequest(string name) => Send(Out.RequestFriend, name);
+        public void FriendRequest(string name) => Interceptor.Send(Out.RequestFriend, name);
 
         /// <summary>
         /// Respects the specified user.
         /// </summary>
-        public void Respect(long userId) => Send(Out.RespectUser, (LegacyLong)userId);
+        public void Respect(long userId) => Interceptor.Send(Out.RespectUser, (LegacyLong)userId);
 
         /// <summary>
         /// Respects the specified user.
@@ -1117,7 +1111,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Scratches (or treats) the specified pet.
         /// </summary>
-        public void Scratch(long petId) => Send(Out.RespectPet, (LegacyLong)petId);
+        public void Scratch(long petId) => Interceptor.Send(Out.RespectPet, (LegacyLong)petId);
 
         /// <summary>
         /// Scratches (or treats) the specified pet.
@@ -1129,7 +1123,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         /// <param name="petId">The id of the pet to (dis)mount.</param>
         /// <param name="mount">Whether to mount or dismount.</param>
-        public void Ride(long petId, bool mount) => Send(Out.MountPet, (LegacyLong)petId, mount);
+        public void Ride(long petId, bool mount) => Interceptor.Send(Out.MountPet, (LegacyLong)petId, mount);
 
         /// <summary>
         /// Mounts or dismounts the specified pet.
@@ -1163,24 +1157,24 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Joins the group with the specified ID.
         /// </summary>
-        public void JoinGroup(long groupId) => Send(Out.JoinHabboGroup, (LegacyLong)groupId);
+        public void JoinGroup(long groupId) => Interceptor.Send(Out.JoinHabboGroup, (LegacyLong)groupId);
 
         /// <summary>
         /// Leaves the group with the specified ID.
         /// </summary>
-        public void LeaveGroup(long groupId) => Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)UserId, false);
+        public void LeaveGroup(long groupId) => Interceptor.Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)UserId, false);
 
         /// <summary>
         /// Sets the specified group as the user's favourite group.
         /// </summary>
         /// <param name="groupId">The ID of the group to set as the user's favourite.</param>
-        public void SetGroupFavourite(long groupId) => Send(Out.SelectFavouriteHabboGroup, groupId);
+        public void SetGroupFavourite(long groupId) => Interceptor.Send(Out.SelectFavouriteHabboGroup, groupId);
 
         /// <summary>
         /// Unsets the specified group as the user's favourite group.
         /// </summary>
         /// <param name="groupId">The ID of the group to remove from the user's favourite.</param>
-        public void RemoveGroupFavourite(long groupId) => Send(Out.DeselectFavouriteHabboGroup, groupId);
+        public void RemoveGroupFavourite(long groupId) => Interceptor.Send(Out.DeselectFavouriteHabboGroup, groupId);
 
         /// <summary>
         /// Gets the group information of the specified group.
@@ -1205,17 +1199,17 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Accepts a user into the specified group.
         /// </summary>
-        public void AcceptGroupMember(long groupId, long userId) => Send(Out.ApproveMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
+        public void AcceptGroupMember(long groupId, long userId) => Interceptor.Send(Out.ApproveMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
 
         /// <summary>
         /// Rejects a user from joining the specified group.
         /// </summary>
-        public void RejectGroupMember(long groupId, long userId) => Send(Out.RejectMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
+        public void RejectGroupMember(long groupId, long userId) => Interceptor.Send(Out.RejectMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
 
         /// <summary>
         /// Kicks a user from the specified group.
         /// </summary>
-        public void KickGroupMember(long groupId, long userId) => Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)userId, false);
+        public void KickGroupMember(long groupId, long userId) => Interceptor.Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)userId, false);
         #endregion
 
         #region - Tasks -

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xabbo.Core;
+
 using Xabbo.Messages;
+using Xabbo.Interceptor;
+using Xabbo.Core;
 
 namespace Xabbo.Scripter.Scripting
 {
@@ -38,7 +38,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Accepts friend requests from the specified users.
         /// </summary>
-        public void AcceptFriendRequests(IEnumerable<long> userIds) => Send(Out.AcceptFriend, userIds.Cast<LegacyLong>());
+        public void AcceptFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.AcceptFriend, userIds.Cast<LegacyLong>());
 
         /// <summary>
         /// Accepts friend requests from the specified users.
@@ -48,7 +48,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Declines friend requests from the specified users.
         /// </summary>
-        public void DeclineFriendRequests(IEnumerable<long> userIds) => Send(Out.DeclineFriend, false, userIds.Cast<LegacyLong>());
+        public void DeclineFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.DeclineFriend, false, userIds.Cast<LegacyLong>());
 
         /// <summary>
         /// Declines friend requests from the specified users.
@@ -63,12 +63,12 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Declines all incoming friend requests.
         /// </summary>
-        public void DeclineAllFriendRequests() => Send(Out.DeclineFriend, true, 0);
+        public void DeclineAllFriendRequests() => Interceptor.Send(Out.DeclineFriend, true, 0);
 
         /// <summary>
         /// Sends a friend request to the specified user.
         /// </summary>
-        public void AddFriend(string name) => Send(Out.RequestFriend, name);
+        public void AddFriend(string name) => Interceptor.Send(Out.RequestFriend, name);
 
         /// <summary>
         /// Sends a friend request to the specified user.
@@ -83,11 +83,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Removes the specified users from the user's friend list.
         /// </summary>
-        public void RemoveFriends(params long[] userIds) => Send(Out.RemoveFriend, userIds);
+        public void RemoveFriends(params long[] userIds) => Interceptor.Send(Out.RemoveFriend, userIds);
 
         /// <summary>
         /// Sends a private message to a friend with the specified ID.
         /// </summary>
-        public void SendMessage(long userId, string message) => Send(Out.SendMessage, userId, message);
+        public void SendMessage(long userId, string message) => Interceptor.Send(Out.SendMessage, userId, message);
     }
 }
