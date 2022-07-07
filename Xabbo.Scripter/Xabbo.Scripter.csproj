@@ -3,14 +3,14 @@
   <!-- Project -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <RootNamespace>Xabbo.Scripter</RootNamespace>
     <ApplicationIcon>Resources\xs.ico</ApplicationIcon>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0-beta</InformationalVersion>
+    <InformationalVersion>1.0.0-beta.2</InformationalVersion>
     <Configurations>Debug;Release;Develop</Configurations>
   </PropertyGroup>
 
@@ -50,6 +50,7 @@
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="RoslynPad.Editor.Windows" Version="1.2.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="WPF-UI" Version="2.0.1" />
     <ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
   </ItemGroup>
 
