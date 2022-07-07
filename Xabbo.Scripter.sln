@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter", "Xabbo.Scripter\Xabbo.Scripter.csproj", "{21D81F9D-B741-4047-9B67-88ACBD9E3436}"
 EndProject
@@ -19,6 +19,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Core", "Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj", "{1B39D5C9-BE71-42B5-8993-7595089F3F8C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.GEarth", "Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj", "{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common.SourceGen", "Xabbo.Scripter.SourceGeneration\Xabbo.Scripter.Common.SourceGen.csproj", "{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xabbo.Scripter.Core", "Xabbo.Scripter.Core\Xabbo.Scripter.Core.csproj", "{93C93848-3D21-4816-9277-5B421CEAFAA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,18 @@ Global
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Develop|Any CPU.Build.0 = Develop|Any CPU
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
