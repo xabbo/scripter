@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Xabbo.Scripter"
              xmlns:converters="clr-namespace:Xabbo.Scripter.WPF.Converters"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -11,63 +12,14 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <md:BundledTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Yellow" />
+                <ui:Resources Theme="Dark" />
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/MaterialDesign.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Purple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Orange.xaml" />
 
-            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type DataGridColumnHeader}"
-                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
-                        <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
-                    </Style>
-                    <Style TargetType="{x:Type DataGridCell}"
-                           BasedOn="{StaticResource MaterialDesignDataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid Background="{TemplateBinding Background}">
-                                        <ContentPresenter
-                                            Margin="{Binding Path=(md:DataGridAssist.CellPadding), RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                            VerticalAlignment="Center"
-                                        />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis" />
-                    </Style>
-                </Style.Resources>
-                <Setter Property="AutoGenerateColumns" Value="False" />
-                <Setter Property="CanUserAddRows" Value="False" />
-                <Setter Property="CanUserDeleteRows" Value="False" />
-                <Setter Property="SelectionMode" Value="Extended" />
-                <Setter Property="SelectionUnit" Value="FullRow" />
-                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="4" />
-                <Setter Property="md:DataGridAssist.CellPadding" Value="4" />
-            </Style>
-            
-            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
-                        <Style.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
-                            </Style>
-                        </Style.Resources>
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                </Style.Resources>
-                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="2" />
-                <Setter Property="md:ListViewAssist.ListViewItemPadding" Value="4" />
-            </Style>
+            </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="MaterialDesignTabablzSlimControlStyle"
                    TargetType="{x:Type dragablz:TabablzControl}"

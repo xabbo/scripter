@@ -14,9 +14,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptViewModel}}"
-             x:Name="root"
-             Background="{DynamicResource MaterialDesignLightBackground}"
-             TextElement.Foreground="{DynamicResource MaterialDesignDarkBackground}">
+             x:Name="root">
     <Grid x:Name="layoutRoot">
         <Grid>
             <Grid.RowDefinitions>
@@ -26,7 +24,7 @@
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
-            <Grid md:ThemeAssist.Theme="Light">
+            <Grid md:ThemeAssist.Theme="Light" Background="White">
                 <Grid.Resources>
                     <Style TargetType="{x:Type ToolTip}">
                         <Setter Property="ToolTipService.Placement" Value="Mouse" />
@@ -66,11 +64,7 @@
                 Grid.Row="1"
                 Margin="0" Padding="0"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                Background="{StaticResource MaterialDesignDarkBackground}">
-                <GridSplitter.Style>
-                    <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource MaterialDesignGridSplitter}">
-                    </Style>
-                </GridSplitter.Style>
+                Style="{StaticResource MaterialDesignGridSplitter}">
             </GridSplitter>
 
             <!-- Status log -->
@@ -80,17 +74,16 @@
                     Margin="0" Padding="0"
                     VerticalScrollBarVisibility="Auto"
                     BorderThickness="0"
-                    Background="{StaticResource MaterialDesignPaper}"
                     FontFamily="{StaticResource FontCode}" FontSize="11"
                     p:AutoScroll.IsEnabled="True"
                     Text="{Binding ResultText}"
                     TextAlignment="Left" TextWrapping="Wrap"
                     IsReadOnly="True"
                     md:TextFieldAssist.TextBoxViewMargin="4"
-                    md:TextFieldAssist.DecorationVisibility="Hidden">
+                    md:TextFieldAssist.DecorationVisibility="Hidden"
+                    Background="{StaticResource MaterialDesignDarkBackground}">
                     <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
-                            <Setter Property="Foreground" Value="{StaticResource MaterialDesignBodyLight}" />
+                        <Style TargetType="{x:Type TextBox}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsFaulted}" Value="True">
                                     <Setter Property="Foreground" Value="OrangeRed" />
@@ -111,11 +104,10 @@
                 md:ShadowAssist.Darken="False"
                 md:ButtonProgressAssist.IsIndeterminate="True"
                 md:ButtonProgressAssist.IndicatorBackground="Transparent"
-                md:ButtonProgressAssist.IndicatorForeground="{DynamicResource PrimaryHueMidBrush}"
                 md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}"
                 ToolTipService.ShowOnDisabled="True">
             <Button.Style>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
                     <Setter Property="Content">
                         <Setter.Value>
                             <md:PackIcon Kind="Play" />

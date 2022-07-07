@@ -10,11 +10,6 @@
              d:DesignHeight="200" d:DesignWidth="400"
              MinWidth="200"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:MessageBoxViewModel}}">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
-            <Setter Property="md:ButtonAssist.CornerRadius" Value="0" />
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

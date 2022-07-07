@@ -6,6 +6,7 @@ using System.Windows;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Controls;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using MaterialDesignThemes.Wpf;
+
+using Wpf.Ui.Mvvm.Contracts;
+using Wpf.Ui.Mvvm.Services;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
@@ -93,10 +97,14 @@ namespace Xabbo.Scripter
             services.AddSingleton<IHostLifetime, WpfLifetime>();
             services.AddSingleton<Application>(this);
             services.AddSingleton<Window, MainWindow>();
+            services.AddSingleton<INavigationWindow>(sp => (INavigationWindow)sp.GetRequiredService<Window>());
             services.AddSingleton<IUiContext, WpfContext>();
             services.AddSingleton(Dispatcher);
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
             services.AddSingleton<ISnackbarMessageQueue, SnackbarMessageQueue>();
+
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IPageService, PageService>();
 
             // Interceptor
             string interceptorService = context.Configuration.GetValue("Xabbo:Interceptor:Service", "G-Earth").ToLower();
@@ -150,6 +158,14 @@ namespace Xabbo.Scripter
             {
                 Debug.WriteLine($"Registering view manager: {type.Name}");
                 services.AddSingleton(type);
+            }
+
+            // Pages
+            foreach (Type type in localAssemblyTypes.Where(
+                x => x.Namespace == "Xabbo.Scripter.View.Pages" && x.IsAssignableTo(typeof(Page))
+            ))
+            {
+                services.AddScoped(type);
             }
         }
 
