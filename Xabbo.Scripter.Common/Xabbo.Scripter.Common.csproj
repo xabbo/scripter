@@ -21,7 +21,7 @@
 	<!-- Source generation -->
 	<ItemGroup>
 		<ProjectReference
-			Include="..\Xabbo.Common.Scripter.SourceGen\Xabbo.Common.Scripter.SourceGen.csproj"
+			Include="..\Xabbo.Scripter.Common.SourceGen\Xabbo.Scripter.Common.SourceGen.csproj"
 			OutputItemType="Analyzer"
 			ReferenceOutputAssembly="false"
 		/>
