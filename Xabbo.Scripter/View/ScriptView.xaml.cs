@@ -115,7 +115,8 @@ namespace Xabbo.Scripter.View
                 Script.Engine.RoslynHost,
                 new ClassificationHighlightColors(),
                 Path.GetFullPath("Scripts"),
-                string.Empty
+                string.Empty,
+                SourceCodeKind.Script
             );
             codeEditor.TextArea.LeftMargins.RemoveAt(1);
 
@@ -128,6 +129,7 @@ namespace Xabbo.Scripter.View
                 new DocumentCreationArgs(
                     e.TextContainer,
                     Path.GetFullPath(Script.Engine.ScriptDirectory),
+                    SourceCodeKind.Script,
                     e.ProcessDiagnostics
                 )
             );
