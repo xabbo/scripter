@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
-using Xabbo.Interceptor.Dispatcher;
 using Xabbo.Core.Game;
 
 namespace Xabbo.Scripter.Services
@@ -13,8 +12,7 @@ namespace Xabbo.Scripter.Services
         private readonly IMessageManager _messages;
         private readonly IRemoteInterceptor _interceptor;
 
-        public Task SendAsync(Header header, params object[] values) => SendAsync(Packet.Compose(header, values));
-        public Task SendAsync(IReadOnlyPacket packet) => _interceptor.SendAsync(packet);
+        public ValueTask SendAsync(IReadOnlyPacket packet) => _interceptor.SendAsync(packet);
 
         public event EventHandler? InitializeComponents;
 
