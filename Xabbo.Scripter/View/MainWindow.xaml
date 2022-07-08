@@ -8,7 +8,6 @@
         xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        WindowStyle="None"
         Style="{StaticResource UiWindow}"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"

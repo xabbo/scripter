@@ -32,10 +32,16 @@
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             CanUserDeleteRows="False"
+            SelectionUnit="FullRow"
             md:DataGridAssist.CornerRadius="0"
-            md:DataGridAssist.EnableEditBoxAssist="False"
             Style="{StaticResource MaterialDesignDataGrid}"
         >
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />
             </DataGrid.InputBindings>
@@ -54,7 +60,7 @@
                     Header="name" Width="300"
                     Binding="{Binding Name, Mode=OneWay}">
                     <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -140,18 +146,19 @@
                                 <Setter.Value>
                                     <ControlTemplate>
                                         <Expander IsExpanded="True"
-                                                  Margin="0,-1,0,0"
+                                                  Margin="0,0,0,0"
+                                                  md:ExpanderAssist.HorizontalHeaderPadding="2"
                                                   Style="{StaticResource MaterialDesignExpander}"
-                                                  BorderThickness="0,2,0,0">
-                                            <Expander.BorderBrush>
+                                                  BorderThickness="0,0,0,0">
+                                            <md:ExpanderAssist.HeaderBackground>
                                                 <SolidColorBrush Color="{StaticResource PurplePrimary700}" />
-                                            </Expander.BorderBrush>
+                                            </md:ExpanderAssist.HeaderBackground>
                                             <Expander.Header>
                                                 <TextBlock
-                                                    Margin="8"
+                                                    Margin="0"
                                                     FontStyle="Italic"
                                                     Text="{Binding Items[0].Group}"
-                                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                    Style="{StaticResource MaterialDesignBody2TextBlock}"
                                                     HorizontalAlignment="Center"
                                                     TextAlignment="Center"
                                                 />

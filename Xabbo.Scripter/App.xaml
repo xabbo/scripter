@@ -18,7 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Purple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Orange.xaml" />
-
+                
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="MaterialDesignTabablzSlimControlStyle"
@@ -66,7 +66,7 @@
             <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
             <converters:DoubleSelector x:Key="DoubleSelector" />
             <converters:ChainConverter x:Key="ChainConverter" />
-
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

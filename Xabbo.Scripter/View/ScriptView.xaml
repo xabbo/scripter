@@ -26,7 +26,7 @@
             <!-- Code editor -->
             <Grid md:ThemeAssist.Theme="Light" Background="White">
                 <Grid.Resources>
-                    <Style TargetType="{x:Type ToolTip}">
+                    <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource {x:Type ToolTip}}">
                         <Setter Property="ToolTipService.Placement" Value="Mouse" />
                     </Style>
                 </Grid.Resources>
