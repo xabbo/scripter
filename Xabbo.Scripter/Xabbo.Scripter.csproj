@@ -1,81 +1,75 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Project -->
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
-    <RootNamespace>Xabbo.Scripter</RootNamespace>
-    <ApplicationIcon>Resources\xs.ico</ApplicationIcon>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <InformationalVersion>1.0.0-beta.2</InformationalVersion>
-    <Configurations>Debug;Release;Develop</Configurations>
-  </PropertyGroup>
+	<!-- Project -->
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Xabbo.Scripter</RootNamespace>
+		<ApplicationIcon>Resources\xs.ico</ApplicationIcon>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<InformationalVersion>1.0.0-beta.2</InformationalVersion>
+		<Configurations>Debug;Release;Develop</Configurations>
+	</PropertyGroup>
 
-  <!-- Configurations -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
+	<!-- Configurations -->
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|AnyCPU'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
 
-  <!-- Rename paths -->
-  <PropertyGroup>
-    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <PathMap>$(AppOutputBase)=Xabbo.Scripter\</PathMap>
-  </PropertyGroup>
+	<!-- Rename paths -->
+	<PropertyGroup>
+		<AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
+		<PathMap>$(AppOutputBase)=Xabbo.Scripter\</PathMap>
+	</PropertyGroup>
 
-  <!-- Resources -->
-  <ItemGroup>
-    <Resource Include="Resources\**" />
-  </ItemGroup>
+	<!-- Resources -->
+	<ItemGroup>
+		<Resource Include="Resources\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-  
-  <!-- References -->
-  <ItemGroup>
-    <PackageReference Include="Dragablz" Version="0.0.3.223" />
-    <PackageReference Include="Humanizer.Core" Version="2.11.10" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
-    <PackageReference Include="MaterialDesignExtensions" Version="3.3.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
-    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
-    <PackageReference Include="RoslynPad.Editor.Windows" Version="1.2.0" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="WPF-UI" Version="2.0.1" />
-    <ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="$(SolutionDir)\Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj" />
-    <ProjectReference Include="$(SolutionDir)\Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj" />
-    <ProjectReference Include="$(SolutionDir)\Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(Configuration)'!='Debug'">
-    <PackageReference Include="Xabbo.Common" Version="1.0.0-beta.2" />
-    <PackageReference Include="Xabbo.GEarth" Version="1.0.0-beta.2" />
-    <PackageReference Include="Xabbo.Core" Version="1.0.0-beta.3" />
-  </ItemGroup>
+	<!-- References -->
+	<ItemGroup>
+		<PackageReference Include="Dragablz" Version="0.0.3.223" />
+		<PackageReference Include="Humanizer.Core" Version="2.11.10" />
+		<PackageReference Include="MaterialDesignColors" Version="2.0.1" />
+		<PackageReference Include="MaterialDesignExtensions" Version="3.3.0" />
+		<PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+		<PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
+		<PackageReference Include="System.Reactive" Version="5.0.0" />
+		<PackageReference Include="WPF-UI" Version="2.0.1" />
+		<ProjectReference Include="..\roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
+		<ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="theme.xshd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Xabbo.Messages\messages.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
+	<ItemGroup>
+		<ProjectReference Include="..\Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj" />
+		<ProjectReference Include="..\Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj" />
+		<ProjectReference Include="..\Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="theme.xshd">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="..\Xabbo.Messages\messages.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>
