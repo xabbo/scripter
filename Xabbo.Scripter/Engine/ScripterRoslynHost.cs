@@ -34,7 +34,7 @@ namespace Xabbo.Scripter.Engine
             ProjectId id = ProjectId.CreateNewId(name);
             CSharpParseOptions parseOptions = new(
                 kind: SourceCodeKind.Script,
-                languageVersion: LanguageVersion.CSharp8
+                languageVersion: LanguageVersion.Latest
             );
             
             compilationOptions = compilationOptions

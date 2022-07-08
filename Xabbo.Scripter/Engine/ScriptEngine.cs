@@ -64,6 +64,7 @@ namespace Xabbo.Scripter.Engine
 
             _referenceAssemblyNames = new()
             {
+                "System.Runtime",
                 "Xabbo.Scripter.Common",
                 "Xabbo.Common",
                 "Xabbo.Core"
@@ -85,7 +86,7 @@ namespace Xabbo.Scripter.Engine
             }
 
             BaseScriptOptions = ScriptOptions.Default
-                .WithLanguageVersion(LanguageVersion.CSharp8)
+                .WithLanguageVersion(LanguageVersion.Latest)
                 .WithEmitDebugInformation(true)
                 .WithOptimizationLevel(OptimizationLevel.Debug)
                 .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
@@ -101,7 +102,9 @@ namespace Xabbo.Scripter.Engine
                     "System.Collections",
                     "System.Collections.Generic",
                     "Xabbo.Messages",
+                    "Xabbo.Interceptor",
                     "Xabbo.Core",
+                    "Xabbo.Core.Extensions",
                     "Xabbo.Scripter.Runtime",
                     "Xabbo.Scripter.Runtime.PacketTypes",
                     "System.Runtime.CompilerServices.ITuple"
