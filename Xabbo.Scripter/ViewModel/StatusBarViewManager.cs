@@ -18,6 +18,13 @@ namespace Xabbo.Scripter.ViewModel
 
         protected IRoom? Room => _gameManager.RoomManager.Room;
 
+        private bool _showUsername = true;
+        public bool ShowUsername
+        {
+            get => _showUsername;
+            set => Set(ref _showUsername, value);
+        }
+
         #region - Remote state -
 
         private bool isRemoteConnected;

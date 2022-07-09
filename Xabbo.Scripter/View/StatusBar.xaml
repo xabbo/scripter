@@ -8,6 +8,7 @@
              xmlns:control="clr-namespace:Xabbo.Scripter.WPF.Controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              TextElement.FontSize="14"
@@ -234,19 +235,26 @@
                                 </StackPanel>
                             </ToolTip>
                         </Grid.ToolTip>
-                        <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
-                            <md:PackIcon.Style>
-                                <Style TargetType="md:PackIcon">
-                                    <Setter Property="Kind" Value="UserOff" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HasUserData}" Value="True">
-                                            <Setter Property="Kind" Value="UserCheck" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </md:PackIcon.Style>
-                        </md:PackIcon>
+                        <ToggleButton
+                            Margin="0" Padding="0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsChecked="{Binding ShowUsername}"
+                        >
+                            <md:PackIcon Foreground="{StaticResource MaterialDesignBodyLight}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                                <md:PackIcon.Style>
+                                    <Style TargetType="md:PackIcon">
+                                        <Setter Property="Kind" Value="UserOff" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasUserData}" Value="True">
+                                                <Setter Property="Kind" Value="UserCheck" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </md:PackIcon.Style>
+                            </md:PackIcon>
+                        </ToggleButton>
                     </Grid>
+                    <TextBlock Visibility="{Binding ShowUsername, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding UserName}" />
                 </StackPanel>
             </DockPanel>
         </Grid>
