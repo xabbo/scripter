@@ -64,7 +64,10 @@ namespace Xabbo.Scripter.Engine
 
             _referenceAssemblyNames = new()
             {
+                "System",
+                "System.Core",
                 "System.Runtime",
+                "System.Linq",
                 "Xabbo.Scripter.Common",
                 "Xabbo.Common",
                 "Xabbo.Core"
@@ -72,6 +75,7 @@ namespace Xabbo.Scripter.Engine
 
             _referenceAssemblies = new() {
                 typeof(object).Assembly,
+                typeof(IEnumerable<>).Assembly,
                 typeof(System.Windows.Media.Geometry).Assembly
             };
         }
