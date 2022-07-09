@@ -80,6 +80,12 @@
                         PageTag="about"
                         PageType="{x:Type pages:AboutPage}"
                     />
+                    <ui:NavigationItem
+                        Content="Test"
+                        Icon="Bug20"
+                        PageTag="test"
+                        PageType="{x:Type pages:TestPage}"
+                    />
                 </ui:NavigationCompact.Items>
             </ui:NavigationCompact>
 

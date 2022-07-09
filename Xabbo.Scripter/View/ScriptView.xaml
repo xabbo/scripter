@@ -81,6 +81,7 @@
                     IsReadOnly="True"
                     md:TextFieldAssist.TextBoxViewMargin="4"
                     md:TextFieldAssist.DecorationVisibility="Hidden"
+                    Foreground="{StaticResource MaterialDesignDarkForeground}"
                     Background="{StaticResource MaterialDesignDarkBackground}">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">

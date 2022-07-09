@@ -36,10 +36,12 @@
             md:DataGridAssist.CornerRadius="0"
             Style="{StaticResource MaterialDesignDataGrid}"
         >
+            <DataGrid.Background>
+                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
+            </DataGrid.Background>
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
                     <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 </Style>
             </DataGrid.Resources>
             <DataGrid.InputBindings>
@@ -48,6 +50,11 @@
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
+                        </Setter.Value>
+                    </Setter>
                     <Style.Resources>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
@@ -151,14 +158,14 @@
                                                   Style="{StaticResource MaterialDesignExpander}"
                                                   BorderThickness="0,0,0,0">
                                             <md:ExpanderAssist.HeaderBackground>
-                                                <SolidColorBrush Color="{StaticResource PurplePrimary700}" />
+                                                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="1.0" />
                                             </md:ExpanderAssist.HeaderBackground>
                                             <Expander.Header>
                                                 <TextBlock
                                                     Margin="0"
                                                     FontStyle="Italic"
                                                     Text="{Binding Items[0].Group}"
-                                                    Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                                    Style="{StaticResource MaterialDesignBody1TextBlock}"
                                                     HorizontalAlignment="Center"
                                                     TextAlignment="Center"
                                                 />
