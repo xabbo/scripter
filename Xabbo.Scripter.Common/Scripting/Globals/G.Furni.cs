@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Xabbo.Common;
+using Xabbo.Messages;
+using Xabbo.Interceptor;
+
 using Xabbo.Core;
 
 namespace Xabbo.Scripter.Scripting;
@@ -32,4 +36,207 @@ public partial class G
     /// Gets the wall item with the specified ID.
     /// </summary>
     public IWallItem? GetWallItem(long id) => WallItems.FirstOrDefault(item => item.Id == id);
+
+    /// <summary>
+    /// Uses the specified furni.
+    /// </summary>
+    public void UseFurni(IFurni furni)
+    {
+        switch (furni.Type)
+        {
+            case ItemType.Floor: UseFloorItem(furni.Id); break;
+            case ItemType.Wall: UseWallItem(furni.Id); break;
+            default: throw new Exception($"Unknown item type: {furni.Type}.");
+        }
+    }
+
+    /// <summary>
+    /// Uses the specified floor item.
+    /// </summary>
+    public void UseFloorItem(long itemId) => ToggleFloorItem(itemId, 0);
+
+    /// <summary>
+    /// Uses the specified wall item.
+    /// </summary>
+    public void UseWallItem(long itemId) => ToggleWallItem(itemId, 0);
+
+    /// <summary>
+    /// Toggles the state of the specified furni.
+    /// </summary>
+    public void ToggleFurni(IFurni furni, int state)
+    {
+        switch (furni.Type)
+        {
+            case ItemType.Floor: ToggleFloorItem(furni.Id, state); break;
+            case ItemType.Wall: ToggleWallItem(furni.Id, state); break;
+            default: throw new Exception($"Unknown item type: {furni.Type}.");
+        }
+    }
+
+    /// <summary>
+    /// Toggles the state of the specified floor item.
+    /// </summary>
+    public void ToggleFloorItem(long itemId, int state) => Interceptor.Send(Out.UseStuff, (LegacyLong)itemId, state);
+
+    /// <summary>
+    /// Toggles the state of the specified wall item.
+    /// </summary>
+    public void ToggleWallItem(long itemId, int state) => Interceptor.Send(Out.UseWallItem, (LegacyLong)itemId, state);
+
+    /// <summary>
+    /// Uses the specified one-way gate.
+    /// </summary>
+    public void UseGate(long itemId) => Interceptor.Send(Out.EnterOneWayDoor, (LegacyLong)itemId);
+
+    /// <summary>
+    /// Uses the specified one-way gate.
+    /// </summary>
+    public void UseGate(IFloorItem item) => UseGate(item.Id);
+
+    /// <summary>
+    /// Deletes the specified wall item. Used for stickies, photos.
+    /// </summary>
+    public void DeleteWallItem(IWallItem item) => DeleteWallItem(item.Id);
+
+    /// <summary>
+    /// Deletes the specified wall item. Used for stickies, photos.
+    /// </summary>
+    public void DeleteWallItem(long itemId) => Interceptor.Send(Out.RemoveItem, (LegacyLong)itemId);
+
+    /// <summary>
+    /// Places a floor item at the specified location.
+    /// </summary>
+    public void Place(IInventoryItem item, int x, int y, int dir = 0)
+    {
+        if (item.Type != ItemType.Floor)
+            throw new InvalidOperationException("The specified item is not a floor item.");
+        PlaceFloorItem(item.ItemId, x, y, dir);
+    }
+
+    /// <summary>
+    /// Places a floor item at the specified location.
+    /// </summary>
+    public void Place(IInventoryItem item, (int X, int Y) location, int dir = 0)
+        => Place(item, location.X, location.Y, dir);
+
+    /// <summary>
+    /// Places a floor item at the specified location.
+    /// </summary>
+    public void Place(IInventoryItem item, Tile location, int dir = 0)
+        => Place(item, location.X, location.Y, dir);
+
+    /// <summary>
+    /// Places a wall item at the specified location.
+    /// </summary>
+    public void Place(IInventoryItem item, WallLocation location)
+    {
+        if (item.Type != ItemType.Wall)
+            throw new InvalidOperationException("The specified item is not a wall item.");
+        PlaceWallItem(item.ItemId, location);
+    }
+
+    /// <summary>
+    /// Moves a floor item to the specified location.
+    /// </summary>
+    public void Move(IFloorItem item, int x, int y, int dir = 0) => MoveFloorItem(item.Id, x, y, dir);
+
+    /// <summary>
+    /// Moves a floor item to the specified location.
+    /// </summary>
+    public void Move(IFloorItem item, (int X, int Y) location, int dir = 0) => MoveFloorItem(item.Id, location.X, location.Y, dir);
+
+    /// <summary>
+    /// Moves a floor item to the specified location.
+    /// </summary>
+    public void Move(IFloorItem item, Tile location, int dir = 0) => MoveFloorItem(item.Id, location.X, location.Y, dir);
+
+    /// <summary>
+    /// Moves a wall item to the specified location.
+    /// </summary>
+    public void Move(IWallItem item, WallLocation location) => MoveWallItem(item.Id, location);
+
+    /// <summary>
+    /// Moves a wall item to the specified location.
+    /// </summary>
+    public void Move(IWallItem item, string location) => MoveWallItem(item.Id, location);
+
+    /// <summary>
+    /// Picks up the specified furni.
+    /// </summary>
+    public void Pickup(IFurni furni)
+    {
+        switch (furni.Type)
+        {
+            case ItemType.Floor: PickupFloorItem(furni.Id); break;
+            case ItemType.Wall: PickupWallItem(furni.Id); break;
+            default: throw new Exception($"Unknown item type: {furni.Type}.");
+        }
+    }
+
+    /// <summary>
+    /// Places a floor item at the specified location.
+    /// </summary>
+    public void PlaceFloorItem(long itemId, int x, int y, int dir = 0)
+    {
+        switch (CurrentClient)
+        {
+            case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}"); break;
+            case ClientType.Unity: Interceptor.Send(Out.PlaceRoomItem, itemId, x, y, dir); break;
+            default: throw new Exception("Unknown client protocol.");
+        }
+    }
+
+    /// <summary>
+    /// Moves a floor item to the specified location.
+    /// </summary>
+    public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, (LegacyLong)itemId, x, y, dir);
+
+    /// <summary>
+    /// Picks up the specified floor item.
+    /// </summary>
+    public void PickupFloorItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 2, (LegacyLong)itemId);
+
+    /// <summary>
+    /// Places a wall item at the specified location.
+    /// </summary>
+    public void PlaceWallItem(long itemId, WallLocation location)
+    {
+        switch (CurrentClient)
+        {
+            case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
+            case ClientType.Unity: Interceptor.Send(Out.PlaceWallItem, itemId, location); break;
+            default: throw new Exception("Unknown client protocol.");
+        }
+    }
+
+    /// <summary>
+    /// Places a wall item at the specified location.
+    /// </summary>
+    public void PlaceWallItem(long itemId, string location) => PlaceWallItem(itemId, WallLocation.Parse(location));
+
+    /// <summary>
+    /// Moves a wall item to the specified location.
+    /// </summary>
+    public void MoveWallItem(long itemId, WallLocation location) => Interceptor.Send(Out.MoveWallItem, (LegacyLong)itemId, location);
+
+    /// <summary>
+    /// Moves a wall item to the specified location.
+    /// </summary>
+    public void MoveWallItem(long itemId, string location) => MoveWallItem(itemId, WallLocation.Parse(location));
+
+    /// <summary>
+    /// Picks up the specified wall item.
+    /// </summary>
+    public void PickupWallItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 1, (LegacyLong)itemId);
+
+    /// <summary>
+    /// Updates the stack tile to the specified height.
+    /// </summary>
+    public void UpdateStackTile(IFloorItem stackTile, double height) => UpdateStackTile(stackTile.Id, height);
+
+    /// <summary>
+    /// Updates the stack tile to the specified height.
+    /// </summary>
+    public void UpdateStackTile(long stackTileId, double height)
+        => Interceptor.Send(Out.StackingHelperSetCaretHeight, (LegacyLong)stackTileId, (int)Math.Round(height * 100.0));
 }
