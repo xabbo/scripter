@@ -21,7 +21,6 @@
             <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
                 <Setter Property="Height" Value="25" />
                 <Setter Property="Padding" Value="8,0" />
-                <EventSetter Event="MouseDown" Handler="DragablzItem_MouseDown" />
             </Style>
         </dragablz:TabablzControl.ItemContainerStyle>
         <TabItem Header="Furni">
