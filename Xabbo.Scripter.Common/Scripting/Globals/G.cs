@@ -112,6 +112,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public dynamic Global => _scriptHost.GlobalVariables;
 
+        /// <summary>
+        /// Constructs a new instance of the scripter globals.
+        /// </summary>
+        /// <param name="scriptHost">A reference to the script host.</param>
+        /// <param name="script">A reference to the script.</param>
         public G(IScriptHost scriptHost, IScript script)
         {
             _scriptHost = scriptHost;
