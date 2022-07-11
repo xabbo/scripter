@@ -7,17 +7,20 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AboutPage">
-
+    <TextElement.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
+    </TextElement.Foreground>
     <Grid>
         <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto"
-                                  SelectionOpacity="0.33"
-                                  SelectionBrush="#F0F">
-            <FlowDocument PagePadding="6" FontFamily="{StaticResource FontCode}" FontSize="14"
-                          Background="#150015"
-                        Foreground="#C4C">
+                                  SelectionOpacity="0.33">
+            <FlowDocument PagePadding="6" FontFamily="{StaticResource FontCode}" FontSize="14">
                 <FlowDocument.Resources>
                     <Style TargetType="{x:Type Hyperlink}">
-                        <Setter Property="Foreground" Value="#F0F" />
+                        <Setter Property="Foreground">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource SystemFillColorCaution}" />
+                            </Setter.Value>
+                        </Setter>
                         <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate" />
                     </Style>
                 </FlowDocument.Resources>
