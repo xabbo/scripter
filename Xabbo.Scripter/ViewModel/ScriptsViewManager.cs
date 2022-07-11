@@ -223,6 +223,7 @@ namespace Xabbo.Scripter.ViewModel
             ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
 
             _scripts.Add(scriptViewModel);
+            OpenTabs.Add(scriptViewModel);
 
             _uiContext.InvokeAsync(() => SelectedTabItem = scriptViewModel);
         }

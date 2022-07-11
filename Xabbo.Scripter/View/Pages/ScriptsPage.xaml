@@ -12,6 +12,7 @@
     xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800"
+    d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}"
     Title="ScriptsPage"
     Style="{StaticResource UiPage}"
 >
@@ -44,6 +45,7 @@
                     Margin="4" Padding="2"
                     Icon="Add24"
                     BorderThickness="0"
+                    Command="{Binding NewTabCommand}"
                 />
             </dragablz:TabablzControl.HeaderSuffixContent>
 
