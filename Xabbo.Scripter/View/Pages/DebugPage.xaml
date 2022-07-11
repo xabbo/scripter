@@ -1,4 +1,4 @@
-﻿<Page x:Class="Xabbo.Scripter.View.Pages.TestPage"
+﻿<Page x:Class="Xabbo.Scripter.View.Pages.DebugPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,10 +7,10 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Test">
+      Title="Debug">
     <Grid Margin="4">
         <StackPanel Orientation="Vertical">
-            <Button Margin="4" Padding="10,4" HorizontalAlignment="Left" Click="Button_Click">Test</Button>
+            <Button Margin="4" Padding="10,4" HorizontalAlignment="Left" Click="Button_Click">Change color</Button>
         </StackPanel>
     </Grid>
 </Page>

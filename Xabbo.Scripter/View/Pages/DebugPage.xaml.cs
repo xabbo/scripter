@@ -18,11 +18,11 @@ namespace Xabbo.Scripter.View.Pages
     /// <summary>
     /// Interaction logic for TestPage.xaml
     /// </summary>
-    public partial class TestPage : Page
+    public partial class DebugPage : Page
     {
         private readonly Random _rng = new();
 
-        public TestPage()
+        public DebugPage()
         {
             InitializeComponent();
         }
