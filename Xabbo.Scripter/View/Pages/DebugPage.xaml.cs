@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,14 @@ namespace Xabbo.Scripter.View.Pages
                 (byte)_rng.Next(0, 256),
                 (byte)_rng.Next(0, 256)
             );
+        }
+
+        private void ButtonAttachDebugger_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
         }
     }
 }
