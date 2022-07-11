@@ -119,6 +119,6 @@ namespace Xabbo.Scripter.Services
         public string Serialize<TValue>(TValue? value, bool indented = true)
             => JsonSerializer.Serialize(value, indented ? _jsonSerializerOptionsIndented : _jsonSerializerOptions);
 
-        public T? Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
+        public T? Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json, _jsonSerializerOptions);
     }
 }
