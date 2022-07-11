@@ -75,16 +75,22 @@
                         PageType="{x:Type pages:ToolsPage}"
                     />
                     <ui:NavigationItem
+                        Content="Settings"
+                        Icon="Settings48"
+                        PageTag="settings"
+                        PageType="{x:Type pages:SettingsPage}"
+                    />
+                    <ui:NavigationItem
+                        Content="Debug"
+                        Icon="Bug20"
+                        PageTag="debug"
+                        PageType="{x:Type pages:DebugPage}"
+                    />
+                    <ui:NavigationItem
                         Content="About"
                         Icon="Info20"
                         PageTag="about"
                         PageType="{x:Type pages:AboutPage}"
-                    />
-                    <ui:NavigationItem
-                        Content="Test"
-                        Icon="Bug20"
-                        PageTag="test"
-                        PageType="{x:Type pages:TestPage}"
                     />
                 </ui:NavigationCompact.Items>
             </ui:NavigationCompact>
