@@ -9,16 +9,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:FurniDataViewManager}}"
-             Background="Transparent"
              TextElement.FontSize="16"
              TextElement.Foreground="{StaticResource MaterialDesignBody}">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type DataGrid}" BasedOn="{x:Null}" />
-        <Style x:Key="TextTrimmingStyle" TargetType="{x:Type TextBlock}"
-               BasedOn="{StaticResource {x:Type TextBlock}}">
-            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,25 +31,10 @@
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
                   SelectionMode="Extended"
-                  SelectionUnit="FullRow"
+                  SelectionUnit="Cell"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   md:DataGridAssist.CellPadding="4">
-            <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridCell}"
-                       BasedOn="{StaticResource MaterialDesignDataGridCell}" />
-                <Style TargetType="{x:Type DataGridRow}"
-                       BasedOn="{StaticResource MaterialDesignDataGridRow}">
-                    <Setter Property="Background" Value="{DynamicResource ApplicationBackgroundColor}" />
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Background>
-                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
-            </DataGrid.Background>
-            <DataGrid.Style>
-                <Style TargetType="{x:Type DataGrid}"
-                       BasedOn="{StaticResource MaterialDesignDataGrid}" />
-            </DataGrid.Style>
             <DataGrid.Columns>
                 <md:DataGridTextColumn Header="name" Width="200" Binding="{Binding Name}"
                                        ElementStyle="{StaticResource TextTrimmingStyle}" />

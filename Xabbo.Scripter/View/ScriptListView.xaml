@@ -33,33 +33,13 @@
             CanUserAddRows="False"
             CanUserDeleteRows="False"
             SelectionUnit="FullRow"
-            md:DataGridAssist.CornerRadius="0"
-            Style="{StaticResource MaterialDesignDataGrid}"
         >
-            <DataGrid.Background>
-                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
-            </DataGrid.Background>
-            <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
-                    <Setter Property="BorderThickness" Value="0" />
-                </Style>
-            </DataGrid.Resources>
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.ItemContainerStyle>
-                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Resources>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                        </Style>
-                    </Style.Resources>
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
@@ -156,9 +136,13 @@
                                                   Margin="0,0,0,0"
                                                   md:ExpanderAssist.HorizontalHeaderPadding="2"
                                                   Style="{StaticResource MaterialDesignExpander}"
-                                                  BorderThickness="0,0,0,0">
-                                            <md:ExpanderAssist.HeaderBackground>
+                                                  BorderThickness="0,0,0,0"
+                                                  Background="Transparent">
+                                            <Expander.BorderBrush>
                                                 <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="1.0" />
+                                            </Expander.BorderBrush>
+                                            <md:ExpanderAssist.HeaderBackground>
+                                                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="0.0" />
                                             </md:ExpanderAssist.HeaderBackground>
                                             <Expander.Header>
                                                 <TextBlock

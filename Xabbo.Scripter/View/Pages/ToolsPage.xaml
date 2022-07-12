@@ -12,11 +12,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ToolsPage"
       d:DataContext="{d:DesignInstance Type={x:Type viewModel:ToolsViewManager}}">
-    <dragablz:TabablzControl Style="{x:Null}"
-                             BorderThickness="0">
-        <dragablz:TabablzControl.Background>
-            <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" />
-        </dragablz:TabablzControl.Background>
+    <dragablz:TabablzControl>
         <dragablz:TabablzControl.ItemContainerStyle>
             <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
                 <Setter Property="Height" Value="25" />
