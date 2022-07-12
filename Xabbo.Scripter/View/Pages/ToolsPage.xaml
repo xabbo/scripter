@@ -14,10 +14,7 @@
       d:DataContext="{d:DesignInstance Type={x:Type viewModel:ToolsViewManager}}">
     <dragablz:TabablzControl>
         <dragablz:TabablzControl.ItemContainerStyle>
-            <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
-                <Setter Property="Height" Value="25" />
-                <Setter Property="Padding" Value="8,0" />
-            </Style>
+            <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource {x:Type dragablz:DragablzItem}}" />
         </dragablz:TabablzControl.ItemContainerStyle>
         <TabItem Header="Furni">
             <view:FurniDataView DataContext="{Binding FurniData}" />
