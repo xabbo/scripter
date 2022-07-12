@@ -16,6 +16,11 @@
     Title="ScriptsPage"
     Style="{StaticResource UiPage}"
 >
+    <Page.InputBindings>
+        <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
+        <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveScriptCommand}" />
+    </Page.InputBindings>
     <Grid>
         <dragablz:TabablzControl
             x:Name="TabablzControl"
@@ -23,8 +28,6 @@
             SelectedItem="{Binding SelectedTabItem, Mode=TwoWay}"
             SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
             NewItemFactory="{Binding NewItemFactory, Mode=OneWay}"
-            BorderThickness="0"
-            Style="{x:Null}"
         >
             <dragablz:TabablzControl.InterTabController>
                 <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
@@ -68,12 +71,6 @@
                     <view:ScriptView />
                 </DataTemplate>
             </dragablz:TabablzControl.Resources>
-
-            <dragablz:TabablzControl.InputBindings>
-                <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
-                <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
-                <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveScriptCommand}" />
-            </dragablz:TabablzControl.InputBindings>
 
         </dragablz:TabablzControl>
 
