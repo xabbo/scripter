@@ -20,6 +20,10 @@
                 <ui:Resources Theme="Dark" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="TextTrimmingStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+
             <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{x:Null}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="Transparent" />
