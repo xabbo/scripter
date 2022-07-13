@@ -67,6 +67,8 @@ namespace Xabbo.Scripter.Engine
                 "System",
                 "System.Core",
                 "System.Runtime",
+                "System.Diagnostics.Process",
+                "System.ComponentModel.Primitives",
                 "System.Linq",
                 "Xabbo.Scripter.Common",
                 "Xabbo.Common",
