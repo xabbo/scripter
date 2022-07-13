@@ -24,9 +24,9 @@
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
-            <Grid md:ThemeAssist.Theme="Light" Background="White">
+            <Grid md:ThemeAssist.Theme="Dark" Background="White">
                 <Grid.Resources>
-                    <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource {x:Type ToolTip}}">
+                    <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
                         <Setter Property="ToolTipService.Placement" Value="Mouse" />
                     </Style>
                 </Grid.Resources>
