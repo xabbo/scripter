@@ -13,9 +13,6 @@
       Title="ToolsPage"
       d:DataContext="{d:DesignInstance Type={x:Type viewModel:ToolsViewManager}}">
     <dragablz:TabablzControl>
-        <dragablz:TabablzControl.ItemContainerStyle>
-            <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource {x:Type dragablz:DragablzItem}}" />
-        </dragablz:TabablzControl.ItemContainerStyle>
         <TabItem Header="Furni">
             <view:FurniDataView DataContext="{Binding FurniData}" />
         </TabItem>

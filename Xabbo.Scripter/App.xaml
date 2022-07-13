@@ -8,6 +8,7 @@
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+             xmlns:dragablzTheme="clr-namespace:Dragablz.Themes;assembly=Dragablz"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
@@ -28,12 +29,20 @@
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderBrush" Value="Transparent" />
                 <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource {x:Type dragablz:DragablzItem}}" />
             </Style>
 
             <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="False">
                         <Setter Property="Opacity" Value="0.5" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="dragablzTheme:MaterialDesignAssist.IndicatorBrush">
+                            <Setter.Value>
+                                <SolidColorBrush Color="White" Opacity="0.2" />
+                            </Setter.Value>
+                        </Setter>
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background">
