@@ -25,13 +25,6 @@
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             </Style>
 
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                <Setter Property="ItemContainerStyle" Value="{StaticResource {x:Type dragablz:DragablzItem}}" />
-            </Style>
-
             <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="False">
@@ -57,6 +50,13 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="Height" Value="28" />
+            </Style>
+
+            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource {x:Type dragablz:DragablzItem}}" />
             </Style>
 
             <!-- DataGrid -->
