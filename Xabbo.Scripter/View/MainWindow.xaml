@@ -22,16 +22,28 @@
         <ui:TitleBar
             Padding="8,0"
             Title="{Binding Title}"
+            Icon="pack://application:,,,/Resources/Images/xabbo-skull-64.png"
         >
             <ui:TitleBar.Header>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <ui:Button
-                        Padding="2" Margin="4,2"
                         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                        Padding="2" Margin="4,2"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
                         Icon="Pin48"
                         IconFilled="{Binding Topmost}"
                         Click="ButtonPin_Click">
-
+                        <ui:Button.Style>
+                            <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Topmost}" Value="True">
+                                        <Setter Property="ToolTip" Value="Unpin window from foreground" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="ToolTip" Value="Pin window to foreground" />
+                            </Style>
+                        </ui:Button.Style>
                     </ui:Button>
                 </StackPanel>
             </ui:TitleBar.Header>
