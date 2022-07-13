@@ -24,7 +24,7 @@
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
-            <Grid md:ThemeAssist.Theme="Dark" Background="White">
+            <Grid Background="White">
                 <Grid.Resources>
                     <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
                         <Setter Property="ToolTipService.Placement" Value="Mouse" />
@@ -72,6 +72,7 @@
                 <TextBox
                     x:Name="textBoxLog"
                     Margin="0" Padding="0"
+                    Background="Transparent"
                     VerticalScrollBarVisibility="Auto"
                     BorderThickness="0"
                     FontFamily="{StaticResource FontCode}" FontSize="11"
@@ -80,16 +81,19 @@
                     TextAlignment="Left" TextWrapping="Wrap"
                     IsReadOnly="True"
                     md:TextFieldAssist.TextBoxViewMargin="4"
-                    md:TextFieldAssist.DecorationVisibility="Hidden"
-                    Foreground="{StaticResource MaterialDesignDarkForeground}"
-                    Background="{StaticResource MaterialDesignDarkBackground}">
+                    md:TextFieldAssist.DecorationVisibility="Hidden">
                     <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}">
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsFaulted}" Value="True">
                                     <Setter Property="Foreground" Value="OrangeRed" />
                                 </DataTrigger>
                             </Style.Triggers>
+                            <Setter Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBox.Style>
                 </TextBox>
