@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:pages="clr-namespace:Xabbo.Scripter.View.Pages"
              xmlns:view="clr-namespace:Xabbo.Scripter.View"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:controls="clr-namespace:Xabbo.Scripter.WPF.Controls"
@@ -20,7 +21,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="0" />
                 <RowDefinition Height="4" />
-                <RowDefinition Height="{Binding Path=DataContext.LogHeight, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}}" MinHeight="0" />
+                <RowDefinition Height="{Binding Path=DataContext.LogHeight, RelativeSource={RelativeSource AncestorType={x:Type pages:ScriptsPage}}, Mode=TwoWay}" MinHeight="0" />
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
@@ -36,7 +37,7 @@
                     ShowLineNumbers="True"
                     Background="Transparent"
                     FontFamily="{StaticResource FontCode}"
-                    FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}, Mode=TwoWay}"
+                    FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type pages:ScriptsPage}}, Mode=TwoWay}"
                     HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="{Binding IsRunning}"
                     IsModified="{Binding IsModified}"
