@@ -60,7 +60,28 @@
 
             <dragablz:TabablzControl.HeaderItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Header}" />
+                        <ui:ProgressRing
+                            Margin="4,0,0,0"
+                            Width="10" Height="10"
+                            IsIndeterminate="True"
+                            Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        >
+                            <ui:ProgressRing.Style>
+                                <Style TargetType="{x:Type ui:ProgressRing}" BasedOn="{StaticResource {x:Type ui:ProgressRing}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCompiling}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCautionBrush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:ProgressRing.Style>
+                        </ui:ProgressRing>
+                    </StackPanel>
                 </DataTemplate>
             </dragablz:TabablzControl.HeaderItemTemplate>
 
