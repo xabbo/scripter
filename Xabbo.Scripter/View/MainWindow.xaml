@@ -75,41 +75,41 @@
                 >
                     <ui:NavigationCompact.Items>
                         <ui:NavigationItem
-                        Content="Log"
-                        Icon="TextDescription20"
-                        PageTag="log"
-                        PageType="{x:Type pages:LogPage}"
-                    />
+                            Content="Log"
+                            Icon="TextDescription20"
+                            PageTag="log"
+                            PageType="{x:Type pages:LogPage}"
+                        />
                         <ui:NavigationItem
-                        Content="Scripts"
-                        Icon="Code20"
-                        PageTag="scripts"
-                        PageType="{x:Type pages:ScriptsPage}"
-                    />
+                            Content="Scripts"
+                            Icon="Code20"
+                            PageTag="scripts"
+                            PageType="{x:Type pages:ScriptsPage}"
+                        />
                         <ui:NavigationItem
-                        Content="Tools"
-                        Icon="Toolbox20"
-                        PageTag="tools"
-                        PageType="{x:Type pages:ToolsPage}"
-                    />
+                            Content="Tools"
+                            Icon="Toolbox20"
+                            PageTag="tools"
+                            PageType="{x:Type pages:ToolsPage}"
+                        />
                         <ui:NavigationItem
-                        Content="Settings"
-                        Icon="Settings48"
-                        PageTag="settings"
-                        PageType="{x:Type pages:SettingsPage}"
-                    />
+                            Content="Settings"
+                            Icon="Settings48"
+                            PageTag="settings"
+                            PageType="{x:Type pages:SettingsPage}"
+                        />
                         <ui:NavigationItem
-                        Content="Debug"
-                        Icon="Bug20"
-                        PageTag="debug"
-                        PageType="{x:Type pages:DebugPage}"
-                    />
+                            Content="Debug"
+                            Icon="Bug20"
+                            PageTag="debug"
+                            PageType="{x:Type pages:DebugPage}"
+                        />
                         <ui:NavigationItem
-                        Content="About"
-                        Icon="Info20"
-                        PageTag="about"
-                        PageType="{x:Type pages:AboutPage}"
-                    />
+                            Content="About"
+                            Icon="Info20"
+                            PageTag="about"
+                            PageType="{x:Type pages:AboutPage}"
+                        />
                     </ui:NavigationCompact.Items>
                 </ui:NavigationCompact>
 
@@ -124,19 +124,17 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <ui:Breadcrumb
-                        Grid.Row="0"
-                        Margin="8"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        FontSize="14"
-                        Navigation="{Binding ElementName=RootNavigation}"
-                    />
+                            Grid.Row="0"
+                            Margin="8"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            FontSize="14"
+                            Navigation="{Binding ElementName=RootNavigation}"
+                        />
                         <Frame x:Name="RootFrame" Grid.Row="1" />
                     </Grid>
                 </Border>
-
                 <view:StatusBar Grid.Row="2" Grid.ColumnSpan="2" DataContext="{Binding StatusBar}" />
-
                 <md:Snackbar
                     Grid.RowSpan="2" Grid.ColumnSpan="2"
                     Margin="8"
@@ -144,58 +142,5 @@
                 />
             </Grid>
         </md:DialogHost>
-        <!--<Grid Grid.Row="1" Margin="12,6,12,12">
-            <TabControl>
-                <TabItem Header="Log">
-                    <view:LogView DataContext="{Binding Log}" />
-                </TabItem>
-                <TabItem Header="Scripts">
-                    <view:ScriptsView DataContext="{Binding Scripts}" />
-                </TabItem>
-                <TabItem Header="Tools">
-                    <view:ToolsView DataContext="{Binding Tools}" />
-                </TabItem>
-                <TabItem Header="About">
-                    <view:AboutPage DataContext="{Binding About}" />
-                </TabItem>
-            </TabControl>
-        </Grid>-->
-        <!--Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TabControl md:ColorZoneAssist.Mode="Dark">
-                    <TabControl.Style>
-                        <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MaterialDesignNavigatilRailTabControl}" />
-                    </TabControl.Style>
-                    <TabControl.ItemContainerStyle>
-                        <Style TargetType="{x:Type TabItem}"
-                           BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}">
-                            <Setter Property="Padding" Value="4" />
-                            <Setter Property="Width" Value="Auto" />
-                            <Setter Property="Height" Value="Auto" />
-                        </Style>
-                    </TabControl.ItemContainerStyle>
-                    <TabItem Header="{md:PackIcon Kind=Text, Size=24}">
-                        <view:LogView DataContext="{Binding Log}" />
-                    </TabItem>
-                    <TabItem Header="{md:PackIcon Kind=ScriptText, Size=24}">
-                        <view:ScriptsView DataContext="{Binding Scripts}" />
-                    </TabItem>
-                    <TabItem Header="{md:PackIcon Kind=Tools, Size=24}">
-                        <view:ToolsView DataContext="{Binding Tools}" />
-                    </TabItem>
-                    <TabItem Header="{md:PackIcon Kind=InfoCircle, Size=24}">
-                        <view:AboutPage DataContext="{Binding About}" />
-                    </TabItem>
-                </TabControl>
-                <view:StatusBar Grid.Row="1" DataContext="{Binding StatusBar}" />
-
-                <md:Snackbar
-                Margin="8"
-                MessageQueue="{Binding SnackbarMessageQueue}"
-            />
-            </Grid-->
     </Grid>
 </Window>
