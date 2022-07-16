@@ -29,6 +29,14 @@ namespace Xabbo.Scripter.View
 
             Loaded += MainWindow_Loaded;
             Activated += MainWindow_Activated;
+
+            RootFrame.Navigating += RootFrame_Navigating;
+        }
+
+        private void RootFrame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Refresh)
+                e.Cancel = true;
         }
 
         private void ButtonPin_Click(object sender, RoutedEventArgs e) => Topmost = !Topmost;
