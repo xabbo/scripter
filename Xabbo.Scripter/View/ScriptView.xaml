@@ -39,7 +39,7 @@
                     FontFamily="{StaticResource FontCode}"
                     FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type pages:ScriptsPage}}, Mode=TwoWay}"
                     HorizontalScrollBarVisibility="Auto"
-                    IsReadOnly="{Binding IsRunning}"
+                    IsReadOnly="{Binding IsWorking}"
                     IsModified="{Binding IsModified}"
                     Loaded="CodeEditor_Loaded"
                     KeyDown="CodeEditor_KeyDown"
@@ -52,7 +52,7 @@
                         <Style TargetType="{x:Type Canvas}">
                             <Setter Property="Opacity" Value="0" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                <DataTrigger Binding="{Binding IsWorking}" Value="True">
                                     <Setter Property="Opacity" Value="0.5" />
                                 </DataTrigger>
                             </Style.Triggers>
