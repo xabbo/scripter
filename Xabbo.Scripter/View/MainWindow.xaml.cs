@@ -28,6 +28,24 @@ namespace Xabbo.Scripter.View
             SetPageService(pageService);
 
             Loaded += MainWindow_Loaded;
+            Activated += MainWindow_Activated;
+        }
+
+        private void ButtonPin_Click(object sender, RoutedEventArgs e) => Topmost = !Topmost;
+
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= MainWindow_Loaded;
+
+            MainViewManager mainViewManager = (MainViewManager)DataContext;
+            await Task.Run(() => mainViewManager.InitializeAsync(CancellationToken.None));
+        }
+
+        private void MainWindow_Activated(object? sender, EventArgs e)
+        {
+            Activated -= MainWindow_Activated;
+
+            Navigate(typeof(Pages.LogPage));
         }
 
         protected override void OnClosed(EventArgs e)
@@ -37,6 +55,7 @@ namespace Xabbo.Scripter.View
             Application.Current.Shutdown();
         }
 
+        #region - INavigationWindow -
         public void CloseWindow() => Close();
 
         public Frame GetFrame() => RootFrame;
@@ -48,18 +67,6 @@ namespace Xabbo.Scripter.View
         public void SetPageService(IPageService pageService) => RootNavigation.PageService = pageService;
 
         public void ShowWindow() => Show();
-
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            Loaded -= MainWindow_Loaded;
-
-            MainViewManager mainViewManager = (MainViewManager)DataContext;
-            await Task.Run(() => mainViewManager.InitializeAsync(CancellationToken.None));
-        }
-
-        private void ButtonPin_Click(object sender, RoutedEventArgs e)
-        {
-            Topmost = !Topmost;
-        }
+        #endregion
     }
 }
