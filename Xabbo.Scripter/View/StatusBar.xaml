@@ -13,7 +13,7 @@
              d:DesignWidth="800"
              TextElement.FontSize="14"
              TextOptions.TextFormattingMode="Display"
-             TextElement.Foreground="{StaticResource MaterialDesignBodyLight}"
+             TextElement.Foreground="{DynamicResource TextFillColorSecondaryBrush}"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:StatusBarViewManager}}">
     <UserControl.Resources>
         <sys:Double x:Key="IconSize">24</sys:Double>
@@ -26,6 +26,16 @@
             <Setter Property="Margin" Value="2" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        <Style x:Key="PackIconStyle" TargetType="md:PackIcon">
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}" Opacity="0.5" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Width" Value="{StaticResource IconSize}" />
+            <Setter Property="Height" Value="{StaticResource IconSize}" />
+        </Style>
+        <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}" />
         <!-- Margin="2" VerticalAlignment="Center" Background="Transparent" -->
     </UserControl.Resources>
     <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource MaterialDesignLightSeparatorBackground}">
@@ -89,9 +99,9 @@
                             </StackPanel>
                         </ToolTip>
                     </Grid.ToolTip>
-                    <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                    <md:PackIcon>
                         <md:PackIcon.Style>
-                            <Style TargetType="md:PackIcon">
+                            <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                 <Setter Property="Kind" Value="WifiOff" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsGameConnected}" Value="True">
@@ -130,7 +140,7 @@
                                     </StackPanel>
                                 </ToolTip>
                             </Grid.ToolTip>
-                            <md:PackIcon Kind="Robot" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" />
+                            <md:PackIcon Kind="Robot" />
                         </Grid>
                         <TextBlock Text="{Binding BotCount}" />
                         <!-- Pet count -->
@@ -164,7 +174,7 @@
                                     </StackPanel>
                                 </ToolTip>
                             </Grid.ToolTip>
-                            <md:PackIcon Kind="SofaSingle" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" />
+                            <md:PackIcon Kind="SofaSingle" />
                         </Grid>
                         <TextBlock Text="{Binding FurniCount}" />
                     </StackPanel>
@@ -192,9 +202,9 @@
                                 </StackPanel>
                             </ToolTip>
                         </Grid.ToolTip>
-                        <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                        <md:PackIcon>
                             <md:PackIcon.Style>
-                                <Style TargetType="md:PackIcon">
+                                <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                     <Setter Property="Kind" Value="HomeWarning" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding BeenInRoom}" Value="True">
@@ -240,9 +250,9 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             IsChecked="{Binding ShowUsername}"
                         >
-                            <md:PackIcon Foreground="{StaticResource MaterialDesignBodyLight}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                            <md:PackIcon>
                                 <md:PackIcon.Style>
-                                    <Style TargetType="md:PackIcon">
+                                    <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                         <Setter Property="Kind" Value="UserOff" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding HasUserData}" Value="True">

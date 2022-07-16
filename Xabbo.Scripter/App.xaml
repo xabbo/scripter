@@ -33,7 +33,7 @@
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="dragablzTheme:MaterialDesignAssist.IndicatorBrush">
                             <Setter.Value>
-                                <SolidColorBrush Color="White" Opacity="0.2" />
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.2" />
                             </Setter.Value>
                         </Setter>
                     </Trigger>
@@ -45,6 +45,7 @@
                         </Setter>
                     </Trigger>
                 </Style.Triggers>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
                 <Setter Property="Padding" Value="4,0" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -62,11 +63,25 @@
             <!-- DataGrid -->
             <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
                 <Setter Property="Background" Value="Transparent" />
-                <Setter Property="HorizontalGridLinesBrush">
-                    <Setter.Value>
-                        <SolidColorBrush Color="White" Opacity="0.1" />
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+            </Style>
+
+            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                <Style.Triggers>
+                    <Trigger Property="SortDirection" Value="Ascending">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Trigger>
+                    <Trigger Property="SortDirection" Value="Descending">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderThickness" Value="0,0,1,0" />
+                <Setter Property="BorderBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
             </Style>
 
             <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
@@ -74,14 +89,14 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="White" Opacity="0.1" />
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.05" />
                             </Setter.Value>
                         </Setter>
                     </Trigger>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="White" Opacity="0.2" />
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.1" />
                             </Setter.Value>
                         </Setter>
                     </Trigger>
@@ -93,7 +108,7 @@
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="White" Opacity="0.2" />
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.1" />
                             </Setter.Value>
                         </Setter>
                     </Trigger>
