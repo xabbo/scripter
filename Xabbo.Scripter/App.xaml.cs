@@ -88,7 +88,7 @@ namespace Xabbo.Scripter
 
         private void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder config)
         {
-            
+
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
@@ -105,6 +105,9 @@ namespace Xabbo.Scripter
 
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IPageService, PageService>();
+
+            // Options
+            services.Configure<ScriptEngineOptions>(context.Configuration.GetSection("Engine"));
 
             // Interceptor
             string interceptorService = context.Configuration.GetValue("Xabbo:Interceptor:Service", "G-Earth").ToLower();

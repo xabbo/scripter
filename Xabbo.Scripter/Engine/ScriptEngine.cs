@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
 
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,7 +21,6 @@ using RoslynPad.Roslyn;
 using Xabbo.Scripter.ViewModel;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Scripting;
-using Microsoft.Extensions.Configuration;
 
 namespace Xabbo.Scripter.Engine
 {
@@ -36,8 +37,8 @@ namespace Xabbo.Scripter.Engine
         );
 
         private readonly ILogger _logger;
+        private readonly IOptions<ScriptEngineOptions> _options;
 
-        private readonly List<string> _referenceAssemblyNames;
         private readonly List<Assembly> _referenceAssemblies;
 
         public string ScriptDirectory { get; }
@@ -47,10 +48,12 @@ namespace Xabbo.Scripter.Engine
 
         public ScriptEngine(
             ILogger<ScriptEngine> logger,
+            IOptions<ScriptEngineOptions> options,
             IConfiguration config,
             IScriptHost host)
         {
             _logger = logger;
+            _options = options;
             BaseScriptOptions = ScriptOptions.Default;
 
             ScriptDirectory = config.GetValue<string>("Scripter:ScriptDirectory");
@@ -62,31 +65,14 @@ namespace Xabbo.Scripter.Engine
 
             Host = host;
 
-            _referenceAssemblyNames = new()
-            {
-                "System",
-                "System.Core",
-                "System.Runtime",
-                "System.Diagnostics.Process",
-                "System.ComponentModel.Primitives",
-                "System.Linq",
-                "Xabbo.Scripter.Common",
-                "Xabbo.Common",
-                "Xabbo.Core"
-            };
-
-            _referenceAssemblies = new() {
-                typeof(object).Assembly,
-                typeof(IEnumerable<>).Assembly,
-                typeof(System.Windows.Media.Geometry).Assembly
-            };
+            _referenceAssemblies = new() { typeof(object).Assembly };
         }
 
         public void Initialize()
         {
             _logger.LogInformation("Initializing script engine...");
 
-            foreach (string assemblyName in _referenceAssemblyNames)
+            foreach (string assemblyName in _options.Value.References)
             {
                 _referenceAssemblies.Add(Assembly.Load(assemblyName));
             }
@@ -98,23 +84,7 @@ namespace Xabbo.Scripter.Engine
                 .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
                 // TODO : Metadata reference resolver
                 .WithReferences(_referenceAssemblies)
-                .WithImports(new[]
-                {
-                    "System",
-                    "System.Text",
-                    "System.Text.RegularExpressions",
-                    "System.IO",
-                    "System.Linq",
-                    "System.Collections",
-                    "System.Collections.Generic",
-                    "Xabbo.Messages",
-                    "Xabbo.Interceptor",
-                    "Xabbo.Core",
-                    "Xabbo.Core.Extensions",
-                    "Xabbo.Scripter.Runtime",
-                    "Xabbo.Scripter.Runtime.PacketTypes",
-                    "System.Runtime.CompilerServices.ITuple"
-                });
+                .WithImports(_options.Value.Imports);
 
             RoslynHost = new ScripterRoslynHost(
                 BaseScriptOptions,
