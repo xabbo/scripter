@@ -13,7 +13,6 @@
              d:DesignWidth="800"
              TextElement.FontSize="14"
              TextOptions.TextFormattingMode="Display"
-             TextElement.Foreground="{DynamicResource TextFillColorSecondaryBrush}"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:StatusBarViewManager}}">
     <UserControl.Resources>
         <sys:Double x:Key="IconSize">24</sys:Double>
@@ -36,8 +35,10 @@
             <Setter Property="Height" Value="{StaticResource IconSize}" />
         </Style>
         <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}" />
-        <!-- Margin="2" VerticalAlignment="Center" Background="Transparent" -->
     </UserControl.Resources>
+    <TextElement.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}" Opacity="0.5" />
+    </TextElement.Foreground>
     <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource MaterialDesignLightSeparatorBackground}">
         <Grid Margin="0">
             <DockPanel>

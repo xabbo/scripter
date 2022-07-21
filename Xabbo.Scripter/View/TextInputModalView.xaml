@@ -15,8 +15,10 @@
              MinWidth="300">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}"
-               BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
+               BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="md:ButtonAssist.CornerRadius" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="md:RippleAssist.Feedback" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -31,11 +33,12 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="textBox" Grid.Column="0" Margin="4"
-                         Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"    
-                         md:ValidationAssist.FontSize="14"
-                         md:ValidationAssist.UsePopup="False"
-                         md:ValidationAssist.PopupPlacement="Top"
+                <TextBox
+                    x:Name="textBox" Grid.Column="0" Margin="4"
+                    Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"    
+                    md:ValidationAssist.FontSize="14"
+                    md:ValidationAssist.UsePopup="False"
+                    md:ValidationAssist.PopupPlacement="Top"
                 >
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SubmitCommand}" />
@@ -59,15 +62,19 @@
             </Grid>
         </StackPanel>
         <UniformGrid Grid.Row="1" Rows="1">
-            <Button Content="Cancel"
-                    Command="{x:Static md:DialogHost.CloseDialogCommand}">
+            <Button
+                Content="Cancel"
+                Command="{x:Static md:DialogHost.CloseDialogCommand}"
+            >
                 <Button.CommandParameter>
                     <sys:Boolean>False</sys:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button Content="Ok"
-                    IsEnabled="{Binding IsInputValid}"
-                    Command="{Binding SubmitCommand}" />
+            <Button
+                Content="Ok"
+                IsEnabled="{Binding IsInputValid}"
+                Command="{Binding SubmitCommand}"
+            />
         </UniformGrid>
     </Grid>
 </UserControl>

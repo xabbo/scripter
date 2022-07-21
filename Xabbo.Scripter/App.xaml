@@ -21,6 +21,10 @@
                 <ui:Resources Theme="Dark" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource MaterialDesignGridSplitter}">
+                <Setter Property="Background" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+            </Style>
+
             <Style x:Key="TextTrimmingStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             </Style>

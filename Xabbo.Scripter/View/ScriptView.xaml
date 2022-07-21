@@ -65,8 +65,7 @@
                 Grid.Row="1"
                 Margin="0" Padding="0"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                Style="{StaticResource MaterialDesignGridSplitter}">
-            </GridSplitter>
+            />
 
             <!-- Status log -->
             <Grid Grid.Row="2">
@@ -114,12 +113,6 @@
                 ToolTipService.ShowOnDisabled="True">
             <Button.Style>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
-                    <Setter Property="Content">
-                        <Setter.Value>
-                            <md:PackIcon Kind="Play" />
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Command" Value="{Binding ExecuteCommand}" />
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -127,19 +120,34 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="IsEnabled" Value="True" />
                         </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsCompiling}" Value="True">
+                            <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="{DynamicResource SystemFillColorCautionBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                            <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsWorking}" Value="True">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <md:PackIcon Kind="Stop" />
-                                </Setter.Value>
-                            </Setter>
                             <Setter Property="Command" Value="{Binding CancelCommand}" />
                             <Setter Property="IsEnabled" Value="True" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsCancelling}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
+                    <Setter Property="Command" Value="{Binding ExecuteCommand}" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="White" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="0.5" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="Transparent" />
+                    <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="Orange" />
                 </Style>
             </Button.Style>
             <Button.ToolTip>
@@ -159,6 +167,18 @@
                     </ToolTip.Style>
                 </ToolTip>
             </Button.ToolTip>
+            <md:PackIcon Foreground="{DynamicResource ApplicationBackgroundColorBrush}">
+                <md:PackIcon.Style>
+                    <Style TargetType="md:PackIcon">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsWorking}" Value="True">
+                                <Setter Property="Kind" Value="Stop" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Kind" Value="Play" />
+                    </Style>
+                </md:PackIcon.Style>
+            </md:PackIcon>
         </Button>
 
     </Grid>
