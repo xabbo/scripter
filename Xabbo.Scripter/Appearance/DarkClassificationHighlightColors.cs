@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Xabbo.Scripter.Theme
+namespace Xabbo.Scripter.Appearance
 {
     public class DarkClassificationHighlightColors : ClassificationHighlightColors
     {

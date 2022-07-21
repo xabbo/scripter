@@ -14,7 +14,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.CodeAnalysis.Classification;
 using RoslynPad.Editor;
 
-namespace Xabbo.Scripter.Theme
+namespace Xabbo.Scripter.Appearance
 {
     public class ExternalHighlightColors : IClassificationHighlightColors
     {
