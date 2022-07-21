@@ -13,6 +13,9 @@
         d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"
         Width="800" Height="450"
         UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Window.Resources>
+        <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource UiTooltip}" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

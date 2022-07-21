@@ -135,7 +135,16 @@
             <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
             <converters:DoubleSelector x:Key="DoubleSelector" />
             <converters:ChainConverter x:Key="ChainConverter" />
-            
+
+            <!--
+                Override style for CodeTextEditor+CustomCompletionWindow tooltip.
+                As it is a nested private class it can't be targeted, so it is set here.
+                This style is set back to the Wpf.Ui style in MainWindow.
+            -->
+            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
+                <Setter Property="MaxWidth" Value="500" />
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
