@@ -33,6 +33,8 @@
             CanUserAddRows="False"
             CanUserDeleteRows="False"
             SelectionUnit="FullRow"
+            IsTextSearchEnabled="True"
+            TextSearch.TextPath="Name"
         >
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />

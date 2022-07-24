@@ -34,7 +34,9 @@
                   SelectionUnit="Cell"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
-                  md:DataGridAssist.CellPadding="4">
+                  md:DataGridAssist.CellPadding="4"
+                  IsTextSearchEnabled="True"
+                  TextSearch.TextPath="Name">
             <DataGrid.Columns>
                 <md:DataGridTextColumn Header="name" Width="200" Binding="{Binding Name}"
                                        ElementStyle="{StaticResource TextTrimmingStyle}" />
