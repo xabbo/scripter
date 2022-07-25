@@ -11,7 +11,6 @@
     <Grid Margin="4">
         <StackPanel Orientation="Vertical">
             <Button Margin="4" Padding="10,4" HorizontalAlignment="Left" Click="ButtonAttachDebugger_Click">Attach debugger</Button>
-            <Button Margin="4" Padding="10,4" HorizontalAlignment="Left" Click="Button_Click">Change color</Button>
         </StackPanel>
     </Grid>
 </Page>
