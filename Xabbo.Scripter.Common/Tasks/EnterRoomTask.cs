@@ -42,7 +42,7 @@ namespace Xabbo.Scripter.Tasks
                     roomData.Forward = true;
                     roomData.Access = RoomAccess.Open;
 
-                    e.Packet = new Packet(Interceptor.Client, e.Packet.Header)
+                    e.Packet = new Packet(e.Packet.Header, Interceptor.Client)
                         .Write(roomData);
 
                     _state = Status.AwaitingFlatOpc;
