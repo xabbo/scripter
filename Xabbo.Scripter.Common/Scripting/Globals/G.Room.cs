@@ -129,6 +129,16 @@ public partial class G
     public void SaveRoomSettings(RoomSettings settings) => Interceptor.Send(Out.SaveRoomSettings, settings);
 
     /// <summary>
+    /// Modifies the settings of the specified room.
+    /// </summary>
+    public void ModifyRoomSettings(Action<RoomSettings> update, long? roomId = null, int timeout = DEFAULT_TIMEOUT)
+    {
+        RoomSettings settings = GetRoomSettings(roomId ?? GetRoomOrThrow().Id, timeout);
+        update(settings);
+        SaveRoomSettings(settings);
+    }
+
+    /// <summary>
     /// Sends a request to delete a room with the specified ID.
     /// </summary>
     public void DeleteRoom(long roomId) => Interceptor.Send(Out.DeleteFlat, (LegacyLong)roomId);
