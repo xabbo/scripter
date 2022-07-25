@@ -1,28 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Xabbo.Scripter.View.Pages
+using Xabbo.Scripter.ViewModel;
+
+namespace Xabbo.Scripter.View.Pages;
+
+public partial class SettingsPage : Page
 {
-    /// <summary>
-    /// Interaction logic for SettingsPage.xaml
-    /// </summary>
-    public partial class SettingsPage : Page
+    private readonly SettingsViewManager _manager;
+
+    public SettingsPage(SettingsViewManager manager)
     {
-        public SettingsPage()
-        {
-            InitializeComponent();
-        }
+        DataContext = _manager = manager;
+
+        InitializeComponent();
     }
 }

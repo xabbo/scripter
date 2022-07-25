@@ -246,26 +246,35 @@
                                 </StackPanel>
                             </ToolTip>
                         </Grid.ToolTip>
-                        <ToggleButton
-                            Margin="0" Padding="0"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            IsChecked="{Binding ShowUsername}"
-                        >
-                            <md:PackIcon>
-                                <md:PackIcon.Style>
-                                    <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
-                                        <Setter Property="Kind" Value="UserOff" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasUserData}" Value="True">
-                                                <Setter Property="Kind" Value="UserCheck" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:PackIcon.Style>
-                            </md:PackIcon>
-                        </ToggleButton>
+                        <md:PackIcon>
+                            <md:PackIcon.Style>
+                                <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
+                                    <Setter Property="Kind" Value="UserOff" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasUserData}" Value="True">
+                                            <Setter Property="Kind" Value="UserCheck" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </md:PackIcon.Style>
+                        </md:PackIcon>
                     </Grid>
-                    <TextBlock Visibility="{Binding ShowUsername, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding UserName}" />
+                    <TextBlock Text="{Binding UserName}">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Settings.ShowUserName}" Value="True" />
+                                            <Condition Binding="{Binding HasUserData}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
             </DockPanel>
         </Grid>
