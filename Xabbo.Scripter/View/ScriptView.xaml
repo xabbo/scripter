@@ -33,6 +33,7 @@
                 </Grid.Resources>
                 <roslynPad:RoslynCodeEditor
                     x:Name="codeEditor"
+                    CompletionBackground="White"
                     SyntaxHighlighting="C#"
                     ShowLineNumbers="True"
                     Background="Transparent"
