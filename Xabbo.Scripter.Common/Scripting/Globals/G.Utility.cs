@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Xabbo.Scripter.Runtime;
@@ -70,7 +71,7 @@ public partial class G
     /// <summary>
     /// Sets the script's status using <see cref="object.ToString"/>.
     /// </summary>
-    public void Status(object? value) => Status(value?.ToString() ?? "null");
+    public void Status(object? value) => Status(_scriptHost.ObjectFormatter.FormatObject(value));
 
     /// <summary>
     /// Logs the specified message to the script's output.
@@ -80,7 +81,7 @@ public partial class G
     /// <summary>
     /// Logs the specified object to the script's output.
     /// </summary>
-    public void Log(object? o) => Log(o?.ToString() ?? "null");
+    public void Log(object? o) => Log(_scriptHost.ObjectFormatter.FormatObject(o));
 
     /// <summary>
     /// Logs an empty line to the script's output.
@@ -140,4 +141,10 @@ public partial class G
     /// will be thrown when the script should no longer execute.
     /// </summary>
     public void RunTask(Action action) => Task.Run(action);
+
+    /// <summary>
+    /// Invokes the specified function on the UI context and returns the result.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public T InvokeOnUiThread<T>(Func<T> func) => _scriptHost.UiContext.Invoke(func);
 }
