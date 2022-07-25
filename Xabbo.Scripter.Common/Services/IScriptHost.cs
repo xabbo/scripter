@@ -23,6 +23,11 @@ namespace Xabbo.Scripter.Services
         IUiContext UiContext { get; }
 
         /// <summary>
+        /// Gets the UI manager of the application.
+        /// </summary>
+        IUiManager UiManager { get; }
+
+        /// <summary>
         /// Provides an interface to the message manager.
         /// </summary>
         IMessageManager MessageManager { get; }

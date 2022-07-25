@@ -50,30 +50,43 @@ namespace Xabbo.Scripter
         {
             base.OnStartup(e);
 
-            _host = Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, config) => {
-                    ConfigureAppConfiguration(context, config);
-                    config.AddCommandLine(e.Args, _switchMappings);
-                })
-                .ConfigureServices(ConfigureServices)
-                .Build();
-
-            GEarthOptions gEarthOptions = _host.Services.GetRequiredService<GEarthOptions>();
-
-            _mutex = new Mutex(false, $"Xabbo.Scripter:{gEarthOptions.Port}");
-
-            if (_mutex.WaitOne(0, false))
+            try
             {
-                _host.Start();
+                _host = Host.CreateDefaultBuilder()
+                    .ConfigureAppConfiguration((context, config) =>
+                    {
+                        ConfigureAppConfiguration(context, config);
+                        config.AddCommandLine(e.Args, _switchMappings);
+                    })
+                    .ConfigureServices(ConfigureServices)
+                    .Build();
+
+                GEarthOptions gEarthOptions = _host.Services.GetRequiredService<GEarthOptions>();
+
+                _mutex = new Mutex(false, $"Xabbo.Scripter:{gEarthOptions.Port}");
+
+                bool acquiredMutex;
+                try { acquiredMutex = _mutex.WaitOne(0); }
+                catch (AbandonedMutexException) { acquiredMutex = true; }
+
+                if (acquiredMutex)
+                {
+                    _host.Start();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"An instance of the scripter is already running for port {gEarthOptions.Port}.",
+                        "xabbo scripter",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    Shutdown();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"An instance of the scripter is already running for port {gEarthOptions.Port}.",
-                    "xabbo scripter",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                );
+                MessageBox.Show(ex.ToString(), "xabbo scripter - initialization failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
         }
@@ -94,7 +107,7 @@ namespace Xabbo.Scripter
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             // Application
-            services.AddSingleton<IHostLifetime, WpfLifetime>();
+            services.AddSingleton<IHostLifetime, ScripterLifetime>();
             services.AddSingleton<Application>(this);
             services.AddSingleton<Window, MainWindow>();
             services.AddSingleton<INavigationWindow>(sp => (INavigationWindow)sp.GetRequiredService<Window>());
@@ -105,6 +118,8 @@ namespace Xabbo.Scripter
 
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IPageService, PageService>();
+
+            services.AddSingleton<IUiManager, ScripterUiManager>();
 
             // Options
             services.Configure<ScriptEngineOptions>(context.Configuration.GetSection("Engine"));
