@@ -33,13 +33,18 @@ namespace Xabbo.Scripter.Scripting
         public double RandDouble() => _scriptHost.Random.NextDouble();
 
         /// <summary>
-        /// Returns a random element from a specified enumerable.
+        /// Selects a random element from a specified enumerable.
+        /// Returns <see langword="default"/>(<typeparamref name="T"/>) if the enumerable is empty.
         /// </summary>
-        public T Rand<T>(IEnumerable<T> enumerable)
+        public T? Rand<T>(IEnumerable<T> enumerable)
         {
             if (enumerable is not Array array)
                 array = enumerable.ToArray();
-            return (T)(array.GetValue(Rand(array.Length)) ?? throw new NullReferenceException());
+
+            if (array.Length == 0)
+                return default;
+
+            return (T?)array.GetValue(Rand(array.Length));
         }
 
         /// <summary>
