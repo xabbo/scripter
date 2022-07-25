@@ -16,14 +16,14 @@ namespace Xabbo.Scripter.Scripting
         public void PlaceSticky(IInventoryItem item, WallLocation location)
         {
             if (item.Category != FurniCategory.Sticky)
-                throw new InvalidOperationException("Item is not a sticky note.");
-            Interceptor.Send(Out.PlacePostIt, (LegacyLong)item.ItemId, location);
+                throw new InvalidOperationException("The specified item is not a sticky note.");
+            Interceptor.Send(Out.PlacePostIt, item.ItemId, location);
         }
 
         /// <summary>
         /// Places a sticky at the specified location.
         /// </summary>
-        public void PlaceSticky(long itemId, WallLocation location) => Interceptor.Send(Out.PlacePostIt, (LegacyLong)itemId, location);
+        public void PlaceSticky(long itemId, WallLocation location) => Interceptor.Send(Out.PlacePostIt, itemId, location);
 
         /// <summary>
         /// Places a sticky at the specified location using a sticky pole.
@@ -35,7 +35,7 @@ namespace Xabbo.Scripter.Scripting
         /// Places a sticky at the specified location using a sticky pole.
         /// </summary>
         public void PlaceStickyWithPole(long itemId, WallLocation location, string color, string text)
-            => Interceptor.Send(Out.AddSpamWallPostIt, (LegacyLong)itemId, location, color, text);
+            => Interceptor.Send(Out.AddSpamWallPostIt, itemId, location, color, text);
 
         /// <summary>
         /// Gets the sticky data for the specified wall item.
@@ -65,7 +65,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Updates the specified sticky.
         /// </summary>
-        public void UpdateSticky(long itemId, string color, string text) => Interceptor.Send(Out.SetStickyData, (LegacyLong)itemId, color, text);
+        public void UpdateSticky(long itemId, string color, string text) => Interceptor.Send(Out.SetStickyData, itemId, color, text);
 
         /// <summary>
         /// Deletes the specified sticky.

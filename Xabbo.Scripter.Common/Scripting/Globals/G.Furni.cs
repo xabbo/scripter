@@ -76,17 +76,17 @@ public partial class G
     /// <summary>
     /// Toggles the state of the specified floor item.
     /// </summary>
-    public void ToggleFloorItem(long itemId, int state) => Interceptor.Send(Out.UseStuff, (LegacyLong)itemId, state);
+    public void ToggleFloorItem(long itemId, int state) => Interceptor.Send(Out.UseStuff, itemId, state);
 
     /// <summary>
     /// Toggles the state of the specified wall item.
     /// </summary>
-    public void ToggleWallItem(long itemId, int state) => Interceptor.Send(Out.UseWallItem, (LegacyLong)itemId, state);
+    public void ToggleWallItem(long itemId, int state) => Interceptor.Send(Out.UseWallItem, itemId, state);
 
     /// <summary>
     /// Uses the specified one-way gate.
     /// </summary>
-    public void UseGate(long itemId) => Interceptor.Send(Out.EnterOneWayDoor, (LegacyLong)itemId);
+    public void UseGate(long itemId) => Interceptor.Send(Out.EnterOneWayDoor, itemId);
 
     /// <summary>
     /// Uses the specified one-way gate.
@@ -101,7 +101,7 @@ public partial class G
     /// <summary>
     /// Deletes the specified wall item. Used for stickies, photos.
     /// </summary>
-    public void DeleteWallItem(long itemId) => Interceptor.Send(Out.RemoveItem, (LegacyLong)itemId);
+    public void DeleteWallItem(long itemId) => Interceptor.Send(Out.RemoveItem, itemId);
 
     /// <summary>
     /// Places a floor item at the specified location.
@@ -189,12 +189,12 @@ public partial class G
     /// <summary>
     /// Moves a floor item to the specified location.
     /// </summary>
-    public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, (LegacyLong)itemId, x, y, dir);
+    public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, itemId, x, y, dir);
 
     /// <summary>
     /// Picks up the specified floor item.
     /// </summary>
-    public void PickupFloorItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 2, (LegacyLong)itemId);
+    public void PickupFloorItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 2, itemId);
 
     /// <summary>
     /// Places a wall item at the specified location.
@@ -217,7 +217,7 @@ public partial class G
     /// <summary>
     /// Moves a wall item to the specified location.
     /// </summary>
-    public void MoveWallItem(long itemId, WallLocation location) => Interceptor.Send(Out.MoveWallItem, (LegacyLong)itemId, location);
+    public void MoveWallItem(long itemId, WallLocation location) => Interceptor.Send(Out.MoveWallItem, itemId, location);
 
     /// <summary>
     /// Moves a wall item to the specified location.
@@ -227,16 +227,16 @@ public partial class G
     /// <summary>
     /// Picks up the specified wall item.
     /// </summary>
-    public void PickupWallItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 1, (LegacyLong)itemId);
+    public void PickupWallItem(long itemId) => Interceptor.Send(Out.PickItemUpFromRoom, 1, itemId);
 
     /// <summary>
     /// Updates the stack tile to the specified height.
     /// </summary>
-    public void UpdateStackTile(IFloorItem stackTile, double height) => UpdateStackTile(stackTile.Id, height);
+    public void UpdateStackTile(IFloorItem stackTile, float height) => UpdateStackTile(stackTile.Id, height);
 
     /// <summary>
     /// Updates the stack tile to the specified height.
     /// </summary>
-    public void UpdateStackTile(long stackTileId, double height)
-        => Interceptor.Send(Out.StackingHelperSetCaretHeight, (LegacyLong)stackTileId, (int)Math.Round(height * 100.0));
+    public void UpdateStackTile(long stackTileId, float height)
+        => Interceptor.Send(Out.StackingHelperSetCaretHeight, stackTileId, (int)Math.Round(height * 100.0));
 }

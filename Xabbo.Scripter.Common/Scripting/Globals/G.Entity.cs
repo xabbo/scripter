@@ -159,7 +159,7 @@ public partial class G
     /// <summary>
     /// Respects the specified user.
     /// </summary>
-    public void Respect(long userId) => Interceptor.Send(Out.RespectUser, (LegacyLong)userId);
+    public void Respect(long userId) => Interceptor.Send(Out.RespectUser, userId);
 
     /// <summary>
     /// Respects the specified user.
@@ -169,7 +169,7 @@ public partial class G
     /// <summary>
     /// Scratches (or treats) the specified pet.
     /// </summary>
-    public void Scratch(long petId) => Interceptor.Send(Out.RespectPet, (LegacyLong)petId);
+    public void Scratch(long petId) => Interceptor.Send(Out.RespectPet, petId);
 
     /// <summary>
     /// Scratches (or treats) the specified pet.
@@ -181,7 +181,7 @@ public partial class G
     /// </summary>
     /// <param name="petId">The id of the pet to (dis)mount.</param>
     /// <param name="mount">Whether to mount or dismount.</param>
-    public void Ride(long petId, bool mount) => Interceptor.Send(Out.MountPet, (LegacyLong)petId, mount);
+    public void Ride(long petId, bool mount) => Interceptor.Send(Out.MountPet, petId, mount);
 
     /// <summary>
     /// Mounts or dismounts the specified pet.

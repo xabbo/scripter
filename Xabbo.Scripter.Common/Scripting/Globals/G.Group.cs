@@ -12,12 +12,12 @@ public partial class G
     /// <summary>
     /// Joins the group with the specified ID.
     /// </summary>
-    public void JoinGroup(long groupId) => Interceptor.Send(Out.JoinHabboGroup, (LegacyLong)groupId);
+    public void JoinGroup(long groupId) => Interceptor.Send(Out.JoinHabboGroup, groupId);
 
     /// <summary>
     /// Leaves the group with the specified ID.
     /// </summary>
-    public void LeaveGroup(long groupId) => Interceptor.Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)UserId, false);
+    public void LeaveGroup(long groupId) => Interceptor.Send(Out.KickMember, groupId, UserId, false);
 
     /// <summary>
     /// Sets the specified group as the user's favourite group.
@@ -54,15 +54,15 @@ public partial class G
     /// <summary>
     /// Accepts a user into the specified group.
     /// </summary>
-    public void AcceptGroupMember(long groupId, long userId) => Interceptor.Send(Out.ApproveMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
+    public void AcceptGroupMember(long groupId, long userId) => Interceptor.Send(Out.ApproveMembershipRequest, groupId, userId);
 
     /// <summary>
     /// Rejects a user from joining the specified group.
     /// </summary>
-    public void RejectGroupMember(long groupId, long userId) => Interceptor.Send(Out.RejectMembershipRequest, (LegacyLong)groupId, (LegacyLong)userId);
+    public void RejectGroupMember(long groupId, long userId) => Interceptor.Send(Out.RejectMembershipRequest, groupId, userId);
 
     /// <summary>
     /// Kicks a user from the specified group.
     /// </summary>
-    public void KickGroupMember(long groupId, long userId) => Interceptor.Send(Out.KickMember, (LegacyLong)groupId, (LegacyLong)userId, false);
+    public void KickGroupMember(long groupId, long userId) => Interceptor.Send(Out.KickMember, groupId, userId, false);
 }

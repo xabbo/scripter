@@ -33,32 +33,22 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Accepts a friend request from the specified user.
         /// </summary>
-        public void AcceptFriendRequest(long userId) => AcceptFriendRequests(userId);
+        public void AcceptFriendRequest(long userId) => AcceptFriendRequests(new[] { userId });
 
         /// <summary>
         /// Accepts friend requests from the specified users.
         /// </summary>
-        public void AcceptFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.AcceptFriend, userIds.Cast<LegacyLong>());
-
-        /// <summary>
-        /// Accepts friend requests from the specified users.
-        /// </summary>
-        public void AcceptFriendRequests(params long[] userIds) => AcceptFriendRequests((IEnumerable<long>)userIds);
-
-        /// <summary>
-        /// Declines friend requests from the specified users.
-        /// </summary>
-        public void DeclineFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.DeclineFriend, false, userIds.Cast<LegacyLong>());
-
-        /// <summary>
-        /// Declines friend requests from the specified users.
-        /// </summary>
-        public void DeclineFriendRequests(params long[] userIds) => DeclineFriendRequests((IEnumerable<long>)userIds);
+        public void AcceptFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.AcceptFriend, userIds);
 
         /// <summary>
         /// Declines a friend request from the specified user.
         /// </summary>
-        public void DeclineFriendRequest(long userId) => DeclineFriendRequests(userId);
+        public void DeclineFriendRequest(long userId) => DeclineFriendRequests(new[] { userId });
+
+        /// <summary>
+        /// Declines friend requests from the specified users.
+        /// </summary>
+        public void DeclineFriendRequests(IEnumerable<long> userIds) => Interceptor.Send(Out.DeclineFriend, false, userIds);
 
         /// <summary>
         /// Declines all incoming friend requests.
@@ -78,16 +68,31 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Removes the specified user from the user's friend list.
         /// </summary>
-        public void RemoveFriend(long userId) => RemoveFriends(userId);
+        public void RemoveFriend(long userId) => RemoveFriends(new[] { userId });
+
+        /// <summary>
+        /// Removes the specified friend.
+        /// </summary>
+        public void RemoveFriend(IFriend friend) => RemoveFriends(new[] { friend.Id });
 
         /// <summary>
         /// Removes the specified users from the user's friend list.
         /// </summary>
-        public void RemoveFriends(params long[] userIds) => Interceptor.Send(Out.RemoveFriend, userIds);
+        public void RemoveFriends(IEnumerable<long> userIds) => Interceptor.Send(Out.RemoveFriend, userIds);
+
+        /// <summary>
+        /// Removes the specified users from the user's friend list.
+        /// </summary>
+        public void RemoveFriends(IEnumerable<IFriend> friends) => Interceptor.Send(Out.RemoveFriend, friends.Select(x => x.Id));
 
         /// <summary>
         /// Sends a private message to a friend with the specified ID.
         /// </summary>
         public void SendMessage(long userId, string message) => Interceptor.Send(Out.SendMessage, userId, message);
+
+        /// <summary>
+        /// Sends a private message to the specified friend.
+        /// </summary>
+        public void SendMessage(IFriend friend, string message) => SendMessage(friend.Id, message);
     }
 }
