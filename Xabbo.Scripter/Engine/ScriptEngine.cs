@@ -125,15 +125,38 @@ namespace Xabbo.Scripter.Engine
                 string filePath = Path.Combine(ScriptDirectory, scriptFileName);
 
                 if (File.Exists(filePath))
+                {
                     filePath = Path.GetFullPath(filePath);
+                }
 
-                Script<object> csharpScript = CSharpScript.Create(
-                    script.Code,
-                    options: BaseScriptOptions
-                        .WithFilePath(filePath)
-                        .WithFileEncoding(Encoding.UTF8),
-                    globalsType: typeof(G)
-                );
+                Script<object> csharpScript;
+
+                if (script.IsSavedToDisk)
+                {
+                    script.Save();
+                }
+
+                if (File.Exists(filePath))
+                {
+                    using FileStream fs = File.OpenRead(filePath);
+                    csharpScript = CSharpScript.Create(
+                        fs,
+                        options: BaseScriptOptions
+                            .WithFilePath(filePath)
+                            .WithFileEncoding(Encoding.UTF8),
+                        globalsType: typeof(G)
+                    );
+                }
+                else
+                {
+                    csharpScript = CSharpScript.Create(
+                        script.Code,
+                        options: BaseScriptOptions
+                            .WithFilePath(filePath)
+                            .WithFileEncoding(Encoding.UTF8),
+                        globalsType: typeof(G)
+                    );
+                }
 
                 ImmutableArray<Diagnostic> diagnostics = csharpScript.Compile();
                 if (diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
@@ -240,8 +263,12 @@ namespace Xabbo.Scripter.Engine
                     string? fileName = frame.GetFileName();
 
                     if (methodBase is null || fileName is null) continue;
-                    if (methodBase.DeclaringType?.Namespace?.StartsWith("Xabbo.Scripter") == true)
+
+                    string? ns = methodBase.DeclaringType?.Namespace;
+                    if (ns is not null && ns.StartsWith("Xabbo."))
+                    {
                         continue;
+                    }
 
                     int lineNumber = frame.GetFileLineNumber();
 
@@ -279,8 +306,9 @@ namespace Xabbo.Scripter.Engine
                     Execute(script);
                 }
             }
-            catch (Exception ex)
+            catch
             {
+                // TODO report unhandled exceptions
                 return;
             }
             finally
