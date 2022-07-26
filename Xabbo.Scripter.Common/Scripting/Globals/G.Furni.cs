@@ -106,24 +106,12 @@ public partial class G
     /// <summary>
     /// Places a floor item at the specified location.
     /// </summary>
-    public void Place(IInventoryItem item, int x, int y, int dir = 0)
+    public void Place(IInventoryItem item, Point location, int dir = 0)
     {
         if (item.Type != ItemType.Floor)
             throw new InvalidOperationException("The specified item is not a floor item.");
-        PlaceFloorItem(item.ItemId, x, y, dir);
+        PlaceFloorItem(item.ItemId, location, dir);
     }
-
-    /// <summary>
-    /// Places a floor item at the specified location.
-    /// </summary>
-    public void Place(IInventoryItem item, (int X, int Y) location, int dir = 0)
-        => Place(item, location.X, location.Y, dir);
-
-    /// <summary>
-    /// Places a floor item at the specified location.
-    /// </summary>
-    public void Place(IInventoryItem item, Tile location, int dir = 0)
-        => Place(item, location.X, location.Y, dir);
 
     /// <summary>
     /// Places a wall item at the specified location.
@@ -138,17 +126,7 @@ public partial class G
     /// <summary>
     /// Moves a floor item to the specified location.
     /// </summary>
-    public void Move(IFloorItem item, int x, int y, int dir = 0) => MoveFloorItem(item.Id, x, y, dir);
-
-    /// <summary>
-    /// Moves a floor item to the specified location.
-    /// </summary>
-    public void Move(IFloorItem item, (int X, int Y) location, int dir = 0) => MoveFloorItem(item.Id, location.X, location.Y, dir);
-
-    /// <summary>
-    /// Moves a floor item to the specified location.
-    /// </summary>
-    public void Move(IFloorItem item, Tile location, int dir = 0) => MoveFloorItem(item.Id, location.X, location.Y, dir);
+    public void Move(IFloorItem item, Point location, int dir = 0) => MoveFloorItem(item.Id, location, dir);
 
     /// <summary>
     /// Moves a wall item to the specified location.
@@ -176,12 +154,12 @@ public partial class G
     /// <summary>
     /// Places a floor item at the specified location.
     /// </summary>
-    public void PlaceFloorItem(long itemId, int x, int y, int dir = 0)
+    public void PlaceFloorItem(long itemId, Point location, int dir = 0)
     {
         switch (CurrentClient)
         {
-            case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {x} {y} {dir}"); break;
-            case ClientType.Unity: Interceptor.Send(Out.PlaceRoomItem, itemId, x, y, dir); break;
+            case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {location.X} {location.Y} {dir}"); break;
+            case ClientType.Unity: Interceptor.Send(Out.PlaceRoomItem, itemId, location.X, location.Y, dir); break;
             default: throw new Exception("Unknown client protocol.");
         }
     }
@@ -189,7 +167,7 @@ public partial class G
     /// <summary>
     /// Moves a floor item to the specified location.
     /// </summary>
-    public void MoveFloorItem(long itemId, int x, int y, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, itemId, x, y, dir);
+    public void MoveFloorItem(long itemId, Point location, int dir = 0) => Interceptor.Send(Out.MoveRoomItem, itemId, location.X, location.Y, dir);
 
     /// <summary>
     /// Picks up the specified floor item.

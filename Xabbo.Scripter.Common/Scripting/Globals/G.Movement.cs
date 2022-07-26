@@ -15,12 +15,14 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Moves to the specified location.
         /// </summary>
-        public void Move((int X, int Y) location) => Move(location.X, location.Y);
+        public void Move(Point location) => Move(location.X, location.Y);
 
         /// <summary>
-        /// Moves to the specified location.
+        /// Moves to the location of the specified floor entity.
+        /// If the floor entity occupies more than one tile, a random tile will be chosen.
         /// </summary>
-        public void Move(Tile location) => Move(location.X, location.Y);
+        /// <param name="floorEntity"></param>
+        public void Move(IFloorEntity floorEntity) => Move(Rand(floorEntity.Area));
 
         /// <summary>
         /// Makes the user look to the specified location.
@@ -30,12 +32,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Makes the user look to the specified location.
         /// </summary>
-        public void LookTo((int X, int Y) location) => LookTo(location.X, location.Y);
-
-        /// <summary>
-        /// Makes the user look to the specified location.
-        /// </summary>
-        public void LookTo(Tile location) => LookTo(location.X, location.Y);
+        public void LookTo(Point location) => LookTo(location.X, location.Y);
 
         /// <summary>
         /// Makes the user look to the specified direction.
