@@ -37,9 +37,7 @@ public partial class G
     /// <param name="block">Whether to block the captured packet.</param>
     /// <returns>The first packet captured with a header that matches one of the specified headers.</returns>
     public IReadOnlyPacket Receive(ITuple tuple, int timeout = -1, bool block = false)
-    {
-        return Receive(HeaderSet.FromTuple(tuple), timeout, block);
-    }
+        => Receive(HeaderSet.FromTuple(tuple), timeout, block);
 
     /// <summary>
     /// Asynchronously captures a packet with a header that matches any of specified headers.
@@ -53,6 +51,10 @@ public partial class G
         return new CaptureMessageTask(Interceptor, headers, block)
             .ExecuteAsync(timeout, Ct);
     }
+
+    /// <inheritdoc cref="ReceiveAsync(HeaderSet, int, bool)" />
+    public Task<IPacket> ReceiveAsync(ITuple headers, int timeout = -1, bool block = false)
+        => ReceiveAsync(HeaderSet.FromTuple(headers), timeout, block);
 
     /// <summary>
     /// Attempts to capture a packet with a header that matches any of the specified headers.
