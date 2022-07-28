@@ -3,101 +3,122 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Xabbo.Scripter"
              xmlns:converters="clr-namespace:Xabbo.Scripter.WPF.Converters"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+             xmlns:dragablzTheme="clr-namespace:Dragablz.Themes;assembly=Dragablz"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <md:BundledTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Yellow" />
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/MaterialDesign.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignDarkTheme.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Purple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Orange.xaml" />
+                <ui:Resources Theme="Dark" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type DataGridColumnHeader}"
-                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
-                        <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
-                    </Style>
-                    <Style TargetType="{x:Type DataGridCell}"
-                           BasedOn="{StaticResource MaterialDesignDataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Template">
+            <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource MaterialDesignGridSplitter}">
+                <Setter Property="Background" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+            </Style>
+
+            <Style x:Key="TextTrimmingStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+
+            <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="False">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="dragablzTheme:MaterialDesignAssist.IndicatorBrush">
                             <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid Background="{TemplateBinding Background}">
-                                        <ContentPresenter
-                                            Margin="{Binding Path=(md:DataGridAssist.CellPadding), RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                            VerticalAlignment="Center"
-                                        />
-                                    </Grid>
-                                </ControlTemplate>
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.2" />
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis" />
-                    </Style>
-                </Style.Resources>
-                <Setter Property="AutoGenerateColumns" Value="False" />
-                <Setter Property="CanUserAddRows" Value="False" />
-                <Setter Property="CanUserDeleteRows" Value="False" />
-                <Setter Property="SelectionMode" Value="Extended" />
-                <Setter Property="SelectionUnit" Value="FullRow" />
-                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="4" />
-                <Setter Property="md:DataGridAssist.CellPadding" Value="4" />
-            </Style>
-            
-            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
-                        <Style.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignLightSeparatorBackground}" />
-                            </Style>
-                        </Style.Resources>
-                        <Setter Property="BorderThickness" Value="0,0,1,0" />
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                </Style.Resources>
-                <Setter Property="md:DataGridAssist.ColumnHeaderPadding" Value="2" />
-                <Setter Property="md:ListViewAssist.ListViewItemPadding" Value="4" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="White" Opacity="0.05" />
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="Padding" Value="4,0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Height" Value="28" />
             </Style>
 
-            <Style x:Key="MaterialDesignTabablzSlimControlStyle"
-                   TargetType="{x:Type dragablz:TabablzControl}"
-                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}">
-                <Setter Property="ItemContainerStyle">
-                    <Setter.Value>
-                        <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Height" Value="30" />
-                        </Style>
-                    </Setter.Value>
-                </Setter>
+            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource {x:Type dragablz:DragablzItem}}" />
             </Style>
 
-            <Style x:Key="MaterialDesignAlternateTabablzSlimControlStyle"
-                   TargetType="{x:Type dragablz:TabablzControl}"
-                   BasedOn="{StaticResource MaterialDesignAlternateTabablzControlStyle}">
-                <Setter Property="ItemContainerStyle">
-                    <Setter.Value>
-                        <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Height" Value="30" />
-                        </Style>
-                    </Setter.Value>
-                </Setter>
+            <!-- DataGrid -->
+            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
             </Style>
 
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzSlimControlStyle}" />
+            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                <Style.Triggers>
+                    <Trigger Property="SortDirection" Value="Ascending">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Trigger>
+                    <Trigger Property="SortDirection" Value="Descending">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderThickness" Value="0,0,1,0" />
+                <Setter Property="BorderBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+            </Style>
+
+            <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.05" />
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.1" />
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" Opacity="0.1" />
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
 
             <!-- Fonts -->
             <FontFamily x:Key="FontUI">Segoe UI</FontFamily>
@@ -114,6 +135,15 @@
             <converters:BooleanVisibilityConverter x:Key="BoolVisibilityConverter" />
             <converters:DoubleSelector x:Key="DoubleSelector" />
             <converters:ChainConverter x:Key="ChainConverter" />
+
+            <!--
+                Override style for CodeTextEditor+CustomCompletionWindow tooltip.
+                As it is a nested private class it can't be targeted, so it is set here.
+                This style is set back to the Wpf.Ui style in MainWindow.
+            -->
+            <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
+                <Setter Property="MaxWidth" Value="500" />
+            </Style>
 
         </ResourceDictionary>
     </Application.Resources>

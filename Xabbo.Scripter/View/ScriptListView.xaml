@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:Xabbo.Scripter.View"
              xmlns:scripting="clr-namespace:Xabbo.Scripter.Scripting;assembly=Xabbo.Scripter.Common"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}"
-             Background="{StaticResource MaterialDesignPaper}">
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,45 +26,40 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <DataGrid ItemsSource="{Binding Scripts}"
-                  SelectionChanged="DataGrid_SelectionChanged"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  md:DataGridAssist.CellPadding="6">
+        <DataGrid
+            ItemsSource="{Binding Scripts}"
+            SelectionChanged="DataGrid_SelectionChanged"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            SelectionUnit="FullRow"
+            IsTextSearchEnabled="True"
+            TextSearch.TextPath="Name"
+        >
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteSelectedScriptsCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.ItemContainerStyle>
-                <Style TargetType="{x:Type DataGridRow}"
-                       BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
-                    <Style.Resources>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                        </Style>
-                    </Style.Resources>
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
-                <md:DataGridTextColumn
+                <DataGridTextColumn
                     Header="name" Width="300"
-                    Binding="{Binding Name, Mode=OneWay}"
-                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}">
-                    <md:DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}"
-                               BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
+                    Binding="{Binding Name, Mode=OneWay}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                         </Style>
-                    </md:DataGridTextColumn.ElementStyle>
-                </md:DataGridTextColumn>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn Header="status" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Padding="4,0" CornerRadius="2"
                                     HorizontalAlignment="Center"
-                                    BorderThickness="0"
-                                    Background="{StaticResource MaterialDesignPaper}">
+                                    BorderThickness="0">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
                                         <Style.Triggers>
@@ -117,9 +112,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <md:DataGridTextColumn Header="runtime" Width="100"
-                                       Binding="{Binding Runtime, StringFormat='hh\\:mm\\:ss', Mode=OneWay}">
-                </md:DataGridTextColumn>
+                <DataGridTextColumn Header="runtime" Width="100"
+                                    Binding="{Binding Runtime, StringFormat='hh\\:mm\\:ss', Mode=OneWay}">
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Width="*"
                     IsReadOnly="True"
@@ -140,26 +135,26 @@
                                 <Setter.Value>
                                     <ControlTemplate>
                                         <Expander IsExpanded="True"
-                                                  Margin="0,-1,0,0"
+                                                  Margin="0,0,0,0"
+                                                  md:ExpanderAssist.HorizontalHeaderPadding="2"
                                                   Style="{StaticResource MaterialDesignExpander}"
-                                                  md:ExpanderAssist.HorizontalHeaderPadding="0"
-                                                  md:ExpanderAssist.VerticalHeaderPadding="0"
-                                                  md:ExpanderAssist.HeaderBackground="Transparent"
-                                                  BorderThickness="0,2,0,0">
+                                                  BorderThickness="0,0,0,0"
+                                                  Background="Transparent">
                                             <Expander.BorderBrush>
-                                                <SolidColorBrush Color="{StaticResource PurplePrimary700}" />
+                                                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="1.0" />
                                             </Expander.BorderBrush>
+                                            <md:ExpanderAssist.HeaderBackground>
+                                                <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="0.0" />
+                                            </md:ExpanderAssist.HeaderBackground>
                                             <Expander.Header>
-                                                <md:Ripple HorizontalContentAlignment="Stretch">
-                                                    <TextBlock
-                                                        Margin="8"
-                                                        FontStyle="Italic"
-                                                        Text="{Binding Items[0].Group}"
-                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                        HorizontalAlignment="Center"
-                                                        TextAlignment="Center"
-                                                    />
-                                                </md:Ripple>
+                                                <TextBlock
+                                                    Margin="0"
+                                                    FontStyle="Italic"
+                                                    Text="{Binding Items[0].Group}"
+                                                    Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                                    HorizontalAlignment="Center"
+                                                    TextAlignment="Center"
+                                                />
                                             </Expander.Header>
                                             <ItemsPresenter />
                                         </Expander>

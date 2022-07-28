@@ -65,17 +65,14 @@ namespace Xabbo.Scripter.Services
                 _categoryName = categoryName;
             }
 
-            public IDisposable? BeginScope<TState>(TState state)
-            {
-                return null;
-            }
+            public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
 
             public bool IsEnabled(LogLevel logLevel)
             {
                 return logLevel != LogLevel.None;
             }
 
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
             {
                 if (!IsEnabled(logLevel))
                     return;

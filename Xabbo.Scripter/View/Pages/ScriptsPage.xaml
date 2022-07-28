@@ -1,0 +1,110 @@
+﻿<Page
+    x:Class="Xabbo.Scripter.View.Pages.ScriptsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:Xabbo.Scripter.View.Pages"
+    xmlns:view="clr-namespace:Xabbo.Scripter.View"
+    xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800"
+    d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}"
+    Title="ScriptsPage"
+    Style="{StaticResource UiPage}"
+>
+    <Page.InputBindings>
+        <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
+        <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseTabCommand}" />
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveScriptCommand}" />
+    </Page.InputBindings>
+    <Grid>
+        <dragablz:TabablzControl
+            x:Name="TabablzControl"
+            ItemsSource="{Binding OpenTabs}"
+            SelectedItem="{Binding SelectedTabItem, Mode=TwoWay}"
+            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+            NewItemFactory="{Binding NewItemFactory, Mode=OneWay}"
+        >
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
+            </dragablz:TabablzControl.InterTabController>
+
+            <dragablz:TabablzControl.HeaderPrefixContent>
+                <ui:Button
+                    Margin="4"
+                    Padding="2"
+                    Icon="Code24"
+                    BorderThickness="0"
+                    Command="{Binding OpenScriptListCommand}"
+                />
+            </dragablz:TabablzControl.HeaderPrefixContent>
+
+            <dragablz:TabablzControl.HeaderSuffixContent>
+                <ui:Button
+                    Margin="4" Padding="2"
+                    Icon="Add24"
+                    BorderThickness="0"
+                    Command="{Binding NewTabCommand}"
+                />
+            </dragablz:TabablzControl.HeaderSuffixContent>
+
+            <dragablz:TabablzControl.ItemContainerStyle>
+                <Style TargetType="{x:Type dragablz:DragablzItem}" BasedOn="{StaticResource {x:Type dragablz:DragablzItem}}">
+                    <EventSetter Event="MouseDown" Handler="DragablzItem_MouseDown" />
+                </Style>
+            </dragablz:TabablzControl.ItemContainerStyle>
+
+            <dragablz:TabablzControl.HeaderItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Header}" />
+                        <ui:ProgressRing
+                            Margin="4,0,0,0"
+                            Width="10" Height="10"
+                            IsIndeterminate="True"
+                            Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        >
+                            <ui:ProgressRing.Style>
+                                <Style TargetType="{x:Type ui:ProgressRing}" BasedOn="{StaticResource {x:Type ui:ProgressRing}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCompiling}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCautionBrush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:ProgressRing.Style>
+                        </ui:ProgressRing>
+                    </StackPanel>
+                </DataTemplate>
+            </dragablz:TabablzControl.HeaderItemTemplate>
+
+            <dragablz:TabablzControl.Resources>
+                <DataTemplate DataType="{x:Type viewModel:ScriptViewModel}">
+                    <view:ScriptView />
+                </DataTemplate>
+            </dragablz:TabablzControl.Resources>
+
+        </dragablz:TabablzControl>
+
+        <Grid Margin="0,26,0,0">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTabIndex}" Value="-1">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <view:ScriptListView />
+        </Grid>
+    </Grid>
+</Page>

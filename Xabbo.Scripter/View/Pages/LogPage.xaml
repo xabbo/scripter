@@ -1,0 +1,46 @@
+﻿<Page x:Class="Xabbo.Scripter.View.Pages.LogPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Xabbo.Scripter.View.Pages"
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="LogPage">
+    <TextElement.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
+    </TextElement.Foreground>
+    <Grid>
+        <TextBox
+            md:TextFieldAssist.TextBoxViewMargin="8"
+            md:TextFieldAssist.DecorationVisibility="Collapsed"
+            Style="{StaticResource MaterialDesignTextBox}"
+            Padding="0"
+            VerticalContentAlignment="Stretch"
+            FontFamily="{StaticResource FontCode}"
+            FontSize="14"
+            TextAlignment="Left"
+            BorderThickness="0"
+            AutoWordSelection="True"
+            IsReadOnly="True"
+            VerticalScrollBarVisibility="Visible"
+            Text="{Binding Logger.Text}"
+            TextWrapping="Wrap"
+            IsInactiveSelectionHighlightEnabled="True">
+        </TextBox>
+        <TextBox
+            x:Name="TextBoxInput"
+            Visibility="Hidden"
+            Padding="4,4,20,4"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Stretch"
+            BorderThickness="0"
+            Height="Auto"
+            Foreground="#C4C"
+            SelectionOpacity="0.33" SelectionBrush="#F0F"
+        />
+    </Grid>
+    
+</Page>

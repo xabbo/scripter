@@ -1,0 +1,58 @@
+﻿<Page x:Class="Xabbo.Scripter.View.Pages.AboutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Xabbo.Scripter.View.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AboutPage">
+    <TextElement.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
+    </TextElement.Foreground>
+    <Grid>
+        <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto"
+                                  SelectionOpacity="0.33">
+            <FlowDocument PagePadding="6" FontFamily="{StaticResource FontCode}" FontSize="14">
+                <FlowDocument.Resources>
+                    <Style TargetType="{x:Type Hyperlink}">
+                        <Setter Property="Foreground">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource SystemFillColorCaution}" />
+                            </Setter.Value>
+                        </Setter>
+                        <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate" />
+                    </Style>
+                </FlowDocument.Resources>
+                <Paragraph>
+                    C# scripting interface created by
+                    <Hyperlink NavigateUri="https://www.github.com/b7c">b7</Hyperlink> for
+                    <Hyperlink NavigateUri="https://www.github.com/sirjonasxx/G-Earth">G-Earth</Hyperlink>.
+                    <LineBreak />
+                    View the project on
+                    <Hyperlink NavigateUri="https://www.github.com/b7c/Xabbo.Scripter">GitHub</Hyperlink>
+                    for more information on usage and example scripts.
+                </Paragraph>
+                <Paragraph>
+                    - Assembly versions -
+                    <LineBreak />
+                    Xabbo.Scripter
+                    <Run Text="{Binding ScripterVersion}" />
+                    <LineBreak />
+                    Xabbo.Scripter.Common
+                    <Run Text="{Binding ScripterCommonVersion}" />
+                    <LineBreak />
+                    Xabbo.Common
+                    <Run Text="{Binding XabboCommonVersion}" />
+                    <LineBreak />
+                    Xabbo.GEarth
+                    <Run Text="{Binding XabboGEarthVersion}" />
+                    <LineBreak />
+                    Xabbo.Core
+                    <Run Text="{Binding XabboCoreVersion}" />
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+    </Grid>
+    
+</Page>

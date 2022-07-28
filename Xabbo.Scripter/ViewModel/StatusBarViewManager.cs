@@ -18,6 +18,8 @@ namespace Xabbo.Scripter.ViewModel
 
         protected IRoom? Room => _gameManager.RoomManager.Room;
 
+        public SettingsViewManager Settings { get; }
+
         #region - Remote state -
 
         private bool isRemoteConnected;
@@ -122,8 +124,10 @@ namespace Xabbo.Scripter.ViewModel
 
         #endregion
 
-        public StatusBarViewManager(IRemoteInterceptor interceptor,
-            IGameManager gameManager)
+        public StatusBarViewManager(
+            IRemoteInterceptor interceptor,
+            IGameManager gameManager,
+            SettingsViewManager settings)
         {
             Interceptor = interceptor;
             Interceptor.InterceptorConnected += OnInterceptorConnected;
@@ -144,6 +148,8 @@ namespace Xabbo.Scripter.ViewModel
             _gameManager.RoomManager.FloorItemRemoved += OnFloorItemRemoved;
             _gameManager.RoomManager.WallItemAdded += OnWallItemAdded;
             _gameManager.RoomManager.WallItemRemoved += OnWallItemRemoved;
+
+            Settings = settings;
         }
 
         private void OnLoadedUserData(object? sender, EventArgs e)

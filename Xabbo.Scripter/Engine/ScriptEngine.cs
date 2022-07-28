@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
 
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,7 +21,6 @@ using RoslynPad.Roslyn;
 using Xabbo.Scripter.ViewModel;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Scripting;
-using Microsoft.Extensions.Configuration;
 
 namespace Xabbo.Scripter.Engine
 {
@@ -36,8 +37,8 @@ namespace Xabbo.Scripter.Engine
         );
 
         private readonly ILogger _logger;
+        private readonly IOptions<ScriptEngineOptions> _options;
 
-        private readonly List<string> _referenceAssemblyNames;
         private readonly List<Assembly> _referenceAssemblies;
 
         public string ScriptDirectory { get; }
@@ -47,10 +48,12 @@ namespace Xabbo.Scripter.Engine
 
         public ScriptEngine(
             ILogger<ScriptEngine> logger,
+            IOptions<ScriptEngineOptions> options,
             IConfiguration config,
             IScriptHost host)
         {
             _logger = logger;
+            _options = options;
             BaseScriptOptions = ScriptOptions.Default;
 
             ScriptDirectory = config.GetValue<string>("Scripter:ScriptDirectory");
@@ -62,50 +65,26 @@ namespace Xabbo.Scripter.Engine
 
             Host = host;
 
-            _referenceAssemblyNames = new()
-            {
-                "Xabbo.Scripter.Common",
-                "Xabbo.Common",
-                "Xabbo.Core"
-            };
-
-            _referenceAssemblies = new() {
-                typeof(object).Assembly,
-                typeof(System.Windows.Media.Geometry).Assembly
-            };
+            _referenceAssemblies = new() { typeof(object).Assembly };
         }
 
         public void Initialize()
         {
             _logger.LogInformation("Initializing script engine...");
 
-            foreach (string assemblyName in _referenceAssemblyNames)
+            foreach (string assemblyName in _options.Value.References)
             {
                 _referenceAssemblies.Add(Assembly.Load(assemblyName));
             }
 
             BaseScriptOptions = ScriptOptions.Default
-                .WithLanguageVersion(LanguageVersion.CSharp8)
+                .WithLanguageVersion(LanguageVersion.Latest)
                 .WithEmitDebugInformation(true)
                 .WithOptimizationLevel(OptimizationLevel.Debug)
                 .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
                 // TODO : Metadata reference resolver
                 .WithReferences(_referenceAssemblies)
-                .WithImports(new[]
-                {
-                    "System",
-                    "System.Text",
-                    "System.Text.RegularExpressions",
-                    "System.IO",
-                    "System.Linq",
-                    "System.Collections",
-                    "System.Collections.Generic",
-                    "Xabbo.Messages",
-                    "Xabbo.Core",
-                    "Xabbo.Scripter.Runtime",
-                    "Xabbo.Scripter.Runtime.PacketTypes",
-                    "System.Runtime.CompilerServices.ITuple"
-                });
+                .WithImports(_options.Value.Imports);
 
             RoslynHost = new ScripterRoslynHost(
                 BaseScriptOptions,
@@ -142,13 +121,42 @@ namespace Xabbo.Scripter.Engine
                 script.StartTime = null;
                 script.EndTime = null;
 
-                Script<object> csharpScript = CSharpScript.Create(
-                    script.Code,
-                    options: BaseScriptOptions
-                        .WithFilePath("script.csx")
-                        .WithFileEncoding(Encoding.UTF8),
-                    globalsType: typeof(G)
-                );
+                string scriptFileName = string.IsNullOrWhiteSpace(script.FileName) ? "<unknown>.csx" : script.FileName;
+                string filePath = Path.Combine(ScriptDirectory, scriptFileName);
+
+                if (File.Exists(filePath))
+                {
+                    filePath = Path.GetFullPath(filePath);
+                }
+
+                Script<object> csharpScript;
+
+                if (script.IsSavedToDisk)
+                {
+                    script.Save();
+                }
+
+                if (File.Exists(filePath))
+                {
+                    using FileStream fs = File.OpenRead(filePath);
+                    csharpScript = CSharpScript.Create(
+                        fs,
+                        options: BaseScriptOptions
+                            .WithFilePath(filePath)
+                            .WithFileEncoding(Encoding.UTF8),
+                        globalsType: typeof(G)
+                    );
+                }
+                else
+                {
+                    csharpScript = CSharpScript.Create(
+                        script.Code,
+                        options: BaseScriptOptions
+                            .WithFilePath(filePath)
+                            .WithFileEncoding(Encoding.UTF8),
+                        globalsType: typeof(G)
+                    );
+                }
 
                 ImmutableArray<Diagnostic> diagnostics = csharpScript.Compile();
                 if (diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
@@ -255,8 +263,12 @@ namespace Xabbo.Scripter.Engine
                     string? fileName = frame.GetFileName();
 
                     if (methodBase is null || fileName is null) continue;
-                    if (methodBase.DeclaringType?.Namespace?.StartsWith("Xabbo.Scripter") == true)
+
+                    string? ns = methodBase.DeclaringType?.Namespace;
+                    if (ns is not null && ns.StartsWith("Xabbo."))
+                    {
                         continue;
+                    }
 
                     int lineNumber = frame.GetFileLineNumber();
 
@@ -294,8 +306,9 @@ namespace Xabbo.Scripter.Engine
                     Execute(script);
                 }
             }
-            catch (Exception ex)
+            catch
             {
+                // TODO report unhandled exceptions
                 return;
             }
             finally

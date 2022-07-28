@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Xabbo.Messages;
+using Xabbo.Interceptor;
 using Xabbo.Interceptor.Dispatcher;
 
 namespace Xabbo.Scripter.Scripting

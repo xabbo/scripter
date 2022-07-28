@@ -11,8 +11,11 @@
              MinWidth="200"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:MessageBoxViewModel}}">
     <UserControl.Resources>
-        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
+        <Style TargetType="{x:Type Button}"
+               BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="md:ButtonAssist.CornerRadius" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="md:RippleAssist.Feedback" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         </Style>
     </UserControl.Resources>
     <Grid>

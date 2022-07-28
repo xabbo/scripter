@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:pages="clr-namespace:Xabbo.Scripter.View.Pages"
              xmlns:view="clr-namespace:Xabbo.Scripter.View"
              xmlns:viewModel="clr-namespace:Xabbo.Scripter.ViewModel"
              xmlns:controls="clr-namespace:Xabbo.Scripter.WPF.Controls"
@@ -14,33 +15,32 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptViewModel}}"
-             x:Name="root"
-             Background="{DynamicResource MaterialDesignLightBackground}"
-             TextElement.Foreground="{DynamicResource MaterialDesignDarkBackground}">
+             x:Name="root">
     <Grid x:Name="layoutRoot">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="0" />
                 <RowDefinition Height="4" />
-                <RowDefinition Height="{Binding Path=DataContext.LogHeight, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}}" MinHeight="0" />
+                <RowDefinition Height="{Binding Path=DataContext.LogHeight, RelativeSource={RelativeSource AncestorType={x:Type pages:ScriptsPage}}, Mode=TwoWay}" MinHeight="0" />
             </Grid.RowDefinitions>
 
             <!-- Code editor -->
-            <Grid md:ThemeAssist.Theme="Light">
+            <Grid Background="White">
                 <Grid.Resources>
-                    <Style TargetType="{x:Type ToolTip}">
+                    <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource MaterialDesignToolTip}">
                         <Setter Property="ToolTipService.Placement" Value="Mouse" />
                     </Style>
                 </Grid.Resources>
                 <roslynPad:RoslynCodeEditor
                     x:Name="codeEditor"
+                    CompletionBackground="White"
                     SyntaxHighlighting="C#"
                     ShowLineNumbers="True"
                     Background="Transparent"
                     FontFamily="{StaticResource FontCode}"
-                    FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type view:ScriptsView}}, Mode=TwoWay}"
+                    FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType={x:Type pages:ScriptsPage}}, Mode=TwoWay}"
                     HorizontalScrollBarVisibility="Auto"
-                    IsReadOnly="{Binding IsRunning}"
+                    IsReadOnly="{Binding IsWorking}"
                     IsModified="{Binding IsModified}"
                     Loaded="CodeEditor_Loaded"
                     KeyDown="CodeEditor_KeyDown"
@@ -53,7 +53,7 @@
                         <Style TargetType="{x:Type Canvas}">
                             <Setter Property="Opacity" Value="0" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                <DataTrigger Binding="{Binding IsWorking}" Value="True">
                                     <Setter Property="Opacity" Value="0.5" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -66,21 +66,16 @@
                 Grid.Row="1"
                 Margin="0" Padding="0"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                Background="{StaticResource MaterialDesignDarkBackground}">
-                <GridSplitter.Style>
-                    <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource MaterialDesignGridSplitter}">
-                    </Style>
-                </GridSplitter.Style>
-            </GridSplitter>
+            />
 
             <!-- Status log -->
             <Grid Grid.Row="2">
                 <TextBox
                     x:Name="textBoxLog"
                     Margin="0" Padding="0"
+                    Background="Transparent"
                     VerticalScrollBarVisibility="Auto"
                     BorderThickness="0"
-                    Background="{StaticResource MaterialDesignPaper}"
                     FontFamily="{StaticResource FontCode}" FontSize="11"
                     p:AutoScroll.IsEnabled="True"
                     Text="{Binding ResultText}"
@@ -90,12 +85,16 @@
                     md:TextFieldAssist.DecorationVisibility="Hidden">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
-                            <Setter Property="Foreground" Value="{StaticResource MaterialDesignBodyLight}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsFaulted}" Value="True">
                                     <Setter Property="Foreground" Value="OrangeRed" />
                                 </DataTrigger>
                             </Style.Triggers>
+                            <Setter Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBox.Style>
                 </TextBox>
@@ -111,17 +110,10 @@
                 md:ShadowAssist.Darken="False"
                 md:ButtonProgressAssist.IsIndeterminate="True"
                 md:ButtonProgressAssist.IndicatorBackground="Transparent"
-                md:ButtonProgressAssist.IndicatorForeground="{DynamicResource PrimaryHueMidBrush}"
                 md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}"
                 ToolTipService.ShowOnDisabled="True">
             <Button.Style>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                    <Setter Property="Content">
-                        <Setter.Value>
-                            <md:PackIcon Kind="Play" />
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Command" Value="{Binding ExecuteCommand}" />
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -129,19 +121,34 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="IsEnabled" Value="True" />
                         </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsCompiling}" Value="True">
+                            <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="{DynamicResource SystemFillColorCautionBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                            <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsWorking}" Value="True">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <md:PackIcon Kind="Stop" />
-                                </Setter.Value>
-                            </Setter>
                             <Setter Property="Command" Value="{Binding CancelCommand}" />
                             <Setter Property="IsEnabled" Value="True" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsCancelling}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
+                    <Setter Property="Command" Value="{Binding ExecuteCommand}" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="White" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource ApplicationBackgroundColor}" Opacity="0.5" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="Transparent" />
+                    <Setter Property="md:ButtonProgressAssist.IndicatorForeground" Value="Orange" />
                 </Style>
             </Button.Style>
             <Button.ToolTip>
@@ -161,6 +168,18 @@
                     </ToolTip.Style>
                 </ToolTip>
             </Button.ToolTip>
+            <md:PackIcon Foreground="{DynamicResource ApplicationBackgroundColorBrush}">
+                <md:PackIcon.Style>
+                    <Style TargetType="md:PackIcon">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsWorking}" Value="True">
+                                <Setter Property="Kind" Value="Stop" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Kind" Value="Play" />
+                    </Style>
+                </md:PackIcon.Style>
+            </md:PackIcon>
         </Button>
 
     </Grid>

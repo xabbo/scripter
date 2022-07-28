@@ -8,11 +8,11 @@
              xmlns:control="clr-namespace:Xabbo.Scripter.WPF.Controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              TextElement.FontSize="14"
              TextOptions.TextFormattingMode="Display"
-             TextElement.Foreground="{StaticResource MaterialDesignBodyLight}"
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:StatusBarViewManager}}">
     <UserControl.Resources>
         <sys:Double x:Key="IconSize">24</sys:Double>
@@ -25,8 +25,20 @@
             <Setter Property="Margin" Value="2" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <!-- Margin="2" VerticalAlignment="Center" Background="Transparent" -->
+        <Style x:Key="PackIconStyle" TargetType="md:PackIcon">
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}" Opacity="0.5" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Width" Value="{StaticResource IconSize}" />
+            <Setter Property="Height" Value="{StaticResource IconSize}" />
+        </Style>
+        <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}" />
     </UserControl.Resources>
+    <TextElement.Foreground>
+        <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}" Opacity="0.5" />
+    </TextElement.Foreground>
     <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource MaterialDesignLightSeparatorBackground}">
         <Grid Margin="0">
             <DockPanel>
@@ -88,9 +100,9 @@
                             </StackPanel>
                         </ToolTip>
                     </Grid.ToolTip>
-                    <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                    <md:PackIcon>
                         <md:PackIcon.Style>
-                            <Style TargetType="md:PackIcon">
+                            <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                 <Setter Property="Kind" Value="WifiOff" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsGameConnected}" Value="True">
@@ -129,7 +141,7 @@
                                     </StackPanel>
                                 </ToolTip>
                             </Grid.ToolTip>
-                            <md:PackIcon Kind="Robot" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" />
+                            <md:PackIcon Kind="Robot" />
                         </Grid>
                         <TextBlock Text="{Binding BotCount}" />
                         <!-- Pet count -->
@@ -163,7 +175,7 @@
                                     </StackPanel>
                                 </ToolTip>
                             </Grid.ToolTip>
-                            <md:PackIcon Kind="SofaSingle" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" />
+                            <md:PackIcon Kind="SofaSingle" />
                         </Grid>
                         <TextBlock Text="{Binding FurniCount}" />
                     </StackPanel>
@@ -191,9 +203,9 @@
                                 </StackPanel>
                             </ToolTip>
                         </Grid.ToolTip>
-                        <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                        <md:PackIcon>
                             <md:PackIcon.Style>
-                                <Style TargetType="md:PackIcon">
+                                <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                     <Setter Property="Kind" Value="HomeWarning" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding BeenInRoom}" Value="True">
@@ -234,9 +246,9 @@
                                 </StackPanel>
                             </ToolTip>
                         </Grid.ToolTip>
-                        <md:PackIcon Width="{StaticResource IconSize}" Height="{StaticResource IconSize}">
+                        <md:PackIcon>
                             <md:PackIcon.Style>
-                                <Style TargetType="md:PackIcon">
+                                <Style TargetType="md:PackIcon" BasedOn="{StaticResource PackIconStyle}">
                                     <Setter Property="Kind" Value="UserOff" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding HasUserData}" Value="True">
@@ -247,6 +259,22 @@
                             </md:PackIcon.Style>
                         </md:PackIcon>
                     </Grid>
+                    <TextBlock Text="{Binding UserName}">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Settings.ShowUserName}" Value="True" />
+                                            <Condition Binding="{Binding HasUserData}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
             </DockPanel>
         </Grid>

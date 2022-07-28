@@ -7,9 +7,13 @@ namespace Xabbo.Scripter.Services
 {
     public class ObjectFormatter : IObjectFormatter
     {
-        private readonly PrintOptions _printOptions = new();
+        private readonly PrintOptions _printOptions = new()
+        {
+            MaximumOutputLength = 10_000,
+            MemberDisplayFormat = MemberDisplayFormat.SeparateLines
+        };
 
-        public string FormatObject(object obj)
+        public string FormatObject(object? obj)
         {
             return CSharpObjectFormatter.Instance.FormatObject(obj, _printOptions);
         }

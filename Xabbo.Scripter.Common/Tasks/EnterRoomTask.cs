@@ -26,7 +26,7 @@ namespace Xabbo.Scripter.Tasks
             _password = password;
         }
 
-        protected override Task OnExecuteAsync() => SendAsync(Out.GetGuestRoom, (LegacyLong)_roomId, 0, 1);
+        protected override ValueTask OnExecuteAsync() => Interceptor.SendAsync(Out.GetGuestRoom, (LegacyLong)_roomId, 0, 1);
 
         [InterceptIn(nameof(Incoming.GetGuestRoomResult))]
         protected void HandleGetGuestRoomResult(InterceptArgs e)
@@ -42,7 +42,8 @@ namespace Xabbo.Scripter.Tasks
                     roomData.Forward = true;
                     roomData.Access = RoomAccess.Open;
 
-                    e.Packet = Packet.Compose(_interceptor.Client, e.Packet.Header, roomData);
+                    e.Packet = new Packet(e.Packet.Header, Interceptor.Client)
+                        .Write(roomData);
 
                     _state = Status.AwaitingFlatOpc;
                 }
@@ -63,7 +64,7 @@ namespace Xabbo.Scripter.Tasks
                 long roomId = e.Packet.ReadLegacyLong();
                 if (roomId == _roomId)
                 {
-                    e.Packet.Replace(_password ?? string.Empty);
+                    e.Packet.ReplaceString(_password ?? string.Empty);
                     _state = Status.AwaitingRoomEntry;
                 }
             }

@@ -11,6 +11,7 @@ using Xabbo.Messages;
 using Xabbo.Interceptor;
 
 using Xabbo.Scripter.Scripting;
+using Xabbo.Core.GameData;
 
 namespace Xabbo.Scripter.Services
 {
@@ -42,6 +43,8 @@ namespace Xabbo.Scripter.Services
 
         public IUiContext UiContext { get; private set; }
 
+        public IUiManager UiManager { get; private set; }
+
         public IGameDataManager GameDataManager { get; private set; }
 
         public IGameManager GameManager { get; private set; }
@@ -63,6 +66,7 @@ namespace Xabbo.Scripter.Services
         public ScriptHost(
             IHostApplicationLifetime lifetime,
             IUiContext uiContext,
+            IUiManager uiManager,
             IMessageManager messageManager,
             IInterceptor interceptor,
             IGameDataManager gameDataManager,
@@ -83,6 +87,7 @@ namespace Xabbo.Scripter.Services
             _lifetime = lifetime;
 
             UiContext = uiContext;
+            UiManager = uiManager;
             MessageManager = messageManager;
             Interceptor = interceptor;
             GameDataManager = gameDataManager;
@@ -118,6 +123,6 @@ namespace Xabbo.Scripter.Services
         public string Serialize<TValue>(TValue? value, bool indented = true)
             => JsonSerializer.Serialize(value, indented ? _jsonSerializerOptionsIndented : _jsonSerializerOptions);
 
-        public T? Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
+        public T? Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json, _jsonSerializerOptions);
     }
 }

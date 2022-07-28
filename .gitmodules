@@ -10,3 +10,6 @@
 [submodule ".\\Xabbo.Messages"]
 	path = .\\Xabbo.Messages
 	url = https://www.github.com/b7c/Xabbo.Messages
+[submodule "roslynpad"]
+	path = roslynpad
+	url = https://github.com/roslynpad/roslynpad

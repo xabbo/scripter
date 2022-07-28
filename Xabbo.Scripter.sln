@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter", "Xabbo.Scripter\Xabbo.Scripter.csproj", "{21D81F9D-B741-4047-9B67-88ACBD9E3436}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common", "Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj", "{013C6314-49A1-4D48-9090-EA4AB26F082B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{DD7B36F8-A070-467B-9028-C14780DCCAF4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DD7B36F8-A070-467B-9028-C14780DCCAF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A509D203-AE6E-4868-9503-79574A47A0C9}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,6 +19,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Core", "Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj", "{1B39D5C9-BE71-42B5-8993-7595089F3F8C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.GEarth", "Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj", "{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common.SourceGen", "Xabbo.Scripter.Common.SourceGen\Xabbo.Scripter.Common.SourceGen.csproj", "{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Core", "Xabbo.Scripter.Core\Xabbo.Scripter.Core.csproj", "{93C93848-3D21-4816-9277-5B421CEAFAA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Editor.Windows", "roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj", "{671AEF01-A611-4066-9F79-E6CCF480BF64}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn.Windows", "roslynpad\src\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj", "{7A818F7F-F00B-4822-8FB9-1724A0232740}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn", "roslynpad\src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj", "{60A6E02D-43FD-493B-A7ED-81504A38C6C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +67,36 @@ Global
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Develop|Any CPU.Build.0 = Develop|Any CPU
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93C93848-3D21-4816-9277-5B421CEAFAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{671AEF01-A611-4066-9F79-E6CCF480BF64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A818F7F-F00B-4822-8FB9-1724A0232740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +105,9 @@ Global
 		{1E6E1844-D944-4BC7-9848-ABED9C90DA0B} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
 		{1B39D5C9-BE71-42B5-8993-7595089F3F8C} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
 		{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
+		{671AEF01-A611-4066-9F79-E6CCF480BF64} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
+		{7A818F7F-F00B-4822-8FB9-1724A0232740} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
+		{60A6E02D-43FD-493B-A7ED-81504A38C6C7} = {DD7B36F8-A070-467B-9028-C14780DCCAF4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDAD3683-F693-47A7-8A2E-557FD7BCED7A}

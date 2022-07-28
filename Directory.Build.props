@@ -1,0 +1,6 @@
+<Project>
+ <PropertyGroup>
+    <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+	<XabboCommonSlnDir>$(MSBuildThisFileDirectory)</XabboCommonSlnDir>
+ </PropertyGroup>
+</Project>
