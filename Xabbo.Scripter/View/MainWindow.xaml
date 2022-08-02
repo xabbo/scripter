@@ -11,6 +11,7 @@
         Style="{StaticResource UiWindow}"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type={x:Type viewModel:MainViewManager}}"
+        Title="{Binding Title}"
         Width="800" Height="450"
         UseLayoutRounding="True" SnapsToDevicePixels="True">
     <Window.Resources>
