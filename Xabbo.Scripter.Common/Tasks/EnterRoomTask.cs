@@ -81,5 +81,20 @@ namespace Xabbo.Scripter.Tasks
 
             SetResult(RoomEntryResult.Success);
         }
+
+        [InterceptIn(nameof(Incoming.CanNotConnect))]
+        protected void HandleCanNotConnect(InterceptArgs e)
+        {
+            if (_state != Status.AwaitingRoomEntry) return;
+
+            RoomEnterError error = (RoomEnterError)e.Packet.ReadInt();
+            
+            SetResult(error switch
+            {
+                RoomEnterError.Full => RoomEntryResult.Full,
+                RoomEnterError.Banned => RoomEntryResult.Banned,
+                _ => RoomEntryResult.Unknown
+            });
+        }
     }
 }

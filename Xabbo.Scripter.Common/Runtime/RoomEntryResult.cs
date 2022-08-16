@@ -6,6 +6,7 @@ namespace Xabbo.Scripter.Runtime
     {
         Unknown,
         Full,
+        Banned,
         InvalidPassword,
         Success
     }
