@@ -8,9 +8,6 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>Xabbo.Scripter</RootNamespace>
 		<ApplicationIcon>Resources\xs.ico</ApplicationIcon>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
-		<InformationalVersion>1.0.0-beta.2</InformationalVersion>
 		<Configurations>Debug;Release;Develop</Configurations>
 	</PropertyGroup>
 
@@ -40,6 +37,10 @@
 	<!-- References -->
 	<ItemGroup>
 		<PackageReference Include="Dragablz" Version="0.0.3.223" />
+		<PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Humanizer.Core" Version="2.11.10" />
 		<PackageReference Include="MaterialDesignColors" Version="2.0.1" />
 		<PackageReference Include="MaterialDesignExtensions" Version="3.3.0" />
