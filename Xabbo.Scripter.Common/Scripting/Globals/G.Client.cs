@@ -13,14 +13,22 @@ public partial class G
     /// <param name="message">The message to display.</param>
     /// <param name="index">
     /// The index of the entity to display the chat bubble from.
-    /// If set to <c>-1</c>, this will attempt to use the user's own index.
+    /// If the argument is <see langword="null" />, the user's own index will be used, if available.
     /// </param>
     /// <param name="bubble">The bubble style.</param>
     /// <param name="type">The type of chat bubble to display.</param>
-    public void ShowBubble(string message, int index = -1, int bubble = 30, ChatType type = ChatType.Whisper)
+    public void ShowBubble(string message, int? index = null, int bubble = 30, ChatType type = ChatType.Whisper)
     {
-        if (index == -1) index = Self?.Index ?? -1;
-
-        Interceptor.Send(In.Whisper, index, message, 0, bubble, 0, 0);
+        Interceptor.Send(
+            type switch
+            {
+                ChatType.Whisper => In.Whisper,
+                ChatType.Talk => In.Chat,
+                ChatType.Shout => In.Shout,
+                _ => throw new ArgumentException("Invalid chat type specified.", nameof(type))
+            },
+            index ?? Self?.Index ?? -1,
+            message, 0, bubble, 0, 0
+        );
     }
 }

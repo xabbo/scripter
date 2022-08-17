@@ -42,6 +42,8 @@ public partial class G
     /// </summary>
     public void UseFurni(IFurni furni)
     {
+        ArgumentNullException.ThrowIfNull(furni);
+
         switch (furni.Type)
         {
             case ItemType.Floor: UseFloorItem(furni.Id); break;
@@ -65,6 +67,8 @@ public partial class G
     /// </summary>
     public void ToggleFurni(IFurni furni, int state)
     {
+        ArgumentNullException.ThrowIfNull(furni);
+
         switch (furni.Type)
         {
             case ItemType.Floor: ToggleFloorItem(furni.Id, state); break;
@@ -91,12 +95,20 @@ public partial class G
     /// <summary>
     /// Uses the specified one-way gate.
     /// </summary>
-    public void UseGate(IFloorItem item) => UseGate(item.Id);
+    public void UseGate(IFloorItem item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        UseGate(item.Id);
+    }
 
     /// <summary>
     /// Deletes the specified wall item. Used for stickies, photos.
     /// </summary>
-    public void DeleteWallItem(IWallItem item) => DeleteWallItem(item.Id);
+    public void DeleteWallItem(IWallItem item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        DeleteWallItem(item.Id);
+    }
 
     /// <summary>
     /// Deletes the specified wall item. Used for stickies, photos.
@@ -108,6 +120,7 @@ public partial class G
     /// </summary>
     public void Place(IInventoryItem item, Point location, int dir = 0)
     {
+        ArgumentNullException.ThrowIfNull(item);
         if (item.Type != ItemType.Floor)
             throw new InvalidOperationException("The specified item is not a floor item.");
         PlaceFloorItem(item.ItemId, location, dir);
@@ -118,6 +131,7 @@ public partial class G
     /// </summary>
     public void Place(IInventoryItem item, WallLocation location)
     {
+        ArgumentNullException.ThrowIfNull(item);
         if (item.Type != ItemType.Wall)
             throw new InvalidOperationException("The specified item is not a wall item.");
         PlaceWallItem(item.ItemId, location);
@@ -126,23 +140,36 @@ public partial class G
     /// <summary>
     /// Moves a floor item to the specified location.
     /// </summary>
-    public void Move(IFloorItem item, Point location, int dir = 0) => MoveFloorItem(item.Id, location, dir);
+    public void Move(IFloorItem item, Point location, int dir = 0)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        MoveFloorItem(item.Id, location, dir);
+    }
 
     /// <summary>
     /// Moves a wall item to the specified location.
     /// </summary>
-    public void Move(IWallItem item, WallLocation location) => MoveWallItem(item.Id, location);
+    public void Move(IWallItem item, WallLocation location)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        MoveWallItem(item.Id, location);
+    }
 
     /// <summary>
     /// Moves a wall item to the specified location.
     /// </summary>
-    public void Move(IWallItem item, string location) => MoveWallItem(item.Id, location);
+    public void Move(IWallItem item, string location)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        MoveWallItem(item.Id, location);
+    }
 
     /// <summary>
     /// Picks up the specified furni.
     /// </summary>
     public void Pickup(IFurni furni)
     {
+        ArgumentNullException.ThrowIfNull(furni);
         switch (furni.Type)
         {
             case ItemType.Floor: PickupFloorItem(furni.Id); break;
@@ -210,7 +237,11 @@ public partial class G
     /// <summary>
     /// Updates the stack tile to the specified height.
     /// </summary>
-    public void UpdateStackTile(IFloorItem stackTile, float height) => UpdateStackTile(stackTile.Id, height);
+    public void UpdateStackTile(IFloorItem stackTile, float height)
+    {
+        ArgumentNullException.ThrowIfNull(stackTile);
+        UpdateStackTile(stackTile.Id, height);
+    }
 
     /// <summary>
     /// Updates the stack tile to the specified height.

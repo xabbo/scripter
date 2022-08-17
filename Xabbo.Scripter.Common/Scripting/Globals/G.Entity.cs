@@ -129,7 +129,11 @@ public partial class G
     /// <summary>
     /// Ignores the specified user.
     /// </summary>
-    public void Ignore(IRoomUser user) => Ignore(user.Name);
+    public void Ignore(IRoomUser user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        Ignore(user.Name);
+    }
 
     /// <summary>
     /// Ignores the specified user.
@@ -139,7 +143,11 @@ public partial class G
     /// <summary>
     /// Unignores the specified user.
     /// </summary>
-    public void Unignore(IRoomUser user) => Unignore(user.Name);
+    public void Unignore(IRoomUser user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        Unignore(user.Name);
+    }
 
     /// <summary>
     /// Unignores the specified user.
@@ -149,7 +157,11 @@ public partial class G
     /// <summary>
     /// Sends a friend request to the specified user.
     /// </summary>
-    public void FriendRequest(IRoomUser user) => FriendRequest(user.Name);
+    public void FriendRequest(IRoomUser user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        FriendRequest(user.Name);
+    }
 
     /// <summary>
     /// Sends a friend request to the specified user.
@@ -164,7 +176,11 @@ public partial class G
     /// <summary>
     /// Respects the specified user.
     /// </summary>
-    public void Respect(IRoomUser user) => Respect(user.Id);
+    public void Respect(IRoomUser user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        Respect(user.Id);
+    }
 
     /// <summary>
     /// Scratches (or treats) the specified pet.
@@ -174,7 +190,11 @@ public partial class G
     /// <summary>
     /// Scratches (or treats) the specified pet.
     /// </summary>
-    public void Scratch(IPet pet) => Scratch(pet.Id);
+    public void Scratch(IPet pet)
+    {
+        ArgumentNullException.ThrowIfNull(pet);
+        Scratch(pet.Id);
+    }
 
     /// <summary>
     /// Mounts or dismounts the pet with the specified id.
@@ -188,7 +208,11 @@ public partial class G
     /// </summary>
     /// <param name="pet">The pet to (dis)mount.</param>
     /// <param name="mount">Whether to mount or dismount.</param>
-    public void Ride(IPet pet, bool mount) => Ride(pet.Id, mount);
+    public void Ride(IPet pet, bool mount)
+    {
+        ArgumentNullException.ThrowIfNull(pet);
+        Ride(pet.Id, mount);
+    }
 
     /// <summary>
     /// Mounts the pet with the specified id.
@@ -198,7 +222,11 @@ public partial class G
     /// <summary>
     /// Mounts the specified pet.
     /// </summary>
-    public void Mount(IPet pet) => Ride(pet.Id, true);
+    public void Mount(IPet pet)
+    {
+        ArgumentNullException.ThrowIfNull(pet);
+        Ride(pet.Id, true);
+    }
 
     /// <summary>
     /// Dismounts the pet with the specified id.
@@ -208,5 +236,9 @@ public partial class G
     /// <summary>
     /// Dismounts the specified pet.
     /// </summary>
-    public void Dismount(IPet pet) => Ride(pet.Id, false);
+    public void Dismount(IPet pet)
+    {
+        ArgumentNullException.ThrowIfNull(pet);
+        Ride(pet.Id, false);
+    }
 }

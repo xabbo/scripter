@@ -15,6 +15,7 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         public void PlaceSticky(IInventoryItem item, WallLocation location)
         {
+            ArgumentNullException.ThrowIfNull(item);
             if (item.Category != FurniCategory.Sticky)
                 throw new InvalidOperationException("The specified item is not a sticky note.");
             Interceptor.Send(Out.PlacePostIt, item.ItemId, location);
@@ -29,7 +30,10 @@ namespace Xabbo.Scripter.Scripting
         /// Places a sticky at the specified location using a sticky pole.
         /// </summary>
         public void PlaceStickyWithPole(IInventoryItem item, WallLocation location, string color, string text)
-            => PlaceStickyWithPole(item.ItemId, location, color, text);
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            PlaceStickyWithPole(item.ItemId, location, color, text);
+        }
 
         /// <summary>
         /// Places a sticky at the specified location using a sticky pole.
@@ -42,7 +46,11 @@ namespace Xabbo.Scripter.Scripting
         /// </summary>
         /// <param name="item">The sticky item to get data for.</param>
         /// <param name="timeout">The time to wait for a response from the server.</param>
-        public Sticky GetSticky(IWallItem item, int timeout = DEFAULT_TIMEOUT) => GetSticky(item.Id, timeout);
+        public Sticky GetSticky(IWallItem item, int timeout = DEFAULT_TIMEOUT)
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            return GetSticky(item.Id, timeout);
+        }
 
         /// <summary>
         /// Gets the sticky data for the specified wall item.
@@ -55,12 +63,20 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Updates the specified sticky.
         /// </summary>
-        public void UpdateSticky(Sticky sticky) => UpdateSticky(sticky.Id, sticky.Color, sticky.Text);
+        public void UpdateSticky(Sticky sticky)
+        {
+            ArgumentNullException.ThrowIfNull(sticky);
+            UpdateSticky(sticky.Id, sticky.Color, sticky.Text);
+        }
 
         /// <summary>
         /// Updates the specified sticky.
         /// </summary>
-        public void UpdateSticky(IWallItem item, string color, string text) => UpdateSticky(item.Id, color, text);
+        public void UpdateSticky(IWallItem item, string color, string text)
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            UpdateSticky(item.Id, color, text);
+        }
 
         /// <summary>
         /// Updates the specified sticky.
@@ -70,7 +86,10 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Deletes the specified sticky.
         /// </summary>
-        public void DeleteSticky(Sticky sticky) => DeleteWallItem(sticky.Id);
-
+        public void DeleteSticky(Sticky sticky)
+        {
+            ArgumentNullException.ThrowIfNull(sticky);
+            DeleteWallItem(sticky.Id);
+        }
     }
 }

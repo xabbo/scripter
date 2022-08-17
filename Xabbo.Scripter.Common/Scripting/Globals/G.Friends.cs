@@ -28,7 +28,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Gets if the specified <see cref="IRoomUser"/> is a friend.
         /// </summary>
-        public bool IsFriend(IRoomUser user) => _friendManager.IsFriend(user.Id);
+        public bool IsFriend(IRoomUser user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+            return _friendManager.IsFriend(user.Id);
+        }
 
         /// <summary>
         /// Accepts a friend request from the specified user.
@@ -63,7 +67,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sends a friend request to the specified user.
         /// </summary>
-        public void AddFriend(IRoomUser user) => AddFriend(user.Name);
+        public void AddFriend(IRoomUser user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+            AddFriend(user.Name);
+        }
 
         /// <summary>
         /// Removes the specified user from the user's friend list.
@@ -73,7 +81,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Removes the specified friend.
         /// </summary>
-        public void RemoveFriend(IFriend friend) => RemoveFriends(new[] { friend.Id });
+        public void RemoveFriend(IFriend friend)
+        {
+            ArgumentNullException.ThrowIfNull(friend);
+            RemoveFriends(new[] { friend.Id });
+        }
 
         /// <summary>
         /// Removes the specified users from the user's friend list.
@@ -83,7 +95,7 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Removes the specified users from the user's friend list.
         /// </summary>
-        public void RemoveFriends(IEnumerable<IFriend> friends) => Interceptor.Send(Out.RemoveFriend, friends.Select(x => x.Id));
+        public void RemoveFriends(IEnumerable<IFriend> friends) => Interceptor.Send(Out.RemoveFriend, friends.Where(x => x is not null).Select(x => x.Id));
 
         /// <summary>
         /// Sends a private message to a friend with the specified ID.
@@ -93,6 +105,10 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Sends a private message to the specified friend.
         /// </summary>
-        public void SendMessage(IFriend friend, string message) => SendMessage(friend.Id, message);
+        public void SendMessage(IFriend friend, string message)
+        {
+            ArgumentNullException.ThrowIfNull(friend);
+            SendMessage(friend.Id, message);
+        }
     }
 }

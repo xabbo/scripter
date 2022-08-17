@@ -50,7 +50,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Trades the specified user.
         /// </summary>
-        public void Trade(IRoomUser user) => Trade(user.Index);
+        public void Trade(IRoomUser user)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+            Trade(user.Index);
+        }
 
         /// <summary>
         /// Trades the user with the specified index.
@@ -60,7 +64,11 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the specified inventory item in the trade.
         /// </summary>
-        public void Offer(IInventoryItem item) => Offer(item.ItemId);
+        public void Offer(IInventoryItem item)
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            Offer(item.ItemId);
+        }
 
         /// <summary>
         /// Offers the item with the specified item ID in the trade.
@@ -70,17 +78,21 @@ namespace Xabbo.Scripter.Scripting
         /// <summary>
         /// Offers the specified inventory items in the trade.
         /// </summary>
-        public void Offer(IEnumerable<IInventoryItem> items) => Offer(items.Select(item => item.ItemId));
+        public void Offer(IEnumerable<IInventoryItem> items) => Offer(items.Where(x => x is not null).Select(item => item.ItemId));
 
         /// <summary>
         /// Offers the items with the specified item IDs in the trade.
         /// </summary>
-        public void Offer(IEnumerable<long> itemIds) => Interceptor.Send(Out.TradeAddItems, itemIds.Cast<LegacyLong>());
+        public void Offer(IEnumerable<long> itemIds) => Interceptor.Send(Out.TradeAddItems, itemIds);
 
         /// <summary>
         /// Cancels the offer for the specified item in the trade.
         /// </summary>
-        public void CancelOffer(IInventoryItem item) => CancelOffer(item.ItemId);
+        public void CancelOffer(IInventoryItem item)
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            CancelOffer(item.ItemId);
+        }
 
         /// <summary>
         /// Cancels the offer for the item with the specified item ID in the trade.

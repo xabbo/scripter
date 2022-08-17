@@ -22,7 +22,11 @@ namespace Xabbo.Scripter.Scripting
         /// If the floor entity occupies more than one tile, a random tile will be chosen.
         /// </summary>
         /// <param name="floorEntity"></param>
-        public void Move(IFloorEntity floorEntity) => Move(Rand(floorEntity.Area));
+        public void Move(IFloorEntity floorEntity)
+        {
+            ArgumentNullException.ThrowIfNull(floorEntity);
+            Move(Rand(floorEntity.Area));
+        }
 
         /// <summary>
         /// Makes the user look to the specified location.

@@ -32,7 +32,10 @@ namespace Xabbo.Scripter.Scripting
         /// Whispers a user with the specified message and chat bubble style.
         /// </summary>
         public void Whisper(IRoomUser recipient, string message, int bubble = 0)
-            => Chat(ChatType.Whisper, $"{recipient.Name} {message}", bubble);
+        {
+            ArgumentNullException.ThrowIfNull(recipient);
+            Chat(ChatType.Whisper, $"{recipient.Name} {message}", bubble);
+        }
 
         /// <summary>
         /// Whispers a user with the specified message and chat bubble style.

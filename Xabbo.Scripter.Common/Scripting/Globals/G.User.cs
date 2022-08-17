@@ -73,7 +73,11 @@ public partial class G
     /// Sets the user's motto.
     /// </summary>
     /// <param name="motto">The new motto.</param>
-    public void SetUserMotto(string motto) => Interceptor.Send(Out.ChangeAvatarMotto, motto);
+    public void SetUserMotto(string motto)
+    {
+        ArgumentNullException.ThrowIfNull(motto);
+        Interceptor.Send(Out.ChangeAvatarMotto, motto);
+    }
 
     /// <summary>
     /// Sets the user's figure.
@@ -81,7 +85,10 @@ public partial class G
     /// <param name="figureString">The figure string.</param>
     /// <param name="gender">The gender of the figure.</param>
     public void SetUserFigure(string figureString, Gender gender)
-        => Interceptor.Send(Out.UpdateAvatar, gender.ToShortString(), figureString);
+    {
+        ArgumentNullException.ThrowIfNull(figureString);
+        Interceptor.Send(Out.UpdateAvatar, gender.ToShortString(), figureString);
+    }
 
     /// <summary>
     /// Sets the user's figure, inferring the gender from the figure string.
@@ -89,6 +96,7 @@ public partial class G
     /// <param name="figureString">The figure string.</param>
     public void SetUserFigure(string figureString)
     {
+        ArgumentNullException.ThrowIfNull(figureString);
         var figure = Figure.Parse(figureString);
         if (figure.Gender == Gender.Unisex)
             throw new Exception($"Unable to detect gender for figure string: {figureString}");

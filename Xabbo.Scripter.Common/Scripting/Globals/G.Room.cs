@@ -126,15 +126,20 @@ public partial class G
     /// <summary>
     /// Saves the specified room settings.
     /// </summary>
-    public void SaveRoomSettings(RoomSettings settings) => Interceptor.Send(Out.SaveRoomSettings, settings);
+    public void SaveRoomSettings(RoomSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        Interceptor.Send(Out.SaveRoomSettings, settings);
+    }
 
     /// <summary>
     /// Modifies the settings of the specified room.
     /// </summary>
-    public void ModifyRoomSettings(Action<RoomSettings> update, long? roomId = null, int timeout = DEFAULT_TIMEOUT)
+    public void ModifyRoomSettings(Action<RoomSettings> updater, long? roomId = null, int timeout = DEFAULT_TIMEOUT)
     {
-        RoomSettings settings = GetRoomSettings(roomId ?? GetRoomOrThrow().Id, timeout);
-        update(settings);
+        ArgumentNullException.ThrowIfNull(updater);
+        RoomSettings settings = GetRoomSettings(roomId ?? RequireRoom().Id, timeout);
+        updater(settings);
         SaveRoomSettings(settings);
     }
 

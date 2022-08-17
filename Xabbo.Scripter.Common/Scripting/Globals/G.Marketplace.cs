@@ -41,7 +41,10 @@ namespace Xabbo.Scripter.Scripting
         /// Gets the marketplace information for the specified item.
         /// </summary>
         public IMarketplaceItemInfo GetMarketplaceInfo(IItem item, int timeout = DEFAULT_TIMEOUT)
-            => new GetMarketplaceInfoTask(Interceptor, item.Type, item.Kind).Execute(timeout, Ct);
+        {
+            ArgumentNullException.ThrowIfNull(item);
+            return new GetMarketplaceInfoTask(Interceptor, item.Type, item.Kind).Execute(timeout, Ct);
+        }
 
         /// <summary>
         /// Gets the marketplace information for the specified furni.

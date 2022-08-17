@@ -46,7 +46,10 @@ namespace Xabbo.Scripter.Scripting
         /// <param name="node">The node of which to load the corresponding catalog page.</param>
         /// <param name="timeout">The time in milliseconds to wait for a response from the server.</param>
         public ICatalogPage GetCatalogPage(ICatalogPageNode node, int timeout = DEFAULT_TIMEOUT)
-            => GetCatalogPage(node.Id, node.Catalog?.Type ?? "NORMAL", timeout);
+        {
+            ArgumentNullException.ThrowIfNull(node);
+            return GetCatalogPage(node.Id, node.Catalog?.Type ?? "NORMAL", timeout);
+        }
 
         /// <summary>
         /// Sends a request to purchase the specified catalog offer.
@@ -60,8 +63,8 @@ namespace Xabbo.Scripter.Scripting
         /// </param>
         public void Purchase(ICatalogOffer offer, int count = 1, string extra = "")
         {
-            if (offer.Page is null)
-                throw new Exception("Catalog page cannot be null.");
+            ArgumentNullException.ThrowIfNull(offer);
+            ArgumentNullException.ThrowIfNull(offer.Page);
 
             Purchase(offer.Page.Id, offer.Id, count, extra);
         }
@@ -106,6 +109,8 @@ namespace Xabbo.Scripter.Scripting
             GiftBox box = GiftBox.Basic,
             GiftDecor decor = GiftDecor.None)
         {
+            ArgumentNullException.ThrowIfNull(offer);
+
             if (string.IsNullOrWhiteSpace(giftFurni))
             {
                 int n = Rand(7);

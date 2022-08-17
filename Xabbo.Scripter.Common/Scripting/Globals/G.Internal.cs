@@ -10,5 +10,5 @@ namespace Xabbo.Scripter.Scripting;
  */ 
 public partial class G
 {
-    private IRoom GetRoomOrThrow() => Room ?? throw new InvalidOperationException("The user is not in a room.");
+    private IRoom RequireRoom() => Room ?? throw new InvalidOperationException("The user is not in a room.");
 }
