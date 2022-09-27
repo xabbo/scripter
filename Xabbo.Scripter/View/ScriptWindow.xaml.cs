@@ -2,13 +2,12 @@
 
 using MaterialDesignExtensions.Controls;
 
-namespace Xabbo.Scripter.View
+namespace Xabbo.Scripter.View;
+
+public partial class ScriptWindow : MaterialWindow
 {
-    public partial class ScriptWindow : MaterialWindow
+    public ScriptWindow()
     {
-        public ScriptWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

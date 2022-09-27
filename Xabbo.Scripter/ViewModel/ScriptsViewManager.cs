@@ -28,375 +28,374 @@ using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Engine;
 using Xabbo.Scripter.Tabs;
 
-namespace Xabbo.Scripter.ViewModel
+namespace Xabbo.Scripter.ViewModel;
+
+public class ScriptsViewManager : ObservableObject
 {
-    public class ScriptsViewManager : ObservableObject
+    private readonly IUiContext _uiContext;
+    private readonly ScriptEngine _engine;
+    private readonly FileSystemWatcher _fsw;
+    private readonly ISnackbarMessageQueue _snackbar;
+
+    private int _currentScriptIndex = 0;
+
+    private readonly ObservableCollection<ScriptViewModel> _scripts;
+
+    private readonly Subject<FileSystemEventArgs> _fileUpdate = new();
+
+    private readonly Dictionary<string, ScriptGroupViewModel> _groups = new();
+
+    public ScriptEngine Engine => _engine;
+    public ICollectionView Scripts { get; }
+    public ObservableCollection<ScriptViewModel> OpenTabs { get; } = new();
+
+    private object? _selectedTabItem;
+    public object? SelectedTabItem
     {
-        private readonly IUiContext _uiContext;
-        private readonly ScriptEngine _engine;
-        private readonly FileSystemWatcher _fsw;
-        private readonly ISnackbarMessageQueue _snackbar;
+        get => _selectedTabItem;
+        set => Set(ref _selectedTabItem, value);
+    }
 
-        private int _currentScriptIndex = 0;
-
-        private readonly ObservableCollection<ScriptViewModel> _scripts;
-
-        private readonly Subject<FileSystemEventArgs> _fileUpdate = new();
-
-        private readonly Dictionary<string, ScriptGroupViewModel> _groups = new();
-
-        public ScriptEngine Engine => _engine;
-        public ICollectionView Scripts { get; }
-        public ObservableCollection<ScriptViewModel> OpenTabs { get; } = new();
-
-        private object? _selectedTabItem;
-        public object? SelectedTabItem
+    private int _selectedTabIndex = -1;
+    public int SelectedTabIndex
+    {
+        get => _selectedTabIndex;
+        set
         {
-            get => _selectedTabItem;
-            set => Set(ref _selectedTabItem, value);
-        }
-
-        private int _selectedTabIndex = -1;
-        public int SelectedTabIndex
-        {
-            get => _selectedTabIndex;
-            set
+            if (Set(ref _selectedTabIndex, value))
             {
-                if (Set(ref _selectedTabIndex, value))
+                if (value == -1)
                 {
-                    if (value == -1)
-                    {
-                        Scripts.Refresh();
-                    }
+                    Scripts.Refresh();
                 }
             }
         }
+    }
 
-        public IList SelectedItems { get; set; } = new List<ScriptViewModel>();
+    public IList SelectedItems { get; set; } = new List<ScriptViewModel>();
 
-        private double fontSize = 12;
-        public double FontSize
+    private double fontSize = 12;
+    public double FontSize
+    {
+        get => fontSize;
+        set => Set(ref fontSize, value);
+    }
+
+    private GridLength _logHeight = new GridLength(60);
+    public GridLength LogHeight
+    {
+        get => _logHeight;
+        set => Set(ref _logHeight, value);
+    }
+
+    public ICommand OpenScriptListCommand { get; }
+    public ICommand NewTabCommand { get; }
+    public ICommand CloseTabCommand { get; }
+
+    public ICommand SaveScriptCommand { get; }
+    public ICommand DeleteSelectedScriptsCommand { get; }
+
+    public IInterTabClient InterTabClient { get; }
+    public Func<object> NewItemFactory { get; }
+
+    public ScriptsViewManager(
+        IUiContext uiContext,
+        ScriptEngine engine,
+        ISnackbarMessageQueue snackbar)
+    {
+        InterTabClient = new ScripterInterTabClient(this);
+
+        _uiContext = uiContext;
+        _engine = engine;
+        _snackbar = snackbar;
+
+        _scripts = new ObservableCollection<ScriptViewModel>();
+        Scripts = CollectionViewSource.GetDefaultView(_scripts);
+        Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Group), ListSortDirection.Ascending));
+        Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Name), ListSortDirection.Ascending));
+        Scripts.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ScriptViewModel.Group)));
+
+        if (uiContext is WpfContext wpfContext)
         {
-            get => fontSize;
-            set => Set(ref fontSize, value);
+            DispatcherTimer timer = new(
+                TimeSpan.FromSeconds(0.1),
+                DispatcherPriority.Background,
+                Timer_Tick,
+                wpfContext.Dispatcher
+            );
+            timer.Start();
         }
 
-        private GridLength _logHeight = new GridLength(60);
-        public GridLength LogHeight
+        OpenScriptListCommand = new RelayCommand(OpenScriptList);
+        NewTabCommand = new RelayCommand(AddNewScript);
+        CloseTabCommand = new RelayCommand(CloseCurrentScript);
+
+        SaveScriptCommand = new RelayCommand(SaveCurrentScript);
+        DeleteSelectedScriptsCommand = new RelayCommand(DeleteSelectedScripts);
+
+        NewItemFactory = () => CreateNewScript();
+
+        LoadScripts();
+
+        _fileUpdate
+            .AsObservable()
+            .Buffer(TimeSpan.FromMilliseconds(200))
+            .Subscribe(HandleFileChanges);
+
+        _fsw = new FileSystemWatcher(Engine.ScriptDirectory, "*.csx");
+        _fsw.Created += (s, e) => _fileUpdate.OnNext(e);
+        _fsw.Changed += (s, e) => _fileUpdate.OnNext(e);
+        _fsw.Deleted += (s, e) => _fileUpdate.OnNext(e);
+        _fsw.EnableRaisingEvents = true;
+    }
+
+    private void HandleFileChanges(IList<FileSystemEventArgs> changes)
+    {
+        foreach (var g in changes.GroupBy(x => x.Name))
         {
-            get => _logHeight;
-            set => Set(ref _logHeight, value);
+            System.Diagnostics.Debug.WriteLine($"{g.Key}: {string.Join(", ", g.Select(x => x.ChangeType.ToString()))}");
         }
+    }
 
-        public ICommand OpenScriptListCommand { get; }
-        public ICommand NewTabCommand { get; }
-        public ICommand CloseTabCommand { get; }
+    private void OpenScriptList() => SelectedTabIndex = -1;
 
-        public ICommand SaveScriptCommand { get; }
-        public ICommand DeleteSelectedScriptsCommand { get; }
+    private void LoadScripts()
+    {
+        DirectoryInfo directory = new(Engine.ScriptDirectory);
+        if (!directory.Exists) return;
 
-        public IInterTabClient InterTabClient { get; }
-        public Func<object> NewItemFactory { get; }
-
-        public ScriptsViewManager(
-            IUiContext uiContext,
-            ScriptEngine engine,
-            ISnackbarMessageQueue snackbar)
-        {
-            InterTabClient = new ScripterInterTabClient(this);
-
-            _uiContext = uiContext;
-            _engine = engine;
-            _snackbar = snackbar;
-
-            _scripts = new ObservableCollection<ScriptViewModel>();
-            Scripts = CollectionViewSource.GetDefaultView(_scripts);
-            Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Group), ListSortDirection.Ascending));
-            Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Name), ListSortDirection.Ascending));
-            Scripts.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ScriptViewModel.Group)));
-
-            if (uiContext is WpfContext wpfContext)
-            {
-                DispatcherTimer timer = new(
-                    TimeSpan.FromSeconds(0.1),
-                    DispatcherPriority.Background,
-                    Timer_Tick,
-                    wpfContext.Dispatcher
-                );
-                timer.Start();
-            }
-
-            OpenScriptListCommand = new RelayCommand(OpenScriptList);
-            NewTabCommand = new RelayCommand(AddNewScript);
-            CloseTabCommand = new RelayCommand(CloseCurrentScript);
-
-            SaveScriptCommand = new RelayCommand(SaveCurrentScript);
-            DeleteSelectedScriptsCommand = new RelayCommand(DeleteSelectedScripts);
-
-            NewItemFactory = () => CreateNewScript();
-
-            LoadScripts();
-
-            _fileUpdate
-                .AsObservable()
-                .Buffer(TimeSpan.FromMilliseconds(200))
-                .Subscribe(HandleFileChanges);
-
-            _fsw = new FileSystemWatcher(Engine.ScriptDirectory, "*.csx");
-            _fsw.Created += (s, e) => _fileUpdate.OnNext(e);
-            _fsw.Changed += (s, e) => _fileUpdate.OnNext(e);
-            _fsw.Deleted += (s, e) => _fileUpdate.OnNext(e);
-            _fsw.EnableRaisingEvents = true;
-        }
-
-        private void HandleFileChanges(IList<FileSystemEventArgs> changes)
-        {
-            foreach (var g in changes.GroupBy(x => x.Name))
-            {
-                System.Diagnostics.Debug.WriteLine($"{g.Key}: {string.Join(", ", g.Select(x => x.ChangeType.ToString()))}");
-            }
-        }
-
-        private void OpenScriptList() => SelectedTabIndex = -1;
-
-        private void LoadScripts()
-        {
-            DirectoryInfo directory = new(Engine.ScriptDirectory);
-            if (!directory.Exists) return;
-
-            foreach (FileInfo file in directory.EnumerateFiles("*.csx", SearchOption.TopDirectoryOnly))
-            {
-                ScriptModel model = new ScriptModel
-                {
-                    FileName = file.Name,
-                    Name = Path.GetFileNameWithoutExtension(file.Name)
-                };
-
-                ScriptGroupViewModel? groupViewModel;
-
-                foreach (string line in File.ReadLines(file.FullName))
-                {
-                    Match match = ScriptEngine.NameRegex.Match(line);
-                    if (match.Success)
-                    {
-                        model.Name = match.Groups["name"].Value;
-                    }
-
-                    match = ScriptEngine.GroupRegex.Match(line);
-                    if (match.Success)
-                    {
-                        string name = match.Groups["group"].Value;
-                        if (!_groups.TryGetValue(name, out groupViewModel))
-                            _groups[name] = new ScriptGroupViewModel() { Name = name };
-                        model.GroupName = name;
-                    }
-                }
-
-                _scripts.Add(new ScriptViewModel(Engine, model)
-                {
-                    IsSavedToDisk = true
-                });
-            }
-        }
-
-        public ScriptViewModel CreateNewScript()
+        foreach (FileInfo file in directory.EnumerateFiles("*.csx", SearchOption.TopDirectoryOnly))
         {
             ScriptModel model = new ScriptModel
             {
-                FileName = $"script-{++_currentScriptIndex}.csx"
+                FileName = file.Name,
+                Name = Path.GetFileNameWithoutExtension(file.Name)
             };
 
-            ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
+            ScriptGroupViewModel? groupViewModel;
 
-            _scripts.Add(scriptViewModel);
-
-            return scriptViewModel;
-        }
-
-        public void AddNewScript()
-        {
-            ScriptModel model = new ScriptModel
+            foreach (string line in File.ReadLines(file.FullName))
             {
-                FileName = $"script-{++_currentScriptIndex}.csx"
-            };
-
-            ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
-
-            _scripts.Add(scriptViewModel);
-            OpenTabs.Add(scriptViewModel);
-
-            _uiContext.InvokeAsync(() => SelectedTabItem = scriptViewModel);
-        }
-
-        public void SelectScript(ScriptViewModel script)
-        {
-            if (!OpenTabs.Contains(script))
-            {
-                if (!script.IsLoaded)
+                Match match = ScriptEngine.NameRegex.Match(line);
+                if (match.Success)
                 {
-                    script.Load();
+                    model.Name = match.Groups["name"].Value;
                 }
 
-                OpenTabs.Add(script);
-            }
-
-            SelectedTabItem = script;
-        }
-
-        private async void SaveCurrentScript()
-        {
-            if (SelectedTabItem is not ScriptViewModel script) return;
-
-            if (!script.IsLoaded) return;
-
-            try
-            {
-                if (script.IsModified)
+                match = ScriptEngine.GroupRegex.Match(line);
+                if (match.Success)
                 {
-                    if (script.IsSavedToDisk)
-                    {
-                        script.Save();
-                    }
-                    else
-                    {
-                        string fileName = script.FileName;
-                        if (fileName.EndsWith(".csx", StringComparison.OrdinalIgnoreCase))
-                            fileName = fileName[..^4];
-
-                        TextInputModalViewModel textInputModal = new TextInputModalViewModel()
-                        {
-                            Message = "Enter a file name.",
-                            InputText = fileName,
-                            InputSuffix = ".csx"
-                        };
-
-                        textInputModal.ValidateInput = fileName =>
-                        {
-                            if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
-                                return new ValidationResult("File name contains invalid characters.");
-                            if (File.Exists(Path.Combine(Engine.ScriptDirectory, fileName)))
-                                return new ValidationResult("A file with that name already exists.");
-                            return ValidationResult.Success;
-                        };
-
-                        object? result = await DialogHost.Show(textInputModal);
-                        if (result is not bool booleanResult || !booleanResult) return;
-
-                        fileName = $"{textInputModal.InputText}.csx";
-
-                        string filePath = Path.Combine(Engine.ScriptDirectory, fileName);
-
-                        if (File.Exists(filePath))
-                        {
-                            _snackbar.Enqueue("A script with that file name already exists.");
-                            return;
-                        }
-
-                        script.FileName = Path.GetFileName(filePath);
-                        script.Save();
-                    }
+                    string name = match.Groups["group"].Value;
+                    if (!_groups.TryGetValue(name, out groupViewModel))
+                        _groups[name] = new ScriptGroupViewModel() { Name = name };
+                    model.GroupName = name;
                 }
             }
-            catch (Exception ex)
-            {
-                _snackbar.Enqueue($"Failed to save file to disk: {ex.Message}");
-            }
-        }
 
-        private async void DeleteSelectedScripts()
-        {
-            List<ScriptViewModel> selectedScripts = SelectedItems.OfType<ScriptViewModel>().ToList();
-            if (selectedScripts.Count == 0) return;
-
-            if (selectedScripts.Any(x => x.IsRunning))
+            _scripts.Add(new ScriptViewModel(Engine, model)
             {
-                await DialogHost.Show(new MessageBoxViewModel
-                {
-                    Buttons = MessageBoxButton.OK,
-                    Message = "Cannot delete scripts while they are running."
-                });
-                return;
-            }
-
-            var result = await DialogHost.Show(new MessageBoxViewModel
-            {
-                Buttons = MessageBoxButton.YesNo,
-                Message = $"Delete {"script".ToQuantity(selectedScripts.Count)}?"
+                IsSavedToDisk = true
             });
+        }
+    }
 
-            if (result is not MessageBoxResult messageBoxResult ||
-                messageBoxResult != MessageBoxResult.Yes)
+    public ScriptViewModel CreateNewScript()
+    {
+        ScriptModel model = new ScriptModel
+        {
+            FileName = $"script-{++_currentScriptIndex}.csx"
+        };
+
+        ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
+
+        _scripts.Add(scriptViewModel);
+
+        return scriptViewModel;
+    }
+
+    public void AddNewScript()
+    {
+        ScriptModel model = new ScriptModel
+        {
+            FileName = $"script-{++_currentScriptIndex}.csx"
+        };
+
+        ScriptViewModel scriptViewModel = new(_engine, model) { IsLoaded = true };
+
+        _scripts.Add(scriptViewModel);
+        OpenTabs.Add(scriptViewModel);
+
+        _uiContext.InvokeAsync(() => SelectedTabItem = scriptViewModel);
+    }
+
+    public void SelectScript(ScriptViewModel script)
+    {
+        if (!OpenTabs.Contains(script))
+        {
+            if (!script.IsLoaded)
             {
-                return;
+                script.Load();
             }
 
-            try
-            {
-                foreach (ScriptViewModel script in selectedScripts)
-                {
-                    _scripts.Remove(script);
-                    OpenTabs.Remove(script);
+            OpenTabs.Add(script);
+        }
 
-                    if (script.IsSavedToDisk)
+        SelectedTabItem = script;
+    }
+
+    private async void SaveCurrentScript()
+    {
+        if (SelectedTabItem is not ScriptViewModel script) return;
+
+        if (!script.IsLoaded) return;
+
+        try
+        {
+            if (script.IsModified)
+            {
+                if (script.IsSavedToDisk)
+                {
+                    script.Save();
+                }
+                else
+                {
+                    string fileName = script.FileName;
+                    if (fileName.EndsWith(".csx", StringComparison.OrdinalIgnoreCase))
+                        fileName = fileName[..^4];
+
+                    TextInputModalViewModel textInputModal = new TextInputModalViewModel()
                     {
-                        File.Delete(Path.Combine(Engine.ScriptDirectory, script.FileName));
+                        Message = "Enter a file name.",
+                        InputText = fileName,
+                        InputSuffix = ".csx"
+                    };
+
+                    textInputModal.ValidateInput = fileName =>
+                    {
+                        if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+                            return new ValidationResult("File name contains invalid characters.");
+                        if (File.Exists(Path.Combine(Engine.ScriptDirectory, fileName)))
+                            return new ValidationResult("A file with that name already exists.");
+                        return ValidationResult.Success;
+                    };
+
+                    object? result = await DialogHost.Show(textInputModal);
+                    if (result is not bool booleanResult || !booleanResult) return;
+
+                    fileName = $"{textInputModal.InputText}.csx";
+
+                    string filePath = Path.Combine(Engine.ScriptDirectory, fileName);
+
+                    if (File.Exists(filePath))
+                    {
+                        _snackbar.Enqueue("A script with that file name already exists.");
+                        return;
                     }
+
+                    script.FileName = Path.GetFileName(filePath);
+                    script.Save();
                 }
             }
-            catch (Exception ex)
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Enqueue($"Failed to save file to disk: {ex.Message}");
+        }
+    }
+
+    private async void DeleteSelectedScripts()
+    {
+        List<ScriptViewModel> selectedScripts = SelectedItems.OfType<ScriptViewModel>().ToList();
+        if (selectedScripts.Count == 0) return;
+
+        if (selectedScripts.Any(x => x.IsRunning))
+        {
+            await DialogHost.Show(new MessageBoxViewModel
             {
-                _snackbar.Enqueue($"Failed to remove script(s): {ex.Message}");
-            }
+                Buttons = MessageBoxButton.OK,
+                Message = "Cannot delete scripts while they are running."
+            });
+            return;
         }
 
-        public void DeleteScript(ScriptViewModel script)
+        var result = await DialogHost.Show(new MessageBoxViewModel
         {
-            _scripts.Remove(script);
+            Buttons = MessageBoxButton.YesNo,
+            Message = $"Delete {"script".ToQuantity(selectedScripts.Count)}?"
+        });
 
-            OpenTabs.Remove(script);
+        if (result is not MessageBoxResult messageBoxResult ||
+            messageBoxResult != MessageBoxResult.Yes)
+        {
+            return;
         }
 
-        public void CloseScript(ScriptViewModel script)
+        try
         {
-            if (SelectedTabIndex != -1)
+            foreach (ScriptViewModel script in selectedScripts)
             {
-                if (SelectedTabItem == script)
+                _scripts.Remove(script);
+                OpenTabs.Remove(script);
+
+                if (script.IsSavedToDisk)
                 {
-                    if (SelectedTabIndex == (OpenTabs.Count - 1))
-                    {
-                        SelectedTabIndex--;
-                    }
-                    else
-                    {
-                        SelectedTabIndex++;
-                    }
+                    File.Delete(Path.Combine(Engine.ScriptDirectory, script.FileName));
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Enqueue($"Failed to remove script(s): {ex.Message}");
+        }
+    }
 
-            OpenTabs.Remove(script);
+    public void DeleteScript(ScriptViewModel script)
+    {
+        _scripts.Remove(script);
 
-            if (!script.IsModified &&
-                string.IsNullOrWhiteSpace(script.Code) &&
-                !script.IsSavedToDisk)
+        OpenTabs.Remove(script);
+    }
+
+    public void CloseScript(ScriptViewModel script)
+    {
+        if (SelectedTabIndex != -1)
+        {
+            if (SelectedTabItem == script)
             {
-                DeleteScript(script);
+                if (SelectedTabIndex == (OpenTabs.Count - 1))
+                {
+                    SelectedTabIndex--;
+                }
+                else
+                {
+                    SelectedTabIndex++;
+                }
             }
         }
 
-        public void CloseCurrentScript()
-        {
-            if (SelectedTabItem is ScriptViewModel scriptViewModel)
-            {
-                CloseScript(scriptViewModel);
-            }
-        }
+        OpenTabs.Remove(script);
 
-        private void Timer_Tick(object? sender, EventArgs e)
+        if (!script.IsModified &&
+            string.IsNullOrWhiteSpace(script.Code) &&
+            !script.IsSavedToDisk)
         {
-            foreach (ScriptViewModel viewModel in _scripts)
-            {
-                viewModel.UpdateRuntime();
-            }
+            DeleteScript(script);
+        }
+    }
+
+    public void CloseCurrentScript()
+    {
+        if (SelectedTabItem is ScriptViewModel scriptViewModel)
+        {
+            CloseScript(scriptViewModel);
+        }
+    }
+
+    private void Timer_Tick(object? sender, EventArgs e)
+    {
+        foreach (ScriptViewModel viewModel in _scripts)
+        {
+            viewModel.UpdateRuntime();
         }
     }
 }

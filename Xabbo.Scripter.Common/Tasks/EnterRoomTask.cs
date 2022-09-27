@@ -8,93 +8,92 @@ using Xabbo.Core;
 
 using Xabbo.Scripter.Runtime;
 
-namespace Xabbo.Scripter.Tasks
+namespace Xabbo.Scripter.Tasks;
+
+internal class EnterRoomTask : InterceptorTask<RoomEntryResult>
 {
-    internal class EnterRoomTask : InterceptorTask<RoomEntryResult>
+    enum Status { RequestingRoomData, AwaitingFlatOpc, AwaitingRoomEntry }
+
+    private readonly long _roomId;
+    private readonly string? _password;
+
+    private Status _state = Status.RequestingRoomData;
+
+    public EnterRoomTask(IInterceptor interceptor, long roomId, string? password = null)
+        : base(interceptor)
     {
-        enum Status { RequestingRoomData, AwaitingFlatOpc, AwaitingRoomEntry }
+        _roomId = roomId;
+        _password = password;
+    }
 
-        private readonly long _roomId;
-        private readonly string? _password;
+    protected override ValueTask OnExecuteAsync() => Interceptor.SendAsync(Out.GetGuestRoom, (LegacyLong)_roomId, 0, 1);
 
-        private Status _state = Status.RequestingRoomData;
+    [InterceptIn(nameof(Incoming.GetGuestRoomResult))]
+    protected void HandleGetGuestRoomResult(InterceptArgs e)
+    {
+        if (_state != Status.RequestingRoomData) return;
 
-        public EnterRoomTask(IInterceptor interceptor, long roomId, string? password = null)
-            : base(interceptor)
+        try
         {
-            _roomId = roomId;
-            _password = password;
-        }
-
-        protected override ValueTask OnExecuteAsync() => Interceptor.SendAsync(Out.GetGuestRoom, (LegacyLong)_roomId, 0, 1);
-
-        [InterceptIn(nameof(Incoming.GetGuestRoomResult))]
-        protected void HandleGetGuestRoomResult(InterceptArgs e)
-        {
-            if (_state != Status.RequestingRoomData) return;
-
-            try
+            RoomData roomData = RoomData.Parse(e.Packet);
+            if (roomData.Id == _roomId)
             {
-                RoomData roomData = RoomData.Parse(e.Packet);
-                if (roomData.Id == _roomId)
-                {
-                    roomData.IsEntering = false;
-                    roomData.Forward = true;
-                    roomData.Access = RoomAccess.Open;
+                roomData.IsEntering = false;
+                roomData.Forward = true;
+                roomData.Access = RoomAccess.Open;
 
-                    e.Packet = new Packet(e.Packet.Header, Interceptor.Client)
-                        .Write(roomData);
+                e.Packet = new Packet(e.Packet.Header, Interceptor.Client)
+                    .Write(roomData);
 
-                    _state = Status.AwaitingFlatOpc;
-                }
-            }
-            catch (Exception ex)
-            {
-                SetException(ex);
+                _state = Status.AwaitingFlatOpc;
             }
         }
-
-        [InterceptOut(nameof(Outgoing.FlatOpc))]
-        protected void HandleFlatOpc(InterceptArgs e)
+        catch (Exception ex)
         {
-            if (_state != Status.AwaitingFlatOpc) return;
+            SetException(ex);
+        }
+    }
 
-            try
+    [InterceptOut(nameof(Outgoing.FlatOpc))]
+    protected void HandleFlatOpc(InterceptArgs e)
+    {
+        if (_state != Status.AwaitingFlatOpc) return;
+
+        try
+        {
+            long roomId = e.Packet.ReadLegacyLong();
+            if (roomId == _roomId)
             {
-                long roomId = e.Packet.ReadLegacyLong();
-                if (roomId == _roomId)
-                {
-                    e.Packet.ReplaceString(_password ?? string.Empty);
-                    _state = Status.AwaitingRoomEntry;
-                }
+                e.Packet.ReplaceString(_password ?? string.Empty);
+                _state = Status.AwaitingRoomEntry;
             }
-            catch (Exception ex)
-            {
-                SetException(ex);
-            }
         }
-
-        [InterceptIn(nameof(Incoming.RoomEntryInfo))]
-        protected void HandleRoomEntryInfo(InterceptArgs e)
+        catch (Exception ex)
         {
-            if (_state != Status.AwaitingRoomEntry) return;
-
-            SetResult(RoomEntryResult.Success);
+            SetException(ex);
         }
+    }
 
-        [InterceptIn(nameof(Incoming.CanNotConnect))]
-        protected void HandleCanNotConnect(InterceptArgs e)
+    [InterceptIn(nameof(Incoming.RoomEntryInfo))]
+    protected void HandleRoomEntryInfo(InterceptArgs e)
+    {
+        if (_state != Status.AwaitingRoomEntry) return;
+
+        SetResult(RoomEntryResult.Success);
+    }
+
+    [InterceptIn(nameof(Incoming.CanNotConnect))]
+    protected void HandleCanNotConnect(InterceptArgs e)
+    {
+        if (_state != Status.AwaitingRoomEntry) return;
+
+        RoomEnterError error = (RoomEnterError)e.Packet.ReadInt();
+        
+        SetResult(error switch
         {
-            if (_state != Status.AwaitingRoomEntry) return;
-
-            RoomEnterError error = (RoomEnterError)e.Packet.ReadInt();
-            
-            SetResult(error switch
-            {
-                RoomEnterError.Full => RoomEntryResult.Full,
-                RoomEnterError.Banned => RoomEntryResult.Banned,
-                _ => RoomEntryResult.Unknown
-            });
-        }
+            RoomEnterError.Full => RoomEntryResult.Full,
+            RoomEnterError.Banned => RoomEntryResult.Banned,
+            _ => RoomEntryResult.Unknown
+        });
     }
 }

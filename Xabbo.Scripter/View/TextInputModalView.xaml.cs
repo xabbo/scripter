@@ -13,21 +13,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Xabbo.Scripter.View
+namespace Xabbo.Scripter.View;
+
+public partial class TextInputModalView : UserControl
 {
-    public partial class TextInputModalView : UserControl
+    public TextInputModalView()
     {
-        public TextInputModalView()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            Loaded += TextInputModalView_Loaded;
-        }
+        Loaded += TextInputModalView_Loaded;
+    }
 
-        private void TextInputModalView_Loaded(object sender, RoutedEventArgs e)
-        {
-            textBox.Focus();
-            textBox.SelectAll();
-        }
+    private void TextInputModalView_Loaded(object sender, RoutedEventArgs e)
+    {
+        textBox.Focus();
+        textBox.SelectAll();
     }
 }

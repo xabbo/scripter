@@ -3,24 +3,23 @@
 using Microsoft.CodeAnalysis.CSharp.Scripting.Hosting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 
-namespace Xabbo.Scripter.Services
+namespace Xabbo.Scripter.Services;
+
+public class ObjectFormatter : IObjectFormatter
 {
-    public class ObjectFormatter : IObjectFormatter
+    private readonly PrintOptions _printOptions = new()
     {
-        private readonly PrintOptions _printOptions = new()
-        {
-            MaximumOutputLength = 10_000,
-            MemberDisplayFormat = MemberDisplayFormat.SeparateLines
-        };
+        MaximumOutputLength = 10_000,
+        MemberDisplayFormat = MemberDisplayFormat.SeparateLines
+    };
 
-        public string FormatObject(object? obj)
-        {
-            return CSharpObjectFormatter.Instance.FormatObject(obj, _printOptions);
-        }
+    public string FormatObject(object? obj)
+    {
+        return CSharpObjectFormatter.Instance.FormatObject(obj, _printOptions);
+    }
 
-        public string FormatException(Exception e)
-        {
-            return CSharpObjectFormatter.Instance.FormatException(e);
-        }
+    public string FormatException(Exception e)
+    {
+        return CSharpObjectFormatter.Instance.FormatException(e);
     }
 }

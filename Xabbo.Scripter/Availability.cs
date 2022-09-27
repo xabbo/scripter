@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Xabbo.Scripter
+namespace Xabbo.Scripter;
+
+public enum Availability
 {
-    public enum Availability
-    {
-        Unavailable,
-        Unresolved,
-        Error,
-        Loading,
-        Available
-    }
+    Unavailable,
+    Unresolved,
+    Error,
+    Loading,
+    Available
 }

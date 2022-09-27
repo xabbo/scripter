@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Xabbo.Scripter.Runtime
+namespace Xabbo.Scripter.Runtime;
+
+/// <summary>
+/// Provides extension methods for use within the scripting context.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public static class ScriptExtensions
 {
     /// <summary>
-    /// Provides extension methods for use within the scripting context.
+    /// Deconstructs a grouping to its key and elements.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class ScriptExtensions
+    public static void Deconstruct<TKey, TElement>(this IGrouping<TKey, TElement> grouping,
+        out TKey key, out IEnumerable<TElement> elements)
     {
-        /// <summary>
-        /// Deconstructs a grouping to its key and elements.
-        /// </summary>
-        public static void Deconstruct<TKey, TElement>(this IGrouping<TKey, TElement> grouping,
-            out TKey key, out IEnumerable<TElement> elements)
-        {
-            key = grouping.Key;
-            elements = grouping;
-        }
+        key = grouping.Key;
+        elements = grouping;
     }
 }

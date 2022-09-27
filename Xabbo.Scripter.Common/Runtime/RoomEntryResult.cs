@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Xabbo.Scripter.Runtime
+namespace Xabbo.Scripter.Runtime;
+
+public enum RoomEntryResult
 {
-    public enum RoomEntryResult
-    {
-        Unknown,
-        Full,
-        Banned,
-        InvalidPassword,
-        Success
-    }
+    Unknown,
+    Full,
+    Banned,
+    InvalidPassword,
+    Success
 }

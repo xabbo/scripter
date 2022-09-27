@@ -4,29 +4,28 @@ using Xabbo.Messages;
 using Xabbo.Interceptor;
 using Xabbo.Interceptor.Dispatcher;
 
-namespace Xabbo.Scripter.Scripting
+namespace Xabbo.Scripter.Scripting;
+
+internal class Intercept : IDisposable
 {
-    internal class Intercept : IDisposable
+    private bool _disposed;
+
+    public IInterceptDispatcher Dispatcher { get; }
+    public Header Header { get; }
+    public Action<InterceptArgs> Callback { get; }
+
+    public Intercept(IInterceptDispatcher dispatcher, Header header, Action<InterceptArgs> callback)
     {
-        private bool _disposed;
+        Dispatcher = dispatcher;
+        Header = header;
+        Callback = callback;
+    }
 
-        public IInterceptDispatcher Dispatcher { get; }
-        public Header Header { get; }
-        public Action<InterceptArgs> Callback { get; }
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
 
-        public Intercept(IInterceptDispatcher dispatcher, Header header, Action<InterceptArgs> callback)
-        {
-            Dispatcher = dispatcher;
-            Header = header;
-            Callback = callback;
-        }
-
-        public void Dispose()
-        {
-            if (_disposed) return;
-            _disposed = true;
-
-            Dispatcher.RemoveIntercept(Header, Callback);
-        }
+        Dispatcher.RemoveIntercept(Header, Callback);
     }
 }

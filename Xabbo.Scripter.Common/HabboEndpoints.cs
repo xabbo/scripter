@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Xabbo.Scripter
+namespace Xabbo.Scripter;
+
+public enum HabboEndpoints
 {
-    public enum HabboEndpoints
-    {
-        GameDataHashes,
-        GameDataHashes2
-    }
+    GameDataHashes,
+    GameDataHashes2
 }

@@ -14,21 +14,20 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xabbo.Scripter.ViewModel;
 
-namespace Xabbo.Scripter.View.Pages
+namespace Xabbo.Scripter.View.Pages;
+
+/// <summary>
+/// Interaction logic for LogPage.xaml
+/// </summary>
+public partial class LogPage : Page
 {
-    /// <summary>
-    /// Interaction logic for LogPage.xaml
-    /// </summary>
-    public partial class LogPage : Page
+    private readonly LogViewManager _manager;
+
+    public LogPage(LogViewManager manager)
     {
-        private readonly LogViewManager _manager;
+        _manager = manager;
+        DataContext = manager;
 
-        public LogPage(LogViewManager manager)
-        {
-            _manager = manager;
-            DataContext = manager;
-
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

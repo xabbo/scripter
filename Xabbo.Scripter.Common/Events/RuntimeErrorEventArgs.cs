@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Xabbo.Scripter.Events
-{
-    public class RuntimeErrorEventArgs : EventArgs
-    {
-        public Exception Error { get; }
+namespace Xabbo.Scripter.Events;
 
-        public RuntimeErrorEventArgs(Exception error)
-        {
-            Error = error;
-        }
+public class RuntimeErrorEventArgs : EventArgs
+{
+    public Exception Error { get; }
+
+    public RuntimeErrorEventArgs(Exception error)
+    {
+        Error = error;
     }
 }

@@ -8,15 +8,14 @@ using GalaSoft.MvvmLight;
 
 using Xabbo.Scripter.Services;
 
-namespace Xabbo.Scripter.ViewModel
-{
-    public class LogViewManager : ObservableObject
-    {
-        public ObservableLoggerProvider Logger { get; }
+namespace Xabbo.Scripter.ViewModel;
 
-        public LogViewManager(IEnumerable<ILoggerProvider> loggers)
-        {
-            Logger = loggers.OfType<ObservableLoggerProvider>().First();
-        }
+public class LogViewManager : ObservableObject
+{
+    public ObservableLoggerProvider Logger { get; }
+
+    public LogViewManager(IEnumerable<ILoggerProvider> loggers)
+    {
+        Logger = loggers.OfType<ObservableLoggerProvider>().First();
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace Xabbo.Scripter.View
+namespace Xabbo.Scripter.View;
+
+public partial class StatusBar : UserControl
 {
-    public partial class StatusBar : UserControl
+    public StatusBar()
     {
-        public StatusBar()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

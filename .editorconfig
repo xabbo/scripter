@@ -2,3 +2,6 @@
 
 # IDE1006: Naming Styles
 dotnet_diagnostic.IDE1006.severity = silent
+
+# IDE0160: Convert to block scoped namespace
+csharp_style_namespace_declarations = file_scoped

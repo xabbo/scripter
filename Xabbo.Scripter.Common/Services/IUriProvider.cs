@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Xabbo.Scripter.Services
+namespace Xabbo.Scripter.Services;
+
+public interface IUriProvider<TEndpoints>
+    where TEndpoints : Enum
 {
-    public interface IUriProvider<TEndpoints>
-        where TEndpoints : Enum
-    {
-        string Domain { get; }
-        Uri this[TEndpoints endpoint] { get; }
-        Uri GetUri(TEndpoints endpoint);
-    }
+    string Domain { get; }
+    Uri this[TEndpoints endpoint] { get; }
+    Uri GetUri(TEndpoints endpoint);
 }

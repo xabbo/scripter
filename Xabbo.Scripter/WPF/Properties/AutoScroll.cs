@@ -2,44 +2,43 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Xabbo.Scripter.WPF.Properties
+namespace Xabbo.Scripter.WPF.Properties;
+
+public static class AutoScroll
 {
-    public static class AutoScroll
+    public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
+        "IsEnabled",
+        typeof(bool),
+        typeof(AutoScroll),
+        new PropertyMetadata(false, IsEnabledChanged)
+    );
+
+    public static bool GetIsEnabled(DependencyObject d) => (bool)d.GetValue(IsEnabledProperty);
+
+    public static void SetIsEnabled(DependencyObject d, bool value) => d.SetValue(IsEnabledProperty, value);
+
+    private static void IsEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
-            "IsEnabled",
-            typeof(bool),
-            typeof(AutoScroll),
-            new PropertyMetadata(false, IsEnabledChanged)
-        );
+        if (e.OldValue == e.NewValue) return;
 
-        public static bool GetIsEnabled(DependencyObject d) => (bool)d.GetValue(IsEnabledProperty);
-
-        public static void SetIsEnabled(DependencyObject d, bool value) => d.SetValue(IsEnabledProperty, value);
-
-        private static void IsEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        if (d is TextBox textBox && e.NewValue is bool isEnabled)
         {
-            if (e.OldValue == e.NewValue) return;
-
-            if (d is TextBox textBox && e.NewValue is bool isEnabled)
+            if (isEnabled)
             {
-                if (isEnabled)
-                {
-                    textBox.TextChanged += ScrollToEnd;
-                }
-                else
-                {
-                    textBox.TextChanged -= ScrollToEnd;
-                }
+                textBox.TextChanged += ScrollToEnd;
+            }
+            else
+            {
+                textBox.TextChanged -= ScrollToEnd;
             }
         }
+    }
 
-        private static void ScrollToEnd(object? sender, TextChangedEventArgs e)
+    private static void ScrollToEnd(object? sender, TextChangedEventArgs e)
+    {
+        if (sender is TextBox textBox)
         {
-            if (sender is TextBox textBox)
-            {
-                textBox.ScrollToEnd();
-            }
+            textBox.ScrollToEnd();
         }
     }
 }

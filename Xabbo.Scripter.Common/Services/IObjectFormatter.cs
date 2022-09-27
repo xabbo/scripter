@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Xabbo.Scripter.Services
+namespace Xabbo.Scripter.Services;
+
+public interface IObjectFormatter
 {
-    public interface IObjectFormatter
-    {
-        string FormatObject(object? obj);
-        string FormatException(Exception ex);
-    }
+    string FormatObject(object? obj);
+    string FormatException(Exception ex);
 }

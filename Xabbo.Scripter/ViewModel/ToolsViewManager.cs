@@ -2,15 +2,14 @@
 
 using GalaSoft.MvvmLight;
 
-namespace Xabbo.Scripter.ViewModel
-{
-    public class ToolsViewManager : ObservableObject
-    {
-        public FurniDataViewManager FurniData { get; }
+namespace Xabbo.Scripter.ViewModel;
 
-        public ToolsViewManager(FurniDataViewManager furniData)
-        {
-            FurniData = furniData;
-        }
+public class ToolsViewManager : ObservableObject
+{
+    public FurniDataViewManager FurniData { get; }
+
+    public ToolsViewManager(FurniDataViewManager furniData)
+    {
+        FurniData = furniData;
     }
 }

@@ -3,46 +3,45 @@ using System.Collections.Generic;
 
 using Microsoft.Extensions.Configuration;
 
-namespace Xabbo.Scripter.Services
+namespace Xabbo.Scripter.Services;
+
+public class HabboUriProvider : IUriProvider<HabboEndpoints>
 {
-    public class HabboUriProvider : IUriProvider<HabboEndpoints>
+    private readonly Dictionary<HabboEndpoints, Uri> _endpoints = new();
+
+    public string Domain { get; }
+
+    public Uri this[HabboEndpoints endpoint] => _endpoints[endpoint];
+
+    public HabboUriProvider(IConfiguration config)
     {
-        private readonly Dictionary<HabboEndpoints, Uri> _endpoints = new();
+        Domain = config.GetValue<string>("Web:Domain");
 
-        public string Domain { get; }
-
-        public Uri this[HabboEndpoints endpoint] => _endpoints[endpoint];
-
-        public HabboUriProvider(IConfiguration config)
+        IConfigurationSection endpoints = config.GetSection("Web:Urls");
+        foreach (IConfigurationSection endpointSection in endpoints.GetChildren())
         {
-            Domain = config.GetValue<string>("Web:Domain");
+            string host = endpointSection.GetValue<string>("Host");
+            Uri baseUri = new(host.Replace("$domain", Domain));
 
-            IConfigurationSection endpoints = config.GetSection("Web:Urls");
-            foreach (IConfigurationSection endpointSection in endpoints.GetChildren())
+            foreach (IConfigurationSection pathSection in endpointSection.GetSection("Endpoints").GetChildren())
             {
-                string host = endpointSection.GetValue<string>("Host");
-                Uri baseUri = new(host.Replace("$domain", Domain));
+                string endpointName = pathSection.Key;
 
-                foreach (IConfigurationSection pathSection in endpointSection.GetSection("Endpoints").GetChildren())
+                if (!Enum.TryParse(endpointName, out HabboEndpoints endpoint))
                 {
-                    string endpointName = pathSection.Key;
-
-                    if (!Enum.TryParse(endpointName, out HabboEndpoints endpoint))
-                    {
-                        throw new Exception($"Unknown Habbo endpoint name: '{endpointName}'.");
-                    }
-
-                    string relativePath = pathSection.Value;
-                    _endpoints[endpoint] = new Uri(baseUri, relativePath);
+                    throw new Exception($"Unknown Habbo endpoint name: '{endpointName}'.");
                 }
+
+                string relativePath = pathSection.Value;
+                _endpoints[endpoint] = new Uri(baseUri, relativePath);
             }
         }
+    }
 
-        public Uri GetUri(HabboEndpoints endpoint) => _endpoints[endpoint];
+    public Uri GetUri(HabboEndpoints endpoint) => _endpoints[endpoint];
 
-        public Uri GetUri(HabboEndpoints endpoint, Dictionary<string, string> parameters)
-        {
-            throw new NotImplementedException();
-        }
+    public Uri GetUri(HabboEndpoints endpoint, Dictionary<string, string> parameters)
+    {
+        throw new NotImplementedException();
     }
 }

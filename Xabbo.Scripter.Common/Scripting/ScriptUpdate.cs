@@ -1,18 +1,17 @@
 ﻿using System;
 
-namespace Xabbo.Scripter.Scripting
+namespace Xabbo.Scripter.Scripting;
+
+public class ScriptUpdate
 {
-    public class ScriptUpdate
+    public ScriptUpdateType UpdateType { get; }
+    public string? Message { get; }
+
+    public ScriptUpdate(ScriptUpdateType updateType, string? message)
     {
-        public ScriptUpdateType UpdateType { get; }
-        public string? Message { get; }
-
-        public ScriptUpdate(ScriptUpdateType updateType, string? message)
-        {
-            UpdateType = updateType;
-            Message = message;
-        }
+        UpdateType = updateType;
+        Message = message;
     }
-
-    public enum ScriptUpdateType { Status, Log }
 }
+
+public enum ScriptUpdateType { Status, Log }

@@ -15,37 +15,36 @@ using System.Windows.Shapes;
 
 using Xabbo.Scripter.ViewModel;
 
-namespace Xabbo.Scripter.View.Pages
+namespace Xabbo.Scripter.View.Pages;
+
+/// <summary>
+/// Interaction logic for ScriptsPage.xaml
+/// </summary>
+public partial class ScriptsPage : Page
 {
-    /// <summary>
-    /// Interaction logic for ScriptsPage.xaml
-    /// </summary>
-    public partial class ScriptsPage : Page
+    public ScriptsViewManager Manager { get; }
+
+    public ScriptsPage(ScriptsViewManager manager)
     {
-        public ScriptsViewManager Manager { get; }
+        Manager = manager;
+        DataContext = manager;
 
-        public ScriptsPage(ScriptsViewManager manager)
+        InitializeComponent();
+    }
+
+    private void DragablzItem_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement element ||
+            element.DataContext is not ScriptViewModel scriptViewModel)
         {
-            Manager = manager;
-            DataContext = manager;
-
-            InitializeComponent();
+            return;
         }
 
-        private void DragablzItem_MouseDown(object sender, MouseButtonEventArgs e)
+        if (e.ChangedButton == MouseButton.Middle)
         {
-            if (sender is not FrameworkElement element ||
-                element.DataContext is not ScriptViewModel scriptViewModel)
-            {
-                return;
-            }
+            e.Handled = true;
 
-            if (e.ChangedButton == MouseButton.Middle)
-            {
-                e.Handled = true;
-
-                Manager.CloseScript(scriptViewModel);
-            }
+            Manager.CloseScript(scriptViewModel);
         }
     }
 }

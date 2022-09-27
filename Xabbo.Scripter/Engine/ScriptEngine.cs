@@ -22,299 +22,298 @@ using Xabbo.Scripter.ViewModel;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.Scripting;
 
-namespace Xabbo.Scripter.Engine
+namespace Xabbo.Scripter.Engine;
+
+public class ScriptEngine
 {
-    public class ScriptEngine
+    public static readonly Regex NameRegex = new Regex(
+        @"^///\s*@name[^\S\n]+(?<name>\S.*?)[^\S\n]*$",
+        RegexOptions.Multiline | RegexOptions.Compiled
+    );
+
+    public static readonly Regex GroupRegex = new Regex(
+        @"^///\s*@group[^\S\n]+(?<group>\S.*?)[^\S\n]*$",
+        RegexOptions.Multiline | RegexOptions.Compiled
+    );
+
+    private readonly ILogger _logger;
+    private readonly IOptions<ScriptEngineOptions> _options;
+
+    private readonly List<Assembly> _referenceAssemblies;
+
+    public string ScriptDirectory { get; }
+    public IScriptHost Host { get; }
+    public RoslynHost RoslynHost { get; private set; } = null!;
+    public ScriptOptions BaseScriptOptions { get; private set; }
+
+    public ScriptEngine(
+        ILogger<ScriptEngine> logger,
+        IOptions<ScriptEngineOptions> options,
+        IConfiguration config,
+        IScriptHost host)
     {
-        public static readonly Regex NameRegex = new Regex(
-            @"^///\s*@name[^\S\n]+(?<name>\S.*?)[^\S\n]*$",
-            RegexOptions.Multiline | RegexOptions.Compiled
+        _logger = logger;
+        _options = options;
+        BaseScriptOptions = ScriptOptions.Default;
+
+        ScriptDirectory = config.GetValue<string>("Scripter:ScriptDirectory");
+        ScriptDirectory = Environment.ExpandEnvironmentVariables(ScriptDirectory);
+        ScriptDirectory = Path.GetFullPath(ScriptDirectory);
+
+        if (!Directory.Exists(ScriptDirectory))
+            Directory.CreateDirectory(ScriptDirectory);
+
+        Host = host;
+
+        _referenceAssemblies = new() { typeof(object).Assembly };
+    }
+
+    public void Initialize()
+    {
+        _logger.LogInformation("Initializing script engine...");
+
+        foreach (string assemblyName in _options.Value.References)
+        {
+            _referenceAssemblies.Add(Assembly.Load(assemblyName));
+        }
+
+        BaseScriptOptions = ScriptOptions.Default
+            .WithLanguageVersion(LanguageVersion.Latest)
+            .WithEmitDebugInformation(true)
+            .WithOptimizationLevel(OptimizationLevel.Debug)
+            .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
+            // TODO : Metadata reference resolver
+            .WithReferences(_referenceAssemblies)
+            .WithImports(_options.Value.Imports);
+
+        RoslynHost = new ScripterRoslynHost(
+            BaseScriptOptions,
+            additionalAssemblies: new[]
+            {
+                Assembly.Load("RoslynPad.Roslyn.Windows"),
+                Assembly.Load("RoslynPad.Editor.Windows")
+            },
+            references: RoslynHostReferences.Empty.With(
+                references: BaseScriptOptions.MetadataReferences,
+                imports: BaseScriptOptions.Imports,
+                assemblyReferences: _referenceAssemblies,
+                typeNamespaceImports: new[] { typeof(G) }
+            )
         );
 
-        public static readonly Regex GroupRegex = new Regex(
-            @"^///\s*@group[^\S\n]+(?<group>\S.*?)[^\S\n]*$",
-            RegexOptions.Multiline | RegexOptions.Compiled
-        );
+        _logger.LogInformation("Script engine initialized.");
+    }
 
-        private readonly ILogger _logger;
-        private readonly IOptions<ScriptEngineOptions> _options;
-
-        private readonly List<Assembly> _referenceAssemblies;
-
-        public string ScriptDirectory { get; }
-        public IScriptHost Host { get; }
-        public RoslynHost RoslynHost { get; private set; } = null!;
-        public ScriptOptions BaseScriptOptions { get; private set; }
-
-        public ScriptEngine(
-            ILogger<ScriptEngine> logger,
-            IOptions<ScriptEngineOptions> options,
-            IConfiguration config,
-            IScriptHost host)
+    public bool Compile(ScriptViewModel script)
+    {
+        if (script.IsCompiling || script.IsRunning)
         {
-            _logger = logger;
-            _options = options;
-            BaseScriptOptions = ScriptOptions.Default;
-
-            ScriptDirectory = config.GetValue<string>("Scripter:ScriptDirectory");
-            ScriptDirectory = Environment.ExpandEnvironmentVariables(ScriptDirectory);
-            ScriptDirectory = Path.GetFullPath(ScriptDirectory);
-
-            if (!Directory.Exists(ScriptDirectory))
-                Directory.CreateDirectory(ScriptDirectory);
-
-            Host = host;
-
-            _referenceAssemblies = new() { typeof(object).Assembly };
+            throw new InvalidOperationException($"The script is currently {(script.IsCompiling ? "compiling" : "running")}.");
         }
 
-        public void Initialize()
+        try
         {
-            _logger.LogInformation("Initializing script engine...");
+            script.IsFaulted = false;
+            script.IsCompiling = true;
+            script.Status = ScriptStatus.Compiling;
+            script.UpdateStatus("Compiling...");
+            
+            script.StartTime = null;
+            script.EndTime = null;
 
-            foreach (string assemblyName in _options.Value.References)
+            string scriptFileName = string.IsNullOrWhiteSpace(script.FileName) ? "<unknown>.csx" : script.FileName;
+            string filePath = Path.Combine(ScriptDirectory, scriptFileName);
+
+            if (File.Exists(filePath))
             {
-                _referenceAssemblies.Add(Assembly.Load(assemblyName));
+                filePath = Path.GetFullPath(filePath);
             }
 
-            BaseScriptOptions = ScriptOptions.Default
-                .WithLanguageVersion(LanguageVersion.Latest)
-                .WithEmitDebugInformation(true)
-                .WithOptimizationLevel(OptimizationLevel.Debug)
-                .WithSourceResolver(new SourceFileResolver(new[] { "." }, ScriptDirectory))
-                // TODO : Metadata reference resolver
-                .WithReferences(_referenceAssemblies)
-                .WithImports(_options.Value.Imports);
+            Script<object> csharpScript;
 
-            RoslynHost = new ScripterRoslynHost(
-                BaseScriptOptions,
-                additionalAssemblies: new[]
-                {
-                    Assembly.Load("RoslynPad.Roslyn.Windows"),
-                    Assembly.Load("RoslynPad.Editor.Windows")
-                },
-                references: RoslynHostReferences.Empty.With(
-                    references: BaseScriptOptions.MetadataReferences,
-                    imports: BaseScriptOptions.Imports,
-                    assemblyReferences: _referenceAssemblies,
-                    typeNamespaceImports: new[] { typeof(G) }
-                )
-            );
+            if (script.IsSavedToDisk)
+            {
+                script.Save();
+            }
 
-            _logger.LogInformation("Script engine initialized.");
+            if (File.Exists(filePath))
+            {
+                using FileStream fs = File.OpenRead(filePath);
+                csharpScript = CSharpScript.Create(
+                    fs,
+                    options: BaseScriptOptions
+                        .WithFilePath(filePath)
+                        .WithFileEncoding(Encoding.UTF8),
+                    globalsType: typeof(G)
+                );
+            }
+            else
+            {
+                csharpScript = CSharpScript.Create(
+                    script.Code,
+                    options: BaseScriptOptions
+                        .WithFilePath(filePath)
+                        .WithFileEncoding(Encoding.UTF8),
+                    globalsType: typeof(G)
+                );
+            }
+
+            ImmutableArray<Diagnostic> diagnostics = csharpScript.Compile();
+            if (diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
+                throw new CompilationErrorException("Failed to compile the script", diagnostics);
+
+            script.Runner = csharpScript.CreateDelegate();
+            script.UpdateStatus(string.Empty);
+
+            return true;
+        }
+        catch (CompilationErrorException ex)
+        {
+            script.Status = ScriptStatus.CompileError;
+            script.ErrorText = "";
+            script.UpdateStatus(ex.ToString());
+
+            script.RaiseCompileError(ex);
+
+            return false;
+        }
+        finally
+        {
+            script.IsCompiling = false;
+            script.Status = ScriptStatus.None;
+        }
+    }
+
+    private void Execute(ScriptViewModel script)
+    {
+        if (script.IsCompiling || script.IsRunning)
+        {
+            throw new InvalidOperationException($"The script is currently {(script.IsCompiling ? "compiling" : "running")}.");
         }
 
-        public bool Compile(ScriptViewModel script)
+        if (script.Runner is null)
         {
-            if (script.IsCompiling || script.IsRunning)
+            throw new InvalidOperationException("The script has not been compiled.");
+        }
+
+        Exception? error = null;
+
+        try
+        {
+            script.IsFaulted = false;
+            script.UpdateStatus("Executing...");
+            script.Status = ScriptStatus.Running;
+            script.StartTime = DateTime.Now;
+            script.EndTime = null;
+            script.IsRunning = true;
+            script.IsLogging = false;
+
+            object? result = null;
+            using (G globals = new(Host, script))
             {
-                throw new InvalidOperationException($"The script is currently {(script.IsCompiling ? "compiling" : "running")}.");
+                result = script.Runner(globals, script.CancellationToken).GetAwaiter().GetResult();
             }
 
-            try
+            script.Status = ScriptStatus.Complete;
+
+            if (result is not null)
             {
-                script.IsFaulted = false;
-                script.IsCompiling = true;
-                script.Status = ScriptStatus.Compiling;
-                script.UpdateStatus("Compiling...");
-                
-                script.StartTime = null;
-                script.EndTime = null;
+                script.LogMessage(Host.ObjectFormatter.FormatObject(result));
+            }
+            else
+            {
+                script.LogMessage("Execution complete.");
+            }
+        }
+        catch (Exception ex)
+        {
+            error = ex;
 
-                string scriptFileName = string.IsNullOrWhiteSpace(script.FileName) ? "<unknown>.csx" : script.FileName;
-                string filePath = Path.Combine(ScriptDirectory, scriptFileName);
+            StringBuilder errorMessage = new();
 
-                if (File.Exists(filePath))
+            if (ex is OperationCanceledException operationCanceledEx)
+            {
+                if (script.CancellationToken.IsCancellationRequested)
                 {
-                    filePath = Path.GetFullPath(filePath);
-                }
-
-                Script<object> csharpScript;
-
-                if (script.IsSavedToDisk)
-                {
-                    script.Save();
-                }
-
-                if (File.Exists(filePath))
-                {
-                    using FileStream fs = File.OpenRead(filePath);
-                    csharpScript = CSharpScript.Create(
-                        fs,
-                        options: BaseScriptOptions
-                            .WithFilePath(filePath)
-                            .WithFileEncoding(Encoding.UTF8),
-                        globalsType: typeof(G)
-                    );
+                    script.Status = ScriptStatus.Canceled;
+                    errorMessage.Append("Execution canceled.");
                 }
                 else
                 {
-                    csharpScript = CSharpScript.Create(
-                        script.Code,
-                        options: BaseScriptOptions
-                            .WithFilePath(filePath)
-                            .WithFileEncoding(Encoding.UTF8),
-                        globalsType: typeof(G)
-                    );
+                    script.Status = ScriptStatus.TimedOut;
+                    errorMessage.Append("Operation timed out.");
+                }
+            }
+            else
+            {
+                errorMessage.Append($"{ex.GetType().FullName ?? "Error"}: {ex.Message}");
+
+                script.IsFaulted = true;
+                script.Status = ScriptStatus.RuntimeError;
+            }
+
+            StackTrace stackTrace = new(ex, true);
+            StackFrame[] frames = stackTrace.GetFrames();
+
+            foreach (StackFrame frame in frames)
+            {
+                if (!frame.HasSource()) continue;
+
+                MethodBase? methodBase = frame.GetMethod();
+                string? fileName = frame.GetFileName();
+
+                if (methodBase is null || fileName is null) continue;
+
+                string? ns = methodBase.DeclaringType?.Namespace;
+                if (ns is not null && ns.StartsWith("Xabbo."))
+                {
+                    continue;
                 }
 
-                ImmutableArray<Diagnostic> diagnostics = csharpScript.Compile();
-                if (diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
-                    throw new CompilationErrorException("Failed to compile the script", diagnostics);
+                int lineNumber = frame.GetFileLineNumber();
 
-                script.Runner = csharpScript.CreateDelegate();
-                script.UpdateStatus(string.Empty);
+                fileName = Path.GetFileName(fileName);
 
-                return true;
+                errorMessage.Append("\r\n  ");
+                if (methodBase.DeclaringType?.Name.StartsWith("<<Init") != true)
+                {
+                    errorMessage.Append($"at {methodBase} ");
+                }
+
+                errorMessage.Append($"in {fileName}:line {lineNumber}");
             }
-            catch (CompilationErrorException ex)
-            {
-                script.Status = ScriptStatus.CompileError;
-                script.ErrorText = "";
-                script.UpdateStatus(ex.ToString());
 
-                script.RaiseCompileError(ex);
+            script.LogMessage(errorMessage.ToString());
+            script.RaiseRuntimeError(ex);
+        }
+        finally
+        {
+            script.IsRunning = false;
+            script.EndTime = DateTime.Now;
+        }
+    }
 
-                return false;
-            }
-            finally
+    public void Run(ScriptViewModel script)
+    {
+        if (!Host.CanExecute || script.IsCompiling || script.IsRunning) return;
+
+        try
+        {
+            script.RenewCancellationToken();
+
+            if (Compile(script))
             {
-                script.IsCompiling = false;
-                script.Status = ScriptStatus.None;
+                Execute(script);
             }
         }
-
-        private void Execute(ScriptViewModel script)
+        catch
         {
-            if (script.IsCompiling || script.IsRunning)
-            {
-                throw new InvalidOperationException($"The script is currently {(script.IsCompiling ? "compiling" : "running")}.");
-            }
-
-            if (script.Runner is null)
-            {
-                throw new InvalidOperationException("The script has not been compiled.");
-            }
-
-            Exception? error = null;
-
-            try
-            {
-                script.IsFaulted = false;
-                script.UpdateStatus("Executing...");
-                script.Status = ScriptStatus.Running;
-                script.StartTime = DateTime.Now;
-                script.EndTime = null;
-                script.IsRunning = true;
-                script.IsLogging = false;
-
-                object? result = null;
-                using (G globals = new(Host, script))
-                {
-                    result = script.Runner(globals, script.CancellationToken).GetAwaiter().GetResult();
-                }
-
-                script.Status = ScriptStatus.Complete;
-
-                if (result is not null)
-                {
-                    script.LogMessage(Host.ObjectFormatter.FormatObject(result));
-                }
-                else
-                {
-                    script.LogMessage("Execution complete.");
-                }
-            }
-            catch (Exception ex)
-            {
-                error = ex;
-
-                StringBuilder errorMessage = new();
-
-                if (ex is OperationCanceledException operationCanceledEx)
-                {
-                    if (script.CancellationToken.IsCancellationRequested)
-                    {
-                        script.Status = ScriptStatus.Canceled;
-                        errorMessage.Append("Execution canceled.");
-                    }
-                    else
-                    {
-                        script.Status = ScriptStatus.TimedOut;
-                        errorMessage.Append("Operation timed out.");
-                    }
-                }
-                else
-                {
-                    errorMessage.Append($"{ex.GetType().FullName ?? "Error"}: {ex.Message}");
-
-                    script.IsFaulted = true;
-                    script.Status = ScriptStatus.RuntimeError;
-                }
-
-                StackTrace stackTrace = new(ex, true);
-                StackFrame[] frames = stackTrace.GetFrames();
-
-                foreach (StackFrame frame in frames)
-                {
-                    if (!frame.HasSource()) continue;
-
-                    MethodBase? methodBase = frame.GetMethod();
-                    string? fileName = frame.GetFileName();
-
-                    if (methodBase is null || fileName is null) continue;
-
-                    string? ns = methodBase.DeclaringType?.Namespace;
-                    if (ns is not null && ns.StartsWith("Xabbo."))
-                    {
-                        continue;
-                    }
-
-                    int lineNumber = frame.GetFileLineNumber();
-
-                    fileName = Path.GetFileName(fileName);
-
-                    errorMessage.Append("\r\n  ");
-                    if (methodBase.DeclaringType?.Name.StartsWith("<<Init") != true)
-                    {
-                        errorMessage.Append($"at {methodBase} ");
-                    }
-
-                    errorMessage.Append($"in {fileName}:line {lineNumber}");
-                }
-
-                script.LogMessage(errorMessage.ToString());
-                script.RaiseRuntimeError(ex);
-            }
-            finally
-            {
-                script.IsRunning = false;
-                script.EndTime = DateTime.Now;
-            }
+            // TODO report unhandled exceptions
+            return;
         }
-
-        public void Run(ScriptViewModel script)
+        finally
         {
-            if (!Host.CanExecute || script.IsCompiling || script.IsRunning) return;
-
-            try
-            {
-                script.RenewCancellationToken();
-
-                if (Compile(script))
-                {
-                    Execute(script);
-                }
-            }
-            catch
-            {
-                // TODO report unhandled exceptions
-                return;
-            }
-            finally
-            {
-                script.IsCancelling = false;
-            }
+            script.IsCancelling = false;
         }
     }
 }
