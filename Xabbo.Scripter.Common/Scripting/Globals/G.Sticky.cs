@@ -71,6 +71,16 @@ namespace Xabbo.Scripter.Scripting
         /// Deletes the specified sticky.
         /// </summary>
         public void DeleteSticky(Sticky sticky) => DeleteWallItem(sticky.Id);
+        
+        /// <summary>
+        /// Deletes the specified wallitem if its a sticky.
+        /// </summary>
+        public void DeleteSticky(IWallItem sticky)
+        {
+            var stickies = new List<int> { 4221, 4531, 4220, 4533, 4540, 4557 };
+            if (stickies.Contains(sticky.Kind)) DeleteWallItem(sticky.Id);
+            else throw new Exception("Selected wallitem is not a sticky");
+        }
 
     }
 }
