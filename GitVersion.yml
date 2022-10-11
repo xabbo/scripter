@@ -3,7 +3,9 @@ assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{SemVer}'
 mode: ContinuousDeployment
 tag-prefix: '[Vv]'
-branches: {}
+branches:
+  develop:
+    tag: beta
 ignore:
   sha: []
 merge-message-formats: {}
