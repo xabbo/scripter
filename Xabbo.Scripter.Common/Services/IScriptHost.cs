@@ -2,7 +2,7 @@
 using System.Threading;
 
 using Xabbo.Messages;
-using Xabbo.Interceptor;
+using Xabbo.Extension;
 
 using Xabbo.Core.GameData;
 
@@ -35,7 +35,7 @@ public interface IScriptHost
     /// <summary>
     /// Provides an interface to the interceptor.
     /// </summary>
-    IInterceptor Interceptor { get; }
+    IRemoteExtension Extension { get; }
 
     /// <summary>
     /// Provides an interface to the game data manager.

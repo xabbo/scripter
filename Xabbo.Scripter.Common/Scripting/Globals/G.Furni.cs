@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Xabbo.Common;
-using Xabbo.Messages;
 using Xabbo.Interceptor;
 
 using Xabbo.Core;

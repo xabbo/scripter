@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.ComponentModel;
 
-using Xabbo.Common;
 using Xabbo.Messages;
+using Xabbo.Messages.Dispatcher;
 using Xabbo.Interceptor;
-using Xabbo.Interceptor.Dispatcher;
 using Xabbo.Core.Game;
 using Xabbo.Core.GameData;
 
@@ -32,7 +31,7 @@ public partial class G : IDisposable
 
     private readonly CancellationTokenSource _cts;
 
-    private IInterceptDispatcher _dispatcher => _scriptHost.Interceptor.Dispatcher;
+    private IMessageDispatcher _dispatcher => _scriptHost.Extension.Dispatcher;
 
     private ProfileManager _profileManager => _scriptHost.GameManager.ProfileManager;
     private FriendManager _friendManager => _scriptHost.GameManager.FriendManager;
@@ -44,7 +43,7 @@ public partial class G : IDisposable
     /// Gets the interceptor service.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public IInterceptor Interceptor => _scriptHost.Interceptor;
+    public IInterceptor Interceptor => _scriptHost.Extension;
 
     /// <summary>
     /// Gets the currently connected client type.

@@ -20,6 +20,7 @@ using Wpf.Ui.Mvvm.Services;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
+using Xabbo.Extension;
 using Xabbo.GEarth;
 
 using Xabbo.Core.Game;
@@ -28,6 +29,7 @@ using Xabbo.Core.GameData;
 using Xabbo.Scripter.Services;
 using Xabbo.Scripter.View;
 using Xabbo.Scripter.Engine;
+using Xabbo.Scripter.Util;
 
 namespace Xabbo.Scripter;
 
@@ -130,16 +132,14 @@ public partial class App : Application
         switch (interceptorService)
         {
             case "g-earth":
-                services.AddSingleton(GEarthOptions.Default
-                    .WithInformationalVersion()
-                    .WithName("xabbo scripter")
-                    .WithDescription("C# scripting interface")
-                    .WithAuthor("b7")
-                    .WithConfiguration(context.Configuration)
+                services.AddSingleton(
+                    GEarthOptions.Default.WithConfiguration(context.Configuration)
+                    with { Version = GitVersionUtil.GetSemanticVersion() }
                 );
-                services.AddSingleton<ScripterExtension>();
-                services.AddSingleton<IInterceptor>(provider => provider.GetRequiredService<ScripterExtension>());
-                services.AddSingleton<IRemoteInterceptor>(provider => provider.GetRequiredService<ScripterExtension>());
+                services.AddSingleton<ScripterGEarthExtension>();
+                services.AddSingleton<IInterceptor>(provider => provider.GetRequiredService<ScripterGEarthExtension>());
+                services.AddSingleton<IExtension>(provider => provider.GetRequiredService<ScripterGEarthExtension>());
+                services.AddSingleton<IRemoteExtension>(provider => provider.GetRequiredService<ScripterGEarthExtension>());
                 break;
             default:
                 throw new Exception($"Unknown interceptor service: '{interceptorService}'.");

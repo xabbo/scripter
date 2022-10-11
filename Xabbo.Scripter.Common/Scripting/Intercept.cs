@@ -1,8 +1,7 @@
 ﻿using System;
 
 using Xabbo.Messages;
-using Xabbo.Interceptor;
-using Xabbo.Interceptor.Dispatcher;
+using Xabbo.Messages.Dispatcher;
 
 namespace Xabbo.Scripter.Scripting;
 
@@ -10,11 +9,11 @@ internal class Intercept : IDisposable
 {
     private bool _disposed;
 
-    public IInterceptDispatcher Dispatcher { get; }
+    public IMessageDispatcher Dispatcher { get; }
     public Header Header { get; }
     public Action<InterceptArgs> Callback { get; }
 
-    public Intercept(IInterceptDispatcher dispatcher, Header header, Action<InterceptArgs> callback)
+    public Intercept(IMessageDispatcher dispatcher, Header header, Action<InterceptArgs> callback)
     {
         Dispatcher = dispatcher;
         Header = header;

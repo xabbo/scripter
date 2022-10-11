@@ -2,9 +2,10 @@
 using System.Linq;
 
 using GalaSoft.MvvmLight;
+
+using Xabbo.Extension;
 using Xabbo.Core.Events;
 using Xabbo.Core.Game;
-using Xabbo.Interceptor;
 
 using Xabbo.Scripter.Services;
 
@@ -12,7 +13,7 @@ namespace Xabbo.Scripter.ViewModel;
 
 public class StatusBarViewManager : ObservableObject
 {
-    public IRemoteInterceptor Interceptor { get; }
+    public IRemoteExtension Extension { get; }
 
     private readonly IGameManager _gameManager;
 
@@ -125,16 +126,16 @@ public class StatusBarViewManager : ObservableObject
     #endregion
 
     public StatusBarViewManager(
-        IRemoteInterceptor interceptor,
+        IRemoteExtension extension,
         IGameManager gameManager,
         SettingsViewManager settings)
     {
-        Interceptor = interceptor;
-        Interceptor.InterceptorConnected += OnInterceptorConnected;
-        Interceptor.Initialized += OnInterceptorInitialized;
-        Interceptor.Connected += OnConnectionStart;
-        Interceptor.Disconnected += OnConnectionEnd;
-        Interceptor.InterceptorDisconnected += OnInterceptorDisconnected;
+        Extension = extension;
+        Extension.InterceptorConnected += OnInterceptorConnected;
+        Extension.Initialized += OnInterceptorInitialized;
+        Extension.Connected += OnConnectionStart;
+        Extension.Disconnected += OnConnectionEnd;
+        Extension.InterceptorDisconnected += OnInterceptorDisconnected;
 
         _gameManager = gameManager;
         _gameManager.ProfileManager.LoadedUserData += OnLoadedUserData;

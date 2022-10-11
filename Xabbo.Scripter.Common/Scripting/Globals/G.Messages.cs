@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using Xabbo.Messages;
+using Xabbo.Connection;
 using Xabbo.Interceptor;
 using Xabbo.Interceptor.Tasks;
 
@@ -13,11 +14,19 @@ namespace Xabbo.Scripter.Scripting;
  */
 public partial class G
 {
-    /// <summary>
-    /// Sends the specified packet to the client or server.
-    /// </summary>
+    /// <inheritdoc cref="IConnection.Send(IReadOnlyPacket)" />
     /// <param name="packet">The packet to send.</param>
     public void Send(IReadOnlyPacket packet) => Interceptor.Send(packet);
+
+    /// <inheritdoc cref="InterceptorExtensions.Send(IInterceptor, Header)" />
+    public void Send(Header header) => Interceptor.Send(header);
+
+    /// <inheritdoc cref="IConnection.SendAsync(IReadOnlyPacket)" />
+    /// <param name="packet">The packet to send.</param>
+    public ValueTask SendAsync(IReadOnlyPacket packet) => Interceptor.SendAsync(packet);
+
+    /// <inheritdoc cref="InterceptorExtensions.SendAsync(IInterceptor, Header)" />
+    public ValueTask SendAsync(Header header) => Interceptor.SendAsync(header);
 
     /// <summary>
     /// Captures a packet with a header that matches any of the specified headers.

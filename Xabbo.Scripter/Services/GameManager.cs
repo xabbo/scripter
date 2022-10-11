@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Xabbo.Messages;
 using Xabbo.Interceptor;
 using Xabbo.Core.Game;
+using Xabbo.Extension;
 
 namespace Xabbo.Scripter.Services;
 
 public class GameManager : IGameManager
 {
     private readonly IMessageManager _messages;
-    private readonly IRemoteInterceptor _interceptor;
+    private readonly IRemoteExtension _extension;
 
-    public ValueTask SendAsync(IReadOnlyPacket packet) => _interceptor.SendAsync(packet);
+    public ValueTask SendAsync(IReadOnlyPacket packet) => _extension.SendAsync(packet);
 
     public event EventHandler? InitializeComponents;
 
@@ -22,7 +23,7 @@ public class GameManager : IGameManager
     public InventoryManager InventoryManager { get; private set; }
     public FriendManager FriendManager { get; private set; }
 
-    public GameManager(IMessageManager messages, IRemoteInterceptor interceptor,
+    public GameManager(IMessageManager messages, IRemoteExtension extension,
         ProfileManager profileManager,
         FriendManager friendManager,
         RoomManager roomManager,
@@ -31,10 +32,10 @@ public class GameManager : IGameManager
     {
         _messages = messages;
 
-        _interceptor = interceptor;
-        _interceptor.Connected += Interceptor_ConnectionStart;
-        _interceptor.Disconnected += Interceptor_ConnectionEnd;
-        _interceptor.Disconnected += Interceptor_Disconnected;
+        _extension = extension;
+        _extension.Connected += Interceptor_ConnectionStart;
+        _extension.Disconnected += Interceptor_ConnectionEnd;
+        _extension.Disconnected += Interceptor_Disconnected;
 
         ProfileManager = profileManager;
         FriendManager = friendManager;

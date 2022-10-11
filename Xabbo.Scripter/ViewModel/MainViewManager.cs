@@ -11,9 +11,12 @@ using GalaSoft.MvvmLight;
 using MaterialDesignThemes.Wpf;
 
 using Xabbo.Interceptor;
-using Xabbo.Core.GameData;
-using Xabbo.Scripter.Engine;
+using Xabbo.Extension;
+
 using Xabbo.Core;
+using Xabbo.Core.GameData;
+
+using Xabbo.Scripter.Engine;
 
 namespace Xabbo.Scripter.ViewModel;
 
@@ -24,7 +27,7 @@ public class MainViewManager : ObservableObject
     private readonly ScriptEngine _scriptEngine;
     private readonly IGameDataManager _gameDataManager;
 
-    private readonly IRemoteInterceptor _interceptor;
+    private readonly IRemoteExtension _extension;
 
     private string _title = "xabbo scripter";
     public string Title
@@ -56,7 +59,7 @@ public class MainViewManager : ObservableObject
         ISnackbarMessageQueue snackbarMessageQueue,
         ScriptEngine scriptEngine,
         IGameDataManager gameDataManager,
-        IRemoteInterceptor interceptor,
+        IRemoteExtension extension,
         LogViewManager log,
         ScriptsViewManager scripts,
         ToolsViewManager tools,
@@ -79,11 +82,11 @@ public class MainViewManager : ObservableObject
         _scriptEngine = scriptEngine;
         _gameDataManager = gameDataManager;
 
-        _interceptor = interceptor;
-        _interceptor.InterceptorConnected += OnInterceptorConnected;
-        _interceptor.Connected += OnConnected;
-        _interceptor.Disconnected += OnDisconnected;
-        _interceptor.InterceptorDisconnected += OnInterceptorDisconnected;
+        _extension = extension;
+        _extension.InterceptorConnected += OnInterceptorConnected;
+        _extension.Connected += OnConnected;
+        _extension.Disconnected += OnDisconnected;
+        _extension.InterceptorDisconnected += OnInterceptorDisconnected;
 
         Log = log;
         Scripts = scripts;
@@ -101,7 +104,7 @@ public class MainViewManager : ObservableObject
 
             _logger.LogInformation($"xabbo scripter initialized.");
 
-            _ = _interceptor.RunAsync();
+            _ = _extension.RunAsync();
         }
         catch (Exception ex)
         {

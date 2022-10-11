@@ -1,13 +1,16 @@
 ﻿using System;
-
+using Xabbo.Extension;
 using Xabbo.GEarth;
 using Xabbo.Messages;
 
 namespace Xabbo.Scripter;
 
-public class ScripterExtension : GEarthExtension
+[Title("xabbo scripter")]
+[Description("C# scripting interface")]
+[Author("b7")]
+public class ScripterGEarthExtension : GEarthExtension
 {
-    public ScripterExtension(IMessageManager messages, GEarthOptions options)
+    public ScripterGEarthExtension(IMessageManager messages, GEarthOptions options)
         : base(messages, options)
     { }
 }

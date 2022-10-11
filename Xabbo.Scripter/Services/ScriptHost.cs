@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using GalaSoft.MvvmLight;
 
 using Xabbo.Messages;
-using Xabbo.Interceptor;
+using Xabbo.Extension;
 
 using Xabbo.Scripter.Scripting;
 using Xabbo.Core.GameData;
@@ -51,7 +51,7 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
 
     public IMessageManager MessageManager { get; private set; }
 
-    public IInterceptor Interceptor { get; private set; }
+    public IRemoteExtension Extension { get; private set; }
 
     public GlobalVariables GlobalVariables { get; private set; }
 
@@ -68,7 +68,7 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
         IUiContext uiContext,
         IUiManager uiManager,
         IMessageManager messageManager,
-        IInterceptor interceptor,
+        IRemoteExtension extension,
         IGameDataManager gameDataManager,
         IGameManager gameManager)
     {
@@ -89,7 +89,7 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
         UiContext = uiContext;
         UiManager = uiManager;
         MessageManager = messageManager;
-        Interceptor = interceptor;
+        Extension = extension;
         GameDataManager = gameDataManager;
         GameManager = gameManager;
 
@@ -97,8 +97,8 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
 
         RefreshCancellationToken();
 
-        interceptor.Connected += Interceptor_Connected;
-        interceptor.Disconnected += Interceptor_Disconnected;
+        extension.Connected += Interceptor_Connected;
+        extension.Disconnected += Interceptor_Disconnected;
     }
 
     private void RefreshCancellationToken()
