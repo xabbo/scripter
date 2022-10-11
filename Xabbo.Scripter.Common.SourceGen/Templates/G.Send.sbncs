@@ -1,0 +1,25 @@
+﻿using System.Threading.Tasks;
+
+using Xabbo.Messages;
+using Xabbo.Interceptor;
+
+namespace Xabbo.Scripter.Scripting;
+
+{{~
+	func gtypes; ret array.join $[0] ', ' @(do(x); ret 'T'+x; end); end
+    func gtypeargs; ret array.join $[0] ', ' @(do(x); ret 'T'+x+' arg'+x; end); end
+	func gargs; ret array.join $[0] ', ' @(do(x); ret 'arg'+x; end); end
+-}}
+
+public partial class G
+{
+	{{~ for n in 1..max_params ~}}
+	/// <summary>Sends a message with the specified header and values.</summary>
+	public void Send<{{gtypes 1..n}}>(Header header, {{gtypeargs 1..n}})
+		=> Interceptor.Send<{{gtypes 1..n}}>(header, {{gargs 1..n}});
+
+	/// <summary>Sends a message with the specified header and values.</summary>
+	public ValueTask SendAsync<{{gtypes 1..n}}>(Header header, {{gtypeargs 1..n}})
+		=> Interceptor.SendAsync<{{gtypes 1..n}}>(header, {{gargs 1..n}});{{ for.last ? '' : '\n' }}
+	{{~ end ~}}
+}
