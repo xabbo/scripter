@@ -51,16 +51,16 @@
 		<PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
 		<PackageReference Include="WPF-UI" Version="2.0.1" />
-		<ProjectReference Include="..\roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
-		<ProjectReference Include="..\roslynpad\src\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj" />
-		<ProjectReference Include="..\roslynpad\src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj" />
+		<ProjectReference Include="..\..\lib\roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj" />
+		<ProjectReference Include="..\..\lib\roslynpad\src\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj" />
+		<ProjectReference Include="..\..\lib\roslynpad\src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj" />
 		<ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj" />
-		<ProjectReference Include="..\Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj" />
-		<ProjectReference Include="..\Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj" />
+		<ProjectReference Include="$(XabboCommonDir)src\Xabbo.Common\Xabbo.Common.csproj" />
+		<ProjectReference Include="$(XabboGEarthDir)src\Xabbo.GEarth\Xabbo.GEarth.csproj" />
+		<ProjectReference Include="$(XabboCoreDir)src\Xabbo.Core\Xabbo.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -70,7 +70,7 @@
 		<None Update="theme.xshd">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Include="..\Xabbo.Messages\messages.ini">
+		<None Include="..\..\lib\Xabbo.Messages\messages.ini">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

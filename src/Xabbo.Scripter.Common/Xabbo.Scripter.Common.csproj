@@ -32,8 +32,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="$(SolutionDir)\Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj" />
-		<ProjectReference Include="$(SolutionDir)\Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj" />
+		<ProjectReference Include="$(XabboCommonDir)src\Xabbo.Common\Xabbo.Common.csproj" />
+		<ProjectReference Include="$(XabboCoreDir)src\Xabbo.Core\Xabbo.Core.csproj" />
 	</ItemGroup>
 
 </Project>

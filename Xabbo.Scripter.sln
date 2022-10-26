@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter", "Xabbo.Scripter\Xabbo.Scripter.csproj", "{21D81F9D-B741-4047-9B67-88ACBD9E3436}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter", "src\Xabbo.Scripter\Xabbo.Scripter.csproj", "{21D81F9D-B741-4047-9B67-88ACBD9E3436}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common", "Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj", "{013C6314-49A1-4D48-9090-EA4AB26F082B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common", "src\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj", "{013C6314-49A1-4D48-9090-EA4AB26F082B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DD7B36F8-A070-467B-9028-C14780DCCAF4}"
 EndProject
@@ -14,23 +14,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Common", "Xabbo.Common\Xabbo.Common\Xabbo.Common.csproj", "{1E6E1844-D944-4BC7-9848-ABED9C90DA0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Common", "lib\Xabbo.Common\src\Xabbo.Common\Xabbo.Common.csproj", "{1E6E1844-D944-4BC7-9848-ABED9C90DA0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Core", "Xabbo.Core\Xabbo.Core\Xabbo.Core.csproj", "{1B39D5C9-BE71-42B5-8993-7595089F3F8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Core", "lib\Xabbo.Core\src\Xabbo.Core\Xabbo.Core.csproj", "{1B39D5C9-BE71-42B5-8993-7595089F3F8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.GEarth", "Xabbo.GEarth\Xabbo.GEarth\Xabbo.GEarth.csproj", "{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.GEarth", "lib\Xabbo.GEarth\src\Xabbo.GEarth\Xabbo.GEarth.csproj", "{AB21926E-A19C-4F2F-82D5-0292D3D0ADDD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common.SourceGen", "Xabbo.Scripter.Common.SourceGen\Xabbo.Scripter.Common.SourceGen.csproj", "{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Common.SourceGen", "src\Xabbo.Scripter.Common.SourceGen\Xabbo.Scripter.Common.SourceGen.csproj", "{4B0D2360-F358-4FC5-8B3E-0E1573A26F37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Core", "Xabbo.Scripter.Core\Xabbo.Scripter.Core.csproj", "{93C93848-3D21-4816-9277-5B421CEAFAA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Scripter.Core", "src\Xabbo.Scripter.Core\Xabbo.Scripter.Core.csproj", "{93C93848-3D21-4816-9277-5B421CEAFAA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn", "roslynpad\src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj", "{C5F76035-AD87-42A5-A9F3-45A09F9669A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn", "lib\roslynpad\src\RoslynPad.Roslyn\RoslynPad.Roslyn.csproj", "{C5F76035-AD87-42A5-A9F3-45A09F9669A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn.Windows", "roslynpad\src\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj", "{17C80EFF-BA5A-4CAE-9954-99D875AB598B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Roslyn.Windows", "lib\roslynpad\src\RoslynPad.Roslyn.Windows\RoslynPad.Roslyn.Windows.csproj", "{17C80EFF-BA5A-4CAE-9954-99D875AB598B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Editor.Windows", "roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj", "{460D3313-462D-4EDC-9B32-81C8B9996BFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoslynPad.Editor.Windows", "lib\roslynpad\src\RoslynPad.Editor.Windows\RoslynPad.Editor.Windows.csproj", "{460D3313-462D-4EDC-9B32-81C8B9996BFD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Common.SourceGeneration", "Xabbo.Common\Xabbo.Common.SourceGeneration\Xabbo.Common.SourceGeneration.csproj", "{A7743BA9-B824-409A-88D2-BABB73E2F4FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabbo.Common.SourceGeneration", "lib\Xabbo.Common\src\Xabbo.Common.SourceGeneration\Xabbo.Common.SourceGeneration.csproj", "{A7743BA9-B824-409A-88D2-BABB73E2F4FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,15 +1,15 @@
 [submodule "Xabbo.Common"]
-	path = Xabbo.Common
+	path = lib/Xabbo.Common
 	url = https://github.com/b7c/Xabbo.Common
 [submodule "Xabbo.Core"]
-	path = Xabbo.Core
+	path = lib/Xabbo.Core
 	url = https://github.com/b7c/Xabbo.Core
 [submodule "Xabbo.GEarth"]
-	path = Xabbo.GEarth
+	path = lib/Xabbo.GEarth
 	url = https://github.com/b7c/Xabbo.GEarth
 [submodule "Xabbo.Messages"]
-	path = Xabbo.Messages
+	path = lib/Xabbo.Messages
 	url = https://www.github.com/b7c/Xabbo.Messages
 [submodule "roslynpad"]
-	path = roslynpad
+	path = lib/roslynpad
 	url = https://github.com/roslynpad/roslynpad
