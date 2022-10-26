@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<!-- Project -->
-	<PropertyGroup>
+	<PropertyGroup Label="Project">
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
@@ -11,31 +10,20 @@
 		<Configurations>Debug;Release;Develop</Configurations>
 	</PropertyGroup>
 
-	<!-- Configurations -->
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|AnyCPU'">
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-	</PropertyGroup>
-
-	<!-- Rename paths -->
-	<PropertyGroup>
+	<PropertyGroup Label="Rename paths">
 		<AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
 		<PathMap>$(AppOutputBase)=Xabbo.Scripter\</PathMap>
 	</PropertyGroup>
 
-	<!-- Resources -->
-	<ItemGroup>
-		<Resource Include="Resources\**" />
-	</ItemGroup>
-
-	<ItemGroup>
+  <ItemGroup Label="Include resources">
+    <Resource Include="Resources\**" />
+  </ItemGroup>
+  
+  <ItemGroup Label="Editor configuration">
 		<None Include="..\..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 
-	<!-- References -->
-	<ItemGroup>
+	<ItemGroup Label="References">
 		<PackageReference Include="Dragablz" Version="0.0.3.223" />
 		<PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
 		  <PrivateAssets>all</PrivateAssets>
@@ -57,13 +45,13 @@
 		<ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Label="Xabbo libraries">
 		<ProjectReference Include="$(XabboCommonDir)src\Xabbo.Common\Xabbo.Common.csproj" />
 		<ProjectReference Include="$(XabboGEarthDir)src\Xabbo.GEarth\Xabbo.GEarth.csproj" />
 		<ProjectReference Include="$(XabboCoreDir)src\Xabbo.Core\Xabbo.Core.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Label="Include files">
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
