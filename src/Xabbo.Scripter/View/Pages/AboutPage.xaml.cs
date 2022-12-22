@@ -21,6 +21,8 @@ public partial class AboutPage : Page
 
     private void Hyperlink_RequestNavigate(object? sender, RequestNavigateEventArgs e)
     {
+        e.Handled = true;
+
         Process.Start(new ProcessStartInfo
         {
             FileName = e.Uri.ToString(),
