@@ -98,6 +98,17 @@ public class ScriptsViewManager : ObservableObject
     public IInterTabClient InterTabClient { get; }
     public Func<object> NewItemFactory { get; }
 
+    private string _filter = string.Empty;
+    public string Filter
+    {
+        get => _filter;
+        set
+        {
+            if (Set(ref _filter, value))
+                Scripts.Refresh();
+        }
+    }
+
     public ScriptsViewManager(
         IUiContext uiContext,
         ScriptEngine engine,
@@ -114,6 +125,7 @@ public class ScriptsViewManager : ObservableObject
         Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Group), ListSortDirection.Ascending));
         Scripts.SortDescriptions.Add(new SortDescription(nameof(ScriptViewModel.Name), ListSortDirection.Ascending));
         Scripts.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ScriptViewModel.Group)));
+        Scripts.Filter = FilterScripts;
 
         if (uiContext is WpfContext wpfContext)
         {
@@ -147,6 +159,19 @@ public class ScriptsViewManager : ObservableObject
         _fsw.Changed += (s, e) => _fileUpdate.OnNext(e);
         _fsw.Deleted += (s, e) => _fileUpdate.OnNext(e);
         _fsw.EnableRaisingEvents = true;
+    }
+
+    private bool FilterScripts(object obj)
+    {
+        if (string.IsNullOrWhiteSpace(_filter))
+            return true;
+
+        if (obj is not ScriptViewModel script)
+            return false;
+
+        return
+            script.Name.Contains(_filter, StringComparison.OrdinalIgnoreCase) ||
+            script.Group.Contains(_filter, StringComparison.OrdinalIgnoreCase);
     }
 
     private void HandleFileChanges(IList<FileSystemEventArgs> changes)

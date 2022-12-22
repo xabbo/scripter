@@ -26,7 +26,18 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TextBox
+            Margin="8"
+            Padding="8"
+            Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+            Icon="Search48"
+        />
         <DataGrid
+            Grid.Row="1"
             ItemsSource="{Binding Scripts}"
             SelectionChanged="DataGrid_SelectionChanged"
             AutoGenerateColumns="False"
