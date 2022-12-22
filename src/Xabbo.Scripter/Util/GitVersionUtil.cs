@@ -5,12 +5,11 @@ namespace Xabbo.Scripter.Util;
 
 internal static class GitVersionUtil
 {
-    public static string GetSemanticVersion()
+    public static string? GetSemanticVersion(Assembly assembly)
     {
-        return Assembly.GetExecutingAssembly()
+        return assembly
             .GetType("GitVersionInformation")
             ?.GetField("SemVer")
-            ?.GetValue(null) as string
-            ?? throw new InvalidOperationException($"Failed to get SemVer from GitVersionInformation.");
+            ?.GetValue(null) as string;
     }
 }

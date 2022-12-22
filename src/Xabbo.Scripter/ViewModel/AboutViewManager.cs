@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using GalaSoft.MvvmLight;
+using Xabbo.Scripter.Util;
 
 namespace Xabbo.Scripter.ViewModel;
 
@@ -16,13 +17,6 @@ public class AboutViewManager : ObservableObject
     {
         get => _scripterVersion;
         set => Set(ref _scripterVersion, value);
-    }
-
-    private string _scripterCommonVersion = string.Empty;
-    public string ScripterCommonVersion
-    {
-        get => _scripterCommonVersion;
-        set => Set(ref _scripterCommonVersion, value);
     }
 
     private string _xabboCommonVersion = string.Empty;
@@ -46,22 +40,28 @@ public class AboutViewManager : ObservableObject
         set => Set(ref _xabboCoreVersion, value);
     }
 
-    string GetAssemblyVersion(string assemblyName)
-    {
-        var asm = Assembly.Load(assemblyName);
-        var attr = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-        if (attr is not null)
-            return $"v{attr.InformationalVersion}";
-        else
-            return "v" + (Assembly.Load(assemblyName).GetName().Version?.ToString(3) ?? " unknown");
-    }
-
     public AboutViewManager()
     {
         ScripterVersion = GetAssemblyVersion("Xabbo.Scripter");
-        ScripterCommonVersion = GetAssemblyVersion("Xabbo.Scripter.Common");
         XabboCommonVersion = GetAssemblyVersion("Xabbo.Common");
         XabboGEarthVersion = GetAssemblyVersion("Xabbo.GEarth");
         XabboCoreVersion = GetAssemblyVersion("Xabbo.Core");
+    }
+
+    private static string GetAssemblyVersion(string assemblyName)
+    {
+        string? version = GitVersionUtil.GetSemanticVersion(Assembly.Load(assemblyName));
+
+        if (version is null)
+        {
+            var asm = Assembly.Load(assemblyName);
+            var attr = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            if (attr is not null)
+                version = $"v{attr.InformationalVersion}";
+            else
+                version = "v" + (Assembly.Load(assemblyName).GetName().Version?.ToString(3) ?? " unknown");
+        }
+
+        return version;
     }
 }

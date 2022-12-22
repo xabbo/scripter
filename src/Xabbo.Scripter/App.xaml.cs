@@ -134,7 +134,7 @@ public partial class App : Application
             case "g-earth":
                 services.AddSingleton(
                     GEarthOptions.Default.WithConfiguration(context.Configuration)
-                    with { Version = GitVersionUtil.GetSemanticVersion() }
+                    with { Version = GitVersionUtil.GetSemanticVersion(Assembly.GetExecutingAssembly()) ?? "unknown" }
                 );
                 services.AddSingleton<ScripterGEarthExtension>();
                 services.AddSingleton<IInterceptor>(provider => provider.GetRequiredService<ScripterGEarthExtension>());

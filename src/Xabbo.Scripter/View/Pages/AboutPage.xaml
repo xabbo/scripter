@@ -39,9 +39,6 @@
                     Xabbo.Scripter
                     <Run Text="{Binding ScripterVersion}" />
                     <LineBreak />
-                    Xabbo.Scripter.Common
-                    <Run Text="{Binding ScripterCommonVersion}" />
-                    <LineBreak />
                     Xabbo.Common
                     <Run Text="{Binding XabboCommonVersion}" />
                     <LineBreak />

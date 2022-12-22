@@ -19,6 +19,13 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup Label="GitVersion">
+    <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <ItemGroup Label="Source generation">
     <ProjectReference
 			Include="..\Xabbo.Scripter.Common.SourceGen\Xabbo.Scripter.Common.SourceGen.csproj"
