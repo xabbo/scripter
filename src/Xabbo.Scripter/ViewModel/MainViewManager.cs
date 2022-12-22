@@ -83,10 +83,6 @@ public class MainViewManager : ObservableObject
         _gameDataManager = gameDataManager;
 
         _extension = extension;
-        _extension.InterceptorConnected += OnInterceptorConnected;
-        _extension.Connected += OnConnected;
-        _extension.Disconnected += OnDisconnected;
-        _extension.InterceptorDisconnected += OnInterceptorDisconnected;
 
         Log = log;
         Scripts = scripts;
@@ -100,35 +96,14 @@ public class MainViewManager : ObservableObject
         try
         {
             await Task.Run(() => _scriptEngine.Initialize(), cancellationToken).ConfigureAwait(false);
-            await _gameDataManager.LoadAsync(Hotel.FromIdentifier("us"), cancellationToken);
 
             _logger.LogInformation($"xabbo scripter initialized.");
 
-            _ = _extension.RunAsync();
+            _ = _extension.RunAsync(default);
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, $"Initialization failed: {ex.Message}");
+            _logger.LogCritical(ex, "Initialization failed: {message}", ex.Message);
         }
-    }
-
-    private void OnInterceptorConnected(object? sender, EventArgs e)
-    {
-        _logger.LogInformation("Connection to G-Earth established.");
-    }
-
-    private void OnConnected(object? sender, GameConnectedEventArgs e)
-    {
-        _logger.LogInformation($"Game connection established. {e.ClientType} / {e.ClientVersion}");
-    }
-
-    private void OnDisconnected(object? sender, EventArgs e)
-    {
-        _logger.LogWarning("Game connection lost.");
-    }
-
-    private void OnInterceptorDisconnected(object? sender, EventArgs e)
-    {
-        _logger.LogWarning("Connection to G-Earth lost.");
     }
 }

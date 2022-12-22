@@ -38,7 +38,23 @@ public class FurniDataViewManager : ObservableObject
         _uiContext = uiContext;
         _gameDataManager = gameDataManager;
 
-        Task initializeTask = Task.Run(InitializeAsync);
+        gameDataManager.Loaded += GameDataManager_Loaded;
+    }
+
+    private void GameDataManager_Loaded()
+    {
+        FurniData? furniData = _gameDataManager.Furni;
+        if (furniData is null) return;
+
+        _uiContext.InvokeAsync(() =>
+        {
+            _furni = new ObservableCollection<FurniInfoViewModel>(
+                furniData.Select(x => new FurniInfoViewModel(x))
+            );
+            Furni = CollectionViewSource.GetDefaultView(_furni);
+            Furni.Filter = Filter;
+            RaisePropertyChanged(nameof(Furni));
+        });
     }
 
     private void RefreshList()
@@ -66,23 +82,5 @@ public class FurniDataViewManager : ObservableObject
                 furniInfo.Name.Contains(_filterText, StringComparison.OrdinalIgnoreCase) ||
                 furniInfo.Identifier.Contains(_filterText, StringComparison.OrdinalIgnoreCase);
         }
-    }
-
-    private async Task InitializeAsync()
-    {
-        await _gameDataManager.WaitForLoadAsync(CancellationToken.None);
-
-        FurniData? furniData = _gameDataManager.Furni;
-        if (furniData is null) return;
-
-        await _uiContext.InvokeAsync(() =>
-        {
-            _furni = new ObservableCollection<FurniInfoViewModel>(
-                furniData.Select(x => new FurniInfoViewModel(x))
-            );
-            Furni = CollectionViewSource.GetDefaultView(_furni);
-            Furni.Filter = Filter;
-            RaisePropertyChanged(nameof(Furni));
-        });
     }
 }
