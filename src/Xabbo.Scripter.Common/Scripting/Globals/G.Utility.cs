@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-
+using Xabbo.Core;
 using Xabbo.Scripter.Runtime;
 
 namespace Xabbo.Scripter.Scripting;
@@ -122,15 +122,9 @@ public partial class G
     }
 
     /// <summary>
-    /// Calculates the distance between two points.
+    /// Calculates the Euclidean distance between two points.
     /// </summary>
-    public static double Dist((int X, int Y) a, (int X, int Y) b)
-    {
-        return Math.Sqrt(
-            Math.Pow(a.X - b.X, 2)
-            + Math.Pow(a.Y - b.Y, 2)
-        );
-    }
+    public static double Distance(Point a, Point b) => Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
 
     /// <summary>
     /// Queues the specified work to run on the thread pool.
