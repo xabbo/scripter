@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
+using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -11,7 +12,7 @@ using Xabbo.Scripter.ViewModel;
 
 namespace Xabbo.Scripter.View;
 
-public partial class MainWindow : Window, INavigationWindow
+public partial class MainWindow : UiWindow, INavigationWindow
 {
     private readonly INavigationService _nav;
 
@@ -24,7 +25,7 @@ public partial class MainWindow : Window, INavigationWindow
 
         InitializeComponent();
 
-        _nav.SetNavigation(RootNavigation);
+        _nav.SetNavigationControl(RootNavigation);
         SetPageService(pageService);
 
         Loaded += MainWindow_Loaded;
