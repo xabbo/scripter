@@ -46,9 +46,24 @@ public partial class G : IDisposable
     public IInterceptor Interceptor => _scriptHost.Extension;
 
     /// <summary>
-    /// Gets the currently connected client type.
+    /// Gets the current client type.
     /// </summary>
-    public ClientType CurrentClient => Interceptor.Client;
+    public ClientType Client => Interceptor.Client;
+
+    /// <summary>
+    /// Gets the current client identifier.
+    /// </summary>
+    public string ClientIdentifier => Interceptor.ClientIdentifier;
+
+    /// <summary>
+    /// Gets the current client version.
+    /// </summary>
+    public string ClientVersion => Interceptor.ClientVersion;
+
+    /// <summary>
+    /// Gets the current hotel.
+    /// </summary>
+    public Hotel Hotel => Interceptor.Hotel;
 
     /// <summary>
     /// Gets the cancellation token which signals when the script has been

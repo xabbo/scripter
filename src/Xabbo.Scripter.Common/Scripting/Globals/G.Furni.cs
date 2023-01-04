@@ -181,7 +181,7 @@ public partial class G
     /// </summary>
     public void PlaceFloorItem(long itemId, Point location, int dir = 0)
     {
-        switch (CurrentClient)
+        switch (Client)
         {
             case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {location.X} {location.Y} {dir}"); break;
             case ClientType.Unity: Interceptor.Send(Out.PlaceRoomItem, itemId, location.X, location.Y, dir); break;
@@ -204,7 +204,7 @@ public partial class G
     /// </summary>
     public void PlaceWallItem(long itemId, WallLocation location)
     {
-        switch (CurrentClient)
+        switch (Client)
         {
             case ClientType.Flash: Interceptor.Send(Out.PlaceRoomItem, $"{itemId} {location}"); break;
             case ClientType.Unity: Interceptor.Send(Out.PlaceWallItem, itemId, location); break;

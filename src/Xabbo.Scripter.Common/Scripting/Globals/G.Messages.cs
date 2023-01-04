@@ -95,7 +95,7 @@ public partial class G
     {
         lock (_intercepts)
         {
-            _dispatcher.AddIntercept(header, callback, CurrentClient);
+            _dispatcher.AddIntercept(header, callback, Client);
             _intercepts.Add(new Intercept(Interceptor.Dispatcher, header, callback));
         }
     }
