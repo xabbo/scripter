@@ -65,7 +65,7 @@
                                     Not connected to G-Earth. Click here to reconnect.
                                 </TextBlock>
                                 <TextBlock Visibility="{Binding IsRemoteConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    Connected to G-Earth on port <Run Text="{Binding Interceptor.Port, Mode=OneWay}" />.
+                                    Connected to G-Earth on port <Run Text="{Binding Extension.Port, Mode=OneWay}" />.
                                 </TextBlock>
                             </Grid>
                         </ToolTip>
@@ -82,7 +82,7 @@
                 <!-- Connection status -->
                 <Grid DockPanel.Dock="Right">
                     <Grid.ToolTip>
-                        <ToolTip>
+                        <ToolTip DataContext="{Binding}">
                             <StackPanel>
                                 <TextBlock FontWeight="Bold" FontSize="12" Text="Connection" />
                                 <TextBlock>
