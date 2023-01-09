@@ -9,34 +9,34 @@ public partial class G
     /// <summary>
     /// Returns a non-negative random integer.
     /// </summary>
-    public int Rand() => _scriptHost.Random.Next();
+    public static int Rand() => Random.Shared.Next();
 
     /// <summary>
     /// Returns a non-negative integer that is less than the specified maximum.
     /// </summary>
-    public int Rand(int max) => _scriptHost.Random.Next(max);
+    public static int Rand(int max) => Random.Shared.Next(max);
 
     /// <summary>
     /// Returns a random integer that is within a specified range.
     /// </summary>
-    public int Rand(int min, int max) => _scriptHost.Random.Next(min, max);
+    public static int Rand(int min, int max) => Random.Shared.Next(min, max);
 
     /// <summary>
     /// Fills the elements of a specified array of bytes with random numbers.
     /// </summary>
-    public void Rand(byte[] buffer) => _scriptHost.Random.NextBytes(buffer);
+    public static void Rand(byte[] buffer) => Random.Shared.NextBytes(buffer);
 
     /// <summary>
     /// Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.
     /// </summary>
     /// <returns></returns>
-    public double RandDouble() => _scriptHost.Random.NextDouble();
+    public static double RandDouble() => Random.Shared.NextDouble();
 
     /// <summary>
-    /// Selects a random element from a specified enumerable.
+    /// Selects a random element from the specified enumerable.
     /// Returns <see langword="default"/>(<typeparamref name="T"/>) if the enumerable is empty.
     /// </summary>
-    public T? Rand<T>(IEnumerable<T> enumerable)
+    public static T? Rand<T>(IEnumerable<T> enumerable)
     {
         if (enumerable is not Array array)
             array = enumerable.ToArray();
@@ -48,7 +48,7 @@ public partial class G
     }
 
     /// <summary>
-    /// Returns a random element from a specified array.
+    /// Returns a random element from the specified array.
     /// </summary>
-    public T Rand<T>(T[] array) => array[Rand(array.Length)];
+    public static T Rand<T>(T[] array) => array[Rand(array.Length)];
 }

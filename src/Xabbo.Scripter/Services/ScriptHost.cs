@@ -21,16 +21,6 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
         _jsonSerializerOptions,
         _jsonSerializerOptionsIndented;
 
-    private static readonly Random _rngGlobal = new();
-    [ThreadStatic]
-    private static Random? _rngLocal;
-    private static Random CreateRng()
-    {
-        int seed;
-        lock (_rngGlobal) seed = _rngGlobal.Next();
-        return new Random(seed);
-    }
-
     private readonly IHostApplicationLifetime _lifetime;
     private CancellationTokenSource? _globalCts;
 
@@ -58,8 +48,6 @@ public class ScriptHost : ObservableObject, IScriptHost, IJsonSerializer
     IJsonSerializer IScriptHost.JsonSerializer => this;
 
     public CancellationToken CancellationToken => _globalCts?.Token ?? CancellationToken.None;
-
-    public Random Random => (_rngLocal ??= CreateRng());
 
     public IObjectFormatter ObjectFormatter { get; } = new ObjectFormatter();
 

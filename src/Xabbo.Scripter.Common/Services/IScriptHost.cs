@@ -63,11 +63,6 @@ public interface IScriptHost
     GlobalVariables GlobalVariables { get; }
 
     /// <summary>
-    /// Provides access to a random number generator.
-    /// </summary>
-    Random Random { get; }
-
-    /// <summary>
     /// Gets the cancellation token for all scripts.
     /// </summary>
     CancellationToken CancellationToken { get; }
