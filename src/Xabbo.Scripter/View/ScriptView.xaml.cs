@@ -101,7 +101,7 @@ public partial class ScriptView : UserControl
         codeEditor.Select(location.SourceSpan.Start, location.SourceSpan.Length);
     }
 
-    private void CodeEditor_Loaded(object sender, RoutedEventArgs e)
+    private async void CodeEditor_Loaded(object sender, RoutedEventArgs e)
     {
         Loaded -= CodeEditor_Loaded;
 
@@ -111,7 +111,7 @@ public partial class ScriptView : UserControl
             codeEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
         }
 
-        codeEditor.Initialize(
+        await codeEditor.InitializeAsync(
             Script.Engine.RoslynHost,
             new ClassificationHighlightColors(),
             Path.GetFullPath("Scripts"),
