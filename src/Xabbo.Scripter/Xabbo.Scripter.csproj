@@ -2,7 +2,7 @@
 
 	<PropertyGroup Label="Project">
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Xabbo.Scripter</RootNamespace>
