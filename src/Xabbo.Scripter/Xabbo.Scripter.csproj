@@ -26,7 +26,7 @@
 	<ItemGroup Label="References">
 		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
 		<PackageReference Include="Dragablz" Version="0.0.3.223" />
-		<PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
+		<PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

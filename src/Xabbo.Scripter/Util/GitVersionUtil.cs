@@ -9,7 +9,7 @@ internal static class GitVersionUtil
     {
         return assembly
             .GetType("GitVersionInformation")
-            ?.GetField("SemVer")
+            ?.GetField("FullSemVer")
             ?.GetValue(null) as string;
     }
 }
