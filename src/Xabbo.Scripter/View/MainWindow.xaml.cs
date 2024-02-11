@@ -3,16 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
+using Wpf.Ui;
 using Wpf.Ui.Controls;
-using Wpf.Ui.Controls.Interfaces;
-using Wpf.Ui.Mvvm.Contracts;
 
 using Xabbo.Scripter.ViewModel;
 
 namespace Xabbo.Scripter.View;
 
-public partial class MainWindow : UiWindow, INavigationWindow
+public partial class MainWindow : FluentWindow, INavigationWindow
 {
     private readonly INavigationService _nav;
 
@@ -23,15 +21,17 @@ public partial class MainWindow : UiWindow, INavigationWindow
         _nav = nav;
         DataContext = manager;
 
+        Wpf.Ui.Appearance.SystemThemeWatcher.Watch(this);
+
         InitializeComponent();
 
-        _nav.SetNavigationControl(RootNavigation);
         SetPageService(pageService);
+        _nav.SetNavigationControl(RootNavigation);
 
         Loaded += MainWindow_Loaded;
         Activated += MainWindow_Activated;
 
-        RootFrame.Navigating += RootFrame_Navigating;
+        // RootFrame.Navigating += RootFrame_Navigating;
     }
 
     private void RootFrame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -67,14 +67,16 @@ public partial class MainWindow : UiWindow, INavigationWindow
     #region - INavigationWindow -
     public void CloseWindow() => Close();
 
-    public Frame GetFrame() => RootFrame;
+    // public Frame GetFrame() => RootFrame;
 
-    public INavigation GetNavigation() => RootNavigation;
+    public INavigationView GetNavigation() => RootNavigation;
 
     public bool Navigate(Type pageType) => RootNavigation.Navigate(pageType);
 
-    public void SetPageService(IPageService pageService) => RootNavigation.PageService = pageService;
+    public void SetPageService(IPageService pageService) => RootNavigation.SetPageService(pageService);
 
     public void ShowWindow() => Show();
+
+    public void SetServiceProvider(IServiceProvider serviceProvider) => RootNavigation.SetServiceProvider(serviceProvider);
     #endregion
 }

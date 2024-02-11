@@ -3,7 +3,7 @@ using System.Windows;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Wpf.Ui.Mvvm.Contracts;
+using Wpf.Ui;
 
 namespace Xabbo.Scripter.Services;
 

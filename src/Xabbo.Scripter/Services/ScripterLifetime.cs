@@ -4,7 +4,7 @@ using System.Windows;
 
 using Microsoft.Extensions.Hosting;
 
-using Wpf.Ui.Appearance;
+using Wpf.Ui;
 
 using Xabbo.Scripter.ViewModel;
 
@@ -43,7 +43,7 @@ public class ScripterLifetime : IHostLifetime
 
             if (!_settings.DarkMode)
             {
-                Theme.Apply(ThemeType.Light, updateAccent: false);
+                // Theme.Apply(ThemeType.Light, updateAccent: false);
             }
         });
 

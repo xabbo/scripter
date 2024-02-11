@@ -15,8 +15,7 @@ using Microsoft.Extensions.Hosting;
 
 using MaterialDesignThemes.Wpf;
 
-using Wpf.Ui.Mvvm.Contracts;
-using Wpf.Ui.Mvvm.Services;
+using Wpf.Ui;
 
 using Xabbo.Messages;
 using Xabbo.Interceptor;
@@ -112,16 +111,18 @@ public partial class App : Application
         services.AddSingleton<IHostLifetime, ScripterLifetime>();
         services.AddSingleton<Application>(this);
         services.AddSingleton<Window, MainWindow>();
-        services.AddSingleton<INavigationWindow>(sp => (INavigationWindow)sp.GetRequiredService<Window>());
         services.AddSingleton<IUiContext, WpfContext>();
         services.AddSingleton(Dispatcher);
         services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
         services.AddSingleton<ISnackbarMessageQueue, SnackbarMessageQueue>();
 
+        services.AddSingleton<IUiManager, ScripterUiManager>();
+
+        // WPF UI
+        services.AddSingleton<INavigationWindow>(sp => (INavigationWindow)sp.GetRequiredService<Window>());
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IPageService, PageService>();
-
-        services.AddSingleton<IUiManager, ScripterUiManager>();
+        services.AddSingleton<IThemeService, ThemeService>();
 
         // Options
         services.Configure<ScriptEngineOptions>(context.Configuration.GetSection("Engine"));

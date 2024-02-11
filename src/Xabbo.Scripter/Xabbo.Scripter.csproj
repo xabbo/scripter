@@ -41,7 +41,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
 		<PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
 		<PackageReference Include="RoslynPad.Editor.Windows" Version="4.8.0" />
-		<PackageReference Include="WPF-UI" Version="2.0.3" />
+		<PackageReference Include="WPF-UI" Version="3.0.0" />
 		<ProjectReference Include="..\Xabbo.Scripter.Common\Xabbo.Scripter.Common.csproj" />
 	</ItemGroup>
 

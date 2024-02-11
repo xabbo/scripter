@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text.Json;
-
+using System.Windows.Forms.VisualStyles;
 using GalaSoft.MvvmLight;
-
+using Wpf.Ui;
 using Wpf.Ui.Appearance;
 
 using Xabbo.Scripter.Configuration;
@@ -13,6 +13,7 @@ public class SettingsViewManager : ObservableObject
 {
     const string FilePath = "settings.json";
 
+    private readonly IThemeService _themeService;
     // private Settings _previousSettings;
     private Settings _settings;
 
@@ -24,7 +25,7 @@ public class SettingsViewManager : ObservableObject
             if (_settings.DarkMode == value) return;
 
             _settings.DarkMode = value;
-            Theme.Apply(value ? ThemeType.Dark : ThemeType.Light, updateAccent: false);
+            _themeService.SetTheme(value ? ApplicationTheme.Dark : ApplicationTheme.Light);
             Save();
 
             RaisePropertyChanged();
@@ -45,8 +46,10 @@ public class SettingsViewManager : ObservableObject
         }
     }
 
-    public SettingsViewManager()
+    public SettingsViewManager(IThemeService themeService)
     {
+        _themeService = themeService;
+
         if (File.Exists(FilePath))
         {
             string json = File.ReadAllText(FilePath);

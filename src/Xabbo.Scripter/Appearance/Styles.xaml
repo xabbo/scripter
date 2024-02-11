@@ -1,0 +1,222 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <!-- Remove the default scroll viewer around pages -->
+    <ControlTemplate x:Key="ScripterLeftNavigationViewTemplate" TargetType="{x:Type controls:NavigationView}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid
+                x:Name="PaneGrid"
+                Grid.Column="0"
+                Width="{TemplateBinding OpenPaneLength}"
+                Margin="4,0">
+                <Border x:Name="PaneBorder">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Back and Toggle buttons  -->
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <controls:Button
+                                x:Name="PART_BackButton"
+                                Grid.Row="0"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Left"
+                                IsEnabled="{TemplateBinding IsBackEnabled}"
+                                Style="{StaticResource BasePaneButtonStyle}"
+                                Visibility="{TemplateBinding IsBackButtonVisible,
+                                                             Converter={StaticResource BackButtonVisibilityToVisibilityConverter}}">
+                                <controls:Button.Icon>
+                                    <controls:SymbolIcon Symbol="ArrowLeft48" />
+                                </controls:Button.Icon>
+                            </controls:Button>
+
+                            <controls:Button
+                                x:Name="PART_ToggleButton"
+                                Grid.Row="1"
+                                Margin="0,0,0,5"
+                                Style="{StaticResource BasePaneButtonStyle}"
+                                Visibility="{TemplateBinding IsPaneToggleVisible,
+                                                             Converter={StaticResource BoolToVisibilityConverter}}">
+                                <controls:Button.Icon>
+                                    <controls:SymbolIcon Symbol="LineHorizontal320" />
+                                </controls:Button.Icon>
+                                <controls:Button.Content>
+                                    <TextBlock FontWeight="Medium" Text="{TemplateBinding PaneTitle}" />
+                                </controls:Button.Content>
+                            </controls:Button>
+
+                            <!--  Pane header  -->
+                            <ContentPresenter
+                                Grid.Row="2"
+                                Margin="0"
+                                Content="{TemplateBinding PaneHeader}" />
+
+                            <!--  Auto Suggest Box  -->
+                            <ContentPresenter
+                                x:Name="AutoSuggestBoxContentPresenter"
+                                Grid.Row="3"
+                                Margin="0"
+                                Content="{TemplateBinding AutoSuggestBox}" />
+
+                            <controls:Button
+                                x:Name="PART_AutoSuggestBoxSymbolButton"
+                                Grid.Row="3"
+                                Margin="0,0,0,6"
+                                Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AutoSuggestBox.Icon}"
+                                Style="{StaticResource BasePaneButtonStyle}"
+                                Visibility="Collapsed" />
+                        </Grid>
+
+                        <!--  Menu items  -->
+                        <controls:DynamicScrollViewer
+                            Grid.Row="1"
+                            Margin="0,0,-4,0"
+                            Padding="0,0,4,0"
+                            CanContentScroll="False"
+                            Background="Red"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsControl
+                                    x:Name="PART_MenuItemsItemsControl"
+                                    Grid.Row="0"
+                                    Focusable="False"
+                                    KeyboardNavigation.DirectionalNavigation="Contained"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Margin="0" IsItemsHost="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <ItemsControl
+                                    x:Name="PART_FooterMenuItemsItemsControl"
+                                    Grid.Row="1"
+                                    Margin="0,0,0,4"
+                                    Focusable="False"
+                                    KeyboardNavigation.DirectionalNavigation="Contained"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Margin="0" IsItemsHost="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </Grid>
+                        </controls:DynamicScrollViewer>
+
+                        <!--  Pane footer  -->
+                        <ContentPresenter
+                            Grid.Row="2"
+                            Margin="0"
+                            Content="{TemplateBinding PaneFooter}" />
+                    </Grid>
+                </Border>
+            </Grid>
+            <Border
+                Grid.Column="1"
+                Margin="{TemplateBinding FrameMargin}"
+                Background="{DynamicResource NavigationViewContentBackground}"
+                BorderBrush="{DynamicResource NavigationViewContentGridBorderBrush}"
+                BorderThickness="1,1,0,0"
+                CornerRadius="8,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Header  -->
+                    <ContentPresenter
+                        Grid.Row="0"
+                        Margin="0"
+                        Content="{TemplateBinding Header}"
+                        Visibility="{TemplateBinding HeaderVisibility}" />
+
+                    <!--  Page content  -->
+                    <!-- Remove the default scroll viewer around pages -->
+                    <controls:NavigationViewContentPresenter
+                        x:Name="PART_NavigationViewContentPresenter"
+                        Grid.Row="1"
+                        Padding="{TemplateBinding Padding}"
+                        Transition="{TemplateBinding Transition}"
+                        TransitionDuration="{TemplateBinding TransitionDuration}"
+                        Template="{StaticResource DefaultNavigationViewContentPresenterControlTemplate}" />
+
+                    <!--  Overlay  -->
+                    <ContentPresenter
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Margin="0"
+                        Content="{TemplateBinding ContentOverlay}" />
+                </Grid>
+            </Border>
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="PaneStates">
+                    <VisualState Name="PaneOpen">
+                        <Storyboard>
+                            <DoubleAnimation
+                                AccelerationRatio="0.4"
+                                Storyboard.TargetName="PaneGrid"
+                                Storyboard.TargetProperty="Width"
+                                From="40"
+                                To="{TemplateBinding OpenPaneLength}"
+                                Duration="0:0:.16" />
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState Name="PaneCompact">
+                        <Storyboard>
+                            <DoubleAnimation
+                                AccelerationRatio="0.4"
+                                Storyboard.TargetName="PaneGrid"
+                                Storyboard.TargetProperty="Width"
+                                From="{TemplateBinding OpenPaneLength}"
+                                To="40"
+                                Duration="0:0:.16" />
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </Grid>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsPaneOpen" Value="False">
+                <Setter TargetName="PART_AutoSuggestBoxSymbolButton" Property="Visibility" Value="Visible" />
+                <Setter TargetName="AutoSuggestBoxContentPresenter" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PART_ToggleButton" Property="Content" Value="{x:Null}" />
+            </Trigger>
+            <Trigger Property="AutoSuggestBox" Value="{x:Null}">
+                <Setter TargetName="PART_AutoSuggestBoxSymbolButton" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="PaneTitle" Value="{x:Null}">
+                <Setter TargetName="PART_ToggleButton" Property="Content" Value="{x:Null}" />
+                <Setter TargetName="PART_ToggleButton" Property="HorizontalAlignment" Value="Left" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+</ResourceDictionary>

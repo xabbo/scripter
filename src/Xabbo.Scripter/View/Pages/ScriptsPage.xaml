@@ -14,7 +14,6 @@
     d:DesignHeight="450" d:DesignWidth="800"
     d:DataContext="{d:DesignInstance Type={x:Type viewModel:ScriptsViewManager}}"
     Title="ScriptsPage"
-    Style="{StaticResource UiPage}"
 >
     <Page.InputBindings>
         <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewTabCommand}" />
@@ -35,9 +34,9 @@
 
             <dragablz:TabablzControl.HeaderPrefixContent>
                 <ui:Button
-                    Margin="4"
-                    Padding="2"
-                    Icon="Code24"
+                    Margin="8,4,4,0"
+                    Padding="4"
+                    Icon="{ui:SymbolIcon Code24}"
                     BorderThickness="0"
                     Command="{Binding OpenScriptListCommand}"
                 />
@@ -45,8 +44,8 @@
 
             <dragablz:TabablzControl.HeaderSuffixContent>
                 <ui:Button
-                    Margin="4" Padding="2"
-                    Icon="Add24"
+                    Margin="4,4,0,0" Padding="4"
+                    Icon="{ui:SymbolIcon Add24}"
                     BorderThickness="0"
                     Command="{Binding NewTabCommand}"
                 />

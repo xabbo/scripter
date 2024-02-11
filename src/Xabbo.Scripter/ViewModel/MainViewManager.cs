@@ -54,6 +54,13 @@ public class MainViewManager : ObservableObject
         }
     }
 
+    private bool _isPaneOpen = false;
+    public bool IsPaneOpen
+    {
+        get => _isPaneOpen;
+        set => Set(ref _isPaneOpen, value);
+    }
+
     public MainViewManager(
         ILogger<MainViewManager> logger,
         ISnackbarMessageQueue snackbarMessageQueue,
